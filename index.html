@@ -60,7 +60,7 @@
         <!-- 제어판 (좌측) -->
         <div class="w-full md:w-80 h-1/3 md:h-screen bg-gray-800 p-4 overflow-y-auto shadow-lg rounded-lg md:rounded-r-lg md:rounded-l-none z-10 flex-shrink-0">
             <h1 class="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-2">
-                로봇 제어판
+                사족보행로봇 제어
                 <div id="status-light" class="w-3 h-3 rounded-full bg-gray-500" title="애니메이션 상태"></div>
             </h1>
             
@@ -68,26 +68,40 @@
             <div class="grid grid-cols-2 gap-2 mb-4 border-b border-gray-700 pb-4">
                 <button id="btn-reset" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded-lg transition duration-200 text-sm">초기 자세</button>
                 <button id="btn-apply-changes" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-2 rounded-lg transition duration-200 text-sm">각도 변화값 적용</button>
+                
+                <!-- 가상 중력 스위치 -->
+                <button id="btn-toggle-gravity" class="col-span-2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-2 rounded-lg transition duration-200 text-sm flex items-center justify-center gap-2">
+                    🌍 가상 중력 (지면 밀착) : ON
+                </button>
             </div>
 
-            <!-- 2. 모터 각도 제어 (3열 배치) -->
+            <!-- 2. 모터 각도 제어 및 코드 자동 생성 -->
             <h2 class="text-lg font-semibold mb-2 text-center">모터 각도 제어</h2>
-            <div id="motor-controls" class="grid grid-cols-3 gap-1 mb-4 border-b border-gray-700 pb-4"></div>
+            <div id="motor-controls" class="grid grid-cols-3 gap-1 mb-2"></div>
+            
+            <!-- Work 코드 생성 및 복사 영역 -->
+            <div class="mb-4 border-b border-gray-700 pb-4 flex gap-1">
+                <input type="text" id="output-work-code" readonly class="w-full p-2 bg-gray-950 border border-gray-600 rounded-md text-green-400 text-[11px] font-mono" placeholder="변화값 적용 시 코드가 생성됩니다.">
+                <button id="btn-copy-code" class="bg-gray-600 hover:bg-gray-500 px-3 rounded-lg text-xs font-bold transition whitespace-nowrap">복사</button>
+            </div>
 
             <!-- 3. 동작 매크로 -->
             <h2 class="text-lg font-semibold mb-2 text-center">동작 매크로</h2>
             <div class="grid grid-cols-3 gap-1 mb-4 border-b border-gray-700 pb-4">
-                <button id="btn-macro-sitstand" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">앉았다 기립</button>
-                <button id="btn-macro-sitspread" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">앉아 펼치기</button>
-                <button id="btn-macro-standspread" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">서서 펼치기</button>
-                
-                <button id="btn-macro-forward" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">앞으로</button>
-                <button id="btn-macro-backward" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">뒤로</button>
-                <button id="btn-macro-left" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">왼쪽으로</button>
-                
-                <button id="btn-macro-right" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">오른쪽으로</button>
+                <!-- 1줄 -->
                 <button id="btn-macro-wave1" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">손인사1</button>
+                <button id="btn-macro-forward" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">앞으로</button>
                 <button id="btn-macro-wave2" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">손인사2</button>
+                
+                <!-- 2줄 -->
+                <button id="btn-macro-left" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">왼쪽으로</button>
+                <button id="btn-macro-sitstand" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">앉았다 기립</button>
+                <button id="btn-macro-right" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">오른쪽으로</button>
+
+                <!-- 3줄 -->
+                <button id="btn-macro-standspread" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">서서 펼치기</button>
+                <button id="btn-macro-backward" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px]">뒤로</button>
+                <button id="btn-macro-sitspread" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-1 rounded-lg transition duration-200 text-[11px] whitespace-nowrap">앉아 펼치기</button>
             </div>
 
             <!-- 4. 단일/다중 로봇 코드 실행 -->
@@ -127,6 +141,18 @@
                     <textarea id="export-data" readonly class="w-full mt-2 p-2 bg-gray-950 border border-gray-600 rounded-md text-xs h-32" placeholder="여기에 구조 데이터가 JSON으로 표시됩니다..."></textarea>
                 </div>
             </details>
+
+            <!-- ★ 6. 저작권 및 제작자 정보 (CCL) -->
+            <div class="mt-8 pt-4 border-t border-gray-700 text-center text-xs text-gray-400">
+                <p class="font-bold text-gray-300 mb-2">🤖 made by 생각대로 메이커 정수쌤 with AI</p>
+                <div class="flex justify-center items-center gap-1 mb-2">
+                    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ko" target="_blank" rel="noopener noreferrer">
+                        <img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA" class="h-6 opacity-80 hover:opacity-100 transition">
+                    </a>
+                </div>
+                <p class="leading-relaxed">본 시뮬레이터는 크리에이티브 커먼즈 <br>저작자표시-비영리-동일조건변경허락<br>라이선스에 따라 이용할 수 있습니다.</p>
+            </div>
+
         </div>
 
         <!-- 3D 캔버스 (우측) -->
@@ -146,6 +172,9 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
         import { DragControls } from 'three/addons/controls/DragControls.js';
+
+        // 가상 중력 변수 (기본값 true)
+        let useGravity = true;
 
         let scene, camera, renderer, orbitControls, dragControls;
         let labelRenderer;
@@ -506,16 +535,8 @@
         
         function updateJointPositionsAndCreateLimbs() { 
             if(!body) return;
-            body.updateMatrixWorld(true);
 
-            while(limbsGroup.children.length > 0){ 
-                const child = limbsGroup.children[0];
-                if(child.geometry && child.geometry !== footGeo) child.geometry.dispose();
-                limbsGroup.remove(child); 
-            } 
-            
             const lmi = [ [2, 1, 0], [5, 4, 3], [8, 7, 6], [11, 10, 9] ]; 
-            
             lmi.forEach(([s_idx, k1_idx, k2_idx], legIdx) => { 
                 const jS = joints[s_idx], jK1 = joints[k1_idx], jK2 = joints[k2_idx]; 
                 if (!jS || !jK1 || !jK2) return; 
@@ -529,10 +550,44 @@
 
                 const fp = jK2.children.find(c => c.userData && c.userData.legIndex === legIdx && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject)); 
                 if(fp) fp.position.set(f_p.x, f_p.y, f_p.z); 
+            }); 
 
-                body.updateMatrixWorld(true);
+            body.updateMatrixWorld(true);
 
-                const sW = jS.getWorldPosition(new THREE.Vector3()), k1W = jK1.getWorldPosition(new THREE.Vector3()), k2W = jK2.getWorldPosition(new THREE.Vector3()), fW = fp ? fp.getWorldPosition(new THREE.Vector3()) : k2W; 
+            if (useGravity) {
+                let minFootY = Infinity;
+                lmi.forEach(([s_idx, k1_idx, k2_idx], legIdx) => {
+                    const jK2 = joints[k2_idx];
+                    const fp = jK2.children.find(c => c.userData && c.userData.legIndex === legIdx && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject));
+                    if (fp) {
+                        const fW = fp.getWorldPosition(new THREE.Vector3());
+                        if (fW.y < minFootY) minFootY = fW.y;
+                    }
+                });
+
+                const targetY = 0.8;
+                if (minFootY !== Infinity) {
+                    body.position.y += (targetY - minFootY);
+                    body.updateMatrixWorld(true);
+                }
+            }
+
+            while(limbsGroup.children.length > 0){ 
+                const child = limbsGroup.children[0];
+                if(child.geometry && child.geometry !== footGeo) child.geometry.dispose();
+                limbsGroup.remove(child); 
+            } 
+            
+            lmi.forEach(([s_idx, k1_idx, k2_idx], legIdx) => { 
+                const jS = joints[s_idx], jK1 = joints[k1_idx], jK2 = joints[k2_idx]; 
+                if (!jS || !jK1 || !jK2) return; 
+
+                const fp = jK2.children.find(c => c.userData && c.userData.legIndex === legIdx && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject)); 
+
+                const sW = jS.getWorldPosition(new THREE.Vector3()), 
+                      k1W = jK1.getWorldPosition(new THREE.Vector3()), 
+                      k2W = jK2.getWorldPosition(new THREE.Vector3()), 
+                      fW = fp ? fp.getWorldPosition(new THREE.Vector3()) : k2W; 
                 
                 const bW = body.getWorldPosition(new THREE.Vector3());
                 const sS = bW.clone().add(jS.position); 
@@ -608,11 +663,18 @@
                     const ui_clmp = Math.max(0,Math.min(180,ui_nxt));
                     const clmp = ui_clmp - offset;
                     const act_ui = ui_clmp - (cur + offset);
-                    if(Math.abs(act_ui)>0.01){ c[i]=act_ui; h=true; }
+                    
+                    const final_chg = parseFloat(act_ui.toFixed(1));
+                    if(Math.abs(final_chg)>0){ c[i]=final_chg; h=true; }
                 } 
                 motorInputs[i].value=""; 
             } 
-            if(h) await Work(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11], 10); 
+            if(h) {
+                const codeStr = `Work(${c.join(', ')}, 10)`;
+                document.getElementById('output-work-code').value = codeStr;
+                
+                await Work(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11], 10); 
+            }
         }
 
         function updateMotorDisplays() { 
@@ -754,7 +816,6 @@
             await Work(0, 0, 0, 0, 0, -45, 0, 0, 0, 0, 0, 45, 9);
         }
 
-        // ★ 새롭게 추가된 이동 및 인사 매크로 함수
         async function macroForward() {
             await Work(0, 0, 0, -20, -80, 0, 0, 0, 0, 0, 0, 0, 4);
             await Work(0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 9);
@@ -866,9 +927,44 @@
             }
         }
 
+        document.getElementById('btn-copy-code').addEventListener('click', () => {
+            const output = document.getElementById('output-work-code');
+            if(output.value) {
+                navigator.clipboard.writeText(output.value).then(() => {
+                    const btn = document.getElementById('btn-copy-code');
+                    const origText = btn.innerText;
+                    btn.innerText = "복사됨!";
+                    btn.classList.replace('bg-gray-600', 'bg-green-600');
+                    setTimeout(() => {
+                        btn.innerText = origText;
+                        btn.classList.replace('bg-green-600', 'bg-gray-600');
+                    }, 1500);
+                });
+            }
+        });
+
         document.getElementById('btn-reset').addEventListener('click', () => resetPosition(true));
         document.getElementById('btn-apply-changes').addEventListener('click', applyChanges);
         
+        document.getElementById('btn-toggle-gravity').addEventListener('click', (e) => {
+            useGravity = !useGravity;
+            const btn = e.target;
+            btn.innerText = `🌍 가상 중력 (지면 밀착) : ${useGravity ? 'ON' : 'OFF'}`;
+            
+            if (useGravity) {
+                btn.classList.replace('bg-gray-600', 'bg-amber-600');
+                btn.classList.replace('hover:bg-gray-500', 'hover:bg-amber-700');
+            } else {
+                btn.classList.replace('bg-amber-600', 'bg-gray-600');
+                btn.classList.replace('hover:bg-amber-700', 'hover:bg-gray-500');
+                
+                if (!isAnimating) {
+                    gsap.to(body.position, { y: 12, duration: 0.5, onUpdate: updateJointPositionsAndCreateLimbs });
+                }
+            }
+            if (useGravity && !isAnimating) updateJointPositionsAndCreateLimbs();
+        });
+
         document.getElementById('btn-macro-sitstand').addEventListener('click', async () => { if (!isAnimating) await macroSitStand(); });
         document.getElementById('btn-macro-sitspread').addEventListener('click', async () => { if (!isAnimating) await macroSitSpread(); });
         document.getElementById('btn-macro-standspread').addEventListener('click', async () => { if (!isAnimating) await macroStandSpread(); });
