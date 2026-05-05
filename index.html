@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4족보행 로봇 시뮬레이터 (완벽한 형태 + 수평면 독립 제어)</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter 폰트 로드 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <!-- GSAP (애니메이션 라이브러리) 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+        
+        input[type="number"], input[type="text"], textarea { 
+            appearance: textfield; 
+            -moz-appearance: textfield; 
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        textarea { resize: none; }
+
+        .label { color: #FFF; font-family: 'Inter', sans-serif; font-size: 12px; padding: 2px; background: rgba(0, 0, 0, 0.6); border-radius: 3px; pointer-events: none; }
+        .leg-label { 
+            color: #10b981; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: bold;
+            padding: 2px 4px; background: rgba(0, 0, 0, 0.8); border: 1px solid #10b981; border-radius: 4px; pointer-events: none;
+        }
+        .front-label {
+            color: #facc15; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: bold;
+            text-shadow: 0 0 5px black; pointer-events: none;
+        }
+        #canvas-container canvas { touch-action: none; outline: none; }
+        .motor-control.selected, .structure-wrapper.selected { border: 2px solid #facc15; box-shadow: 0 0 10px #facc15; border-radius: 0.375rem; }
+        .pos-btn { background-color: #4b5563; }
+        .pos-btn:hover:not(:disabled) { background-color: #374151; }
+        .pos-btn:disabled { background-color: #374151; opacity: 0.5; cursor: not-allowed; }
+        select { background-color: #4b5563; color: white; border: 1px solid #6b7280; padding: 0.5rem; border-radius: 0.375rem; cursor: pointer; }
+        select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); }
+        .structure-input { width: 3rem; } 
+        .structure-label { width: 4.5rem; }
+        .structure-wrapper { justify-content: space-around; padding: 2px 0; }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-white overflow-hidden">
+    <div class="flex flex-col md:flex-row h-screen">
+        
+        <!-- 제어판 (좌측) -->
+        <div class="w-full md:w-80 h-1/3 md:h-screen bg-gray-800 p-4 overflow-y-auto shadow-lg rounded-lg md:rounded-r-lg md:rounded-l-none z-10 flex-shrink-0">
+            <h1 class="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-2">
+                로봇 제어판
+                <div id="status-light" class="w-3 h-3 rounded-full bg-gray-500" title="애니메이션 상태"></div>
+            </h1>
+            
+            <!-- 1. 리셋 및 적용 버튼 상단 배치 -->
+            <div class="grid grid-cols-2 gap-2 mb-4 border-b border-gray-700 pb-4">
+                <button id="btn-reset" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded-lg transition duration-200 text-sm">초기 자세</button>
+                <button id="btn-apply-changes" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-2 rounded-lg transition duration-200 text-sm">각도 변화값 적용</button>
+            </div>
+
+            <!-- 2. 모터 각도 제어 (3열 배치) -->
+            <h2 class="text-lg font-semibold mb-2 text-center">모터 각도 제어</h2>
+            <div id="motor-controls" class="grid grid-cols-3 gap-1 mb-4 border-b border-gray-700 pb-4"></div>
+
+            <!-- 3. 동작 매크로 -->
+            <h2 class="text-lg font-semibold mb-2 text-center">동작 매크로</h2>
+            <div class="flex flex-col gap-2 mb-4 border-b border-gray-700 pb-4">
+                <button id="btn-macro-sitstand" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">앉았다 일어나기</button>
+                <button id="btn-macro-sitspread" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">앉아서 쫙 펼치기</button>
+                <button id="btn-macro-standspread" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">서서 쫙 펼치기</button>
+            </div>
+
+            <!-- 4. 단일/다중 로봇 코드 실행 -->
+            <h2 class="text-lg font-semibold mb-2 text-center">로봇 코드 실행</h2>
+            <div class="mb-2 flex gap-1">
+                <input type="text" id="input-single-code" class="w-full p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono" placeholder="Work(...) 1줄 코드">
+                <button id="btn-exec-single" class="bg-green-600 hover:bg-green-700 px-3 rounded-lg text-sm font-bold transition whitespace-nowrap">실행</button>
+            </div>
+            <div class="mb-4 border-b border-gray-700 pb-4">
+                <textarea id="input-multi-code" class="w-full h-24 p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
+                <button id="btn-exec-multi" class="w-full mt-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행</button>
+            </div>
+
+            <!-- 5. 조정 대상 및 위치 제어 -->
+            <h2 class="text-lg font-semibold mb-2 text-center">조정 대상 선택</h2>
+            <div class="mb-2">
+                 <select id="item-select" class="w-full text-sm">
+                     <option value="-1">-- 선택 --</option>
+                 </select>
+            </div>
+
+            <div id="position-controls" class="grid grid-cols-3 gap-2 mb-4">
+                 <button data-axis="x" data-amount="0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>+X</button>
+                 <button data-axis="y" data-amount="0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>+Y</button>
+                 <button data-axis="z" data-amount="0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>+Z</button>
+                 <button data-axis="x" data-amount="-0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>-X</button>
+                 <button data-axis="y" data-amount="-0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>-Y</button>
+                 <button data-axis="z" data-amount="-0.5" class="pos-btn text-white font-bold py-2 px-1 rounded-lg transition duration-200 disabled:opacity-50 text-sm" disabled>-Z</button>
+            </div>
+
+            <details class="mt-4 bg-gray-900 rounded-lg">
+                <summary class="cursor-pointer p-2 font-semibold text-sm text-center">로봇 구조 (고급)</summary>
+                <div class="p-2 border-t border-gray-700">
+                    <div id="structure-controls" class="space-y-1 max-h-72 overflow-y-auto pr-2"></div>
+                    <button id="btn-apply-structure" class="w-full mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">구조 적용 (뼈대 재생성)</button>
+                    <button id="btn-export-structure" class="w-full mt-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">구조 데이터 내보내기</button>
+                    <textarea id="export-data" readonly class="w-full mt-2 p-2 bg-gray-950 border border-gray-600 rounded-md text-xs h-32" placeholder="여기에 구조 데이터가 JSON으로 표시됩니다..."></textarea>
+                </div>
+            </details>
+        </div>
+
+        <!-- 3D 캔버스 (우측) -->
+        <div class="flex-1 h-2/3 md:h-screen relative">
+            <div id="canvas-container" class="w-full h-full absolute top-0 left-0"></div>
+            <div id="label-container" class="w-full h-full absolute top-0 left-0"></div>
+            <div class="absolute top-2 left-2 bg-gray-900 bg-opacity-70 p-2 rounded-lg text-xs z-10">
+                <p>뷰 이동: 마우스 드래그 / 줌: 휠</p>
+                <p>모터 이동: 모터 구체 클릭 & 드래그</p>
+                <p>수평면 제어: '조정 대상' 메뉴에서 [수평면] 선택 후 X, Y, Z 버튼 클릭</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ★ 모듈 스크립트 셋팅 (선생님의 물리/수학 로직 원본 100% 유지) -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        import { DragControls } from 'three/addons/controls/DragControls.js';
+
+        let scene, camera, renderer, orbitControls, dragControls;
+        let labelRenderer;
+        let robot, body;
+
+        const joints = [];
+        const planeVisuals = []; 
+        let limbsGroup = new THREE.Group();
+        const motorInputs = [];
+        const motorValueDisplays = [];
+        const motorControlDivs = [];
+        const structureControlWrappers = {}; 
+        const draggableObjects = [];
+        let selectedIndex = null; 
+        let selectedType = null; 
+        const positionButtons = [];
+        const itemSelectDropdown = document.getElementById('item-select'); 
+
+        const CoreWLstF = [110, 70, 90, 110, 70, 90, 110, 70, 90, 110, 70, 90];
+        
+        let isAnimating = false;
+        const DEG_TO_RAD = Math.PI / 180;
+        
+        // ★ 선생님이 주신 완벽한 JSON 데이터 및 로직 변수들!
+        const jointAxes = ["x", "x", "z", "x", "x", "z", "x", "x", "z", "x", "x", "z"];
+        const motorDir = [1, 1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1];
+        const UIWLstF = [141, 69, 83, 33, 90, 85, 40, 95, 58, 149, 70, 60];
+        let WorkLst = [...CoreWLstF]; 
+
+        let robotStructure = {
+            motorPositions: [
+                { "x": 4.5, "y": -1.5, "z": -4.5 },
+                { "x": 1, "y": 4.5, "z": -4.5 },
+                { "x": -7, "y": 0, "z": -5 },
+                { "x": 4.5, "y": -0.5, "z": 5.5 },
+                { "x": 0, "y": -6, "z": 0 },
+                { "x": 6.5, "y": 0, "z": -5.5 },
+                { "x": 4.5, "y": 4.5, "z": -2 },
+                { "x": 0.5, "y": 4, "z": 4 },
+                { "x": -7, "y": 0, "z": 5 },
+                { "x": 4, "y": -2, "z": 4 },
+                { "x": -0.09, "y": -6.7, "z": 0.1 },
+                { "x": 6.5, "y": 0, "z": 4.5 }
+            ],
+            motorPlanes: [
+                { "x": -20, "y": -20, "z": 90 },
+                { "x": -50, "y": 90, "z": 10 },
+                { "x": -90, "y": 0, "z": 0 },
+                { "x": 35, "y": 105, "z": 70 },
+                { "x": 0, "y": 85, "z": 0 },
+                { "x": -90, "y": 0, "z": 0 },
+                { "x": 65, "y": -15, "z": -90 },
+                { "x": 45, "y": 90, "z": 0 },
+                { "x": -90, "y": 0, "z": 0 },
+                { "x": -70, "y": -85, "z": 0 },
+                { "x": -25, "y": -90, "z": -25 },
+                { "x": -85, "y": 0, "z": 0 }
+            ],
+            footOffsets: [
+                { "id": "FL", "motorIndex": 0, "x": -14, "y": -1.5, "z": 0.5 },
+                { "id": "FR", "motorIndex": 3, "x": -13, "y": -0.5, "z": 2 },
+                { "id": "BL", "motorIndex": 6, "x": -12, "y": -0.5, "z": 0 },
+                { "id": "BR", "motorIndex": 9, "x": -12.5, "y": 0, "z": -0.5 }
+            ]
+        };
+
+        const statusLight = document.getElementById('status-light');
+        const tempVector = new THREE.Vector3();
+
+        const limbMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.8 }); 
+        const footMat = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+        const footGeo = new THREE.SphereGeometry(0.8);
+        const planeVisualMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+
+        function init() {
+            const container=document.getElementById('canvas-container'), labelContainer=document.getElementById('label-container');
+            scene=new THREE.Scene(); 
+            scene.background=new THREE.Color(0x111827); 
+            camera=new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000); 
+            camera.position.set(25, 25, 25);
+            
+            renderer=new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
+            renderer.setSize(container.clientWidth, container.clientHeight); 
+            renderer.setPixelRatio(window.devicePixelRatio); 
+            renderer.shadowMap.enabled = true; 
+            container.appendChild(renderer.domElement);
+            
+            labelRenderer=new CSS2DRenderer(); 
+            labelRenderer.setSize(container.clientWidth, container.clientHeight); 
+            labelContainer.appendChild(labelRenderer.domElement);
+            
+            orbitControls=new OrbitControls(camera, labelRenderer.domElement); 
+            orbitControls.enableDamping = true; 
+            orbitControls.dampingFactor = 0.1; 
+            orbitControls.target.set(0, 5, 0);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5)); 
+            const dirLight=new THREE.DirectionalLight(0xffffff, 1); 
+            dirLight.position.set(10, 20, 5); 
+            dirLight.castShadow = true; 
+            scene.add(dirLight);
+            
+            const ground=new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshStandardMaterial({ color: 0x374151 })); 
+            ground.rotation.x = -Math.PI / 2; 
+            ground.receiveShadow = true; 
+            scene.add(ground);
+
+            createRobot(); 
+            addFrontIndicator();
+            initDragControls(); 
+            createMotorControls(); 
+            createStructureControls(); 
+            initPositionControls(); 
+            
+            resetPosition(false); 
+            updateJointPositionsAndCreateLimbs();
+            updateVisualPlanes();
+            
+            window.addEventListener('resize', onWindowResize); 
+            animate();
+        }
+
+        // FRONT 방향 교정 (화살표 -Z축 유지)
+        function addFrontIndicator() {
+            const dir = new THREE.Vector3(0, 0, -1); const origin = new THREE.Vector3(0, 0.1, 0); const length = 15; const hex = 0xfacc15;
+            const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex, 2, 1); scene.add(arrowHelper);
+            const div = document.createElement('div'); div.className = 'front-label'; div.textContent = 'FRONT';
+            const label = new CSS2DObject(div); label.position.set(0, 0, -16); scene.add(label);
+        }
+
+        function createRobot() {
+            robot = new THREE.Group(); scene.add(robot); limbsGroup = new THREE.Group(); robot.add(limbsGroup);
+            const bodyGeo = new THREE.BoxGeometry(14, 4, 10); 
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x4b5563 }); 
+            body = new THREE.Mesh(bodyGeo, bodyMat); 
+            body.castShadow = true; 
+            body.position.y = 12; 
+            robot.add(body);
+            
+            const jointMat = new THREE.MeshStandardMaterial({ color: 0xef4444 }); 
+            
+            // 선생님 베이스 코드의 순정 다리 맵핑!
+            const legs = [
+                { name: 'FL', indices: [2, 1, 0] },
+                { name: 'FR', indices: [5, 4, 3] },
+                { name: 'BL', indices: [8, 7, 6] },
+                { name: 'BR', indices: [11, 10, 9] }
+            ];
+            
+            legs.forEach((leg, legIdx) => {
+                const [s_idx, k1_idx, k2_idx] = leg.indices;
+                
+                // 1. 어깨
+                const s_p=robotStructure.motorPositions[s_idx], jS=new THREE.Group(); jS.position.set(s_p.x,s_p.y,s_p.z); body.add(jS); joints[s_idx]=jS; 
+                const sS=new THREE.Mesh(new THREE.SphereGeometry(1.2), jointMat); sS.userData={index:s_idx, type:'joint'}; jS.add(sS); draggableObjects.push(sS); 
+                addMotorLabel(jS, `M${s_idx+1}`); addLegLabel(jS, leg.name);
+
+                const visS = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 0.1, 16), planeVisualMat);
+                body.add(visS); planeVisuals[s_idx] = visS; 
+
+                // 2. 무릎1
+                const k1_p=robotStructure.motorPositions[k1_idx], jK1=new THREE.Group(); jK1.position.set(k1_p.x,k1_p.y,k1_p.z); jS.add(jK1); joints[k1_idx]=jK1; 
+                const k1S=new THREE.Mesh(new THREE.SphereGeometry(1.0), jointMat); k1S.userData={index:k1_idx, type:'joint'}; jK1.add(k1S); draggableObjects.push(k1S); 
+                addMotorLabel(jK1, `M${k1_idx+1}`);
+                
+                const visK1 = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.1, 16), planeVisualMat);
+                jS.add(visK1); planeVisuals[k1_idx] = visK1;
+
+                // 3. 무릎2
+                const k2_p=robotStructure.motorPositions[k2_idx], jK2=new THREE.Group(); jK2.position.set(k2_p.x,k2_p.y,k2_p.z); jK1.add(jK2); joints[k2_idx]=jK2; 
+                const k2S=new THREE.Mesh(new THREE.SphereGeometry(0.8), jointMat); k2S.userData={index:k2_idx, type:'joint'}; jK2.add(k2S); draggableObjects.push(k2S); 
+                addMotorLabel(jK2, `M${k2_idx+1}`);
+                
+                const visK2 = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.1, 16), planeVisualMat);
+                jK1.add(visK2); planeVisuals[k2_idx] = visK2;
+
+                // 4. 발끝
+                const fo_d=robotStructure.footOffsets[legIdx], f_p={x:fo_d.x, y:fo_d.y, z:fo_d.z}; 
+                const fp=new THREE.Group(); fp.position.set(f_p.x,f_p.y,f_p.z); fp.userData={legIndex: legIdx}; jK2.add(fp);
+            });
+        }
+
+        function addMotorLabel(joint, text) { const d=document.createElement('div'); d.className='label'; d.textContent=text; const l=new CSS2DObject(d); l.position.set(0, 1.5, 0); joint.add(l); }
+        function addLegLabel(joint, text) { const d=document.createElement('div'); d.className='leg-label'; d.textContent=text; const l=new CSS2DObject(d); l.position.set(0, 3.5, 0); joint.add(l); } 
+
+        function initDragControls() { dragControls=new DragControls(draggableObjects, camera, labelRenderer.domElement); dragControls.addEventListener('dragstart', (e)=>{ orbitControls.enabled=false; e.object.material.emissive.set(0xaaaa00); }); dragControls.addEventListener('drag', (e)=>{ updateStructureFromDrag(e.object); updateJointPositionsAndCreateLimbs(); }); dragControls.addEventListener('dragend', (e)=>{ orbitControls.enabled=true; e.object.material.emissive.set(0x000000); updateStructureFromDrag(e.object); updateStructureUI(); updateJointPositionsAndCreateLimbs(); }); }
+        
+        function updateStructureFromDrag(draggedObject) { 
+            const idx=draggedObject.userData.index; 
+            const jG=joints[idx]; 
+            if(!jG||!jG.parent) return; 
+            const pG=jG.parent, nWP=draggedObject.getWorldPosition(tempVector.clone()), nLP=pG.worldToLocal(nWP); 
+            robotStructure.motorPositions[idx].x=parseFloat(nLP.x.toFixed(2)); 
+            robotStructure.motorPositions[idx].y=parseFloat(nLP.y.toFixed(2)); 
+            robotStructure.motorPositions[idx].z=parseFloat(nLP.z.toFixed(2)); 
+            jG.position.copy(nLP); 
+        }
+
+        function updateStructureUI() { 
+            robotStructure.motorPositions.forEach((p, i)=>{ const x=document.getElementById(`motor-pos-${i}-x`), y=document.getElementById(`motor-pos-${i}-y`), z=document.getElementById(`motor-pos-${i}-z`); if(x) x.value=p.x; if(y) y.value=p.y; if(z) z.value=p.z; }); 
+            robotStructure.motorPlanes.forEach((pl, i)=>{ const px=document.getElementById(`plane-pos-${i}-x`), py=document.getElementById(`plane-pos-${i}-y`), pz=document.getElementById(`plane-pos-${i}-z`); if(px) px.value=pl.x; if(py) py.value=pl.y; if(pz) pz.value=pl.z; }); 
+            robotStructure.footOffsets.forEach((fo, i)=>{ const id=fo.id, fx=document.getElementById(`foot-offset-${id}-x`), fy=document.getElementById(`foot-offset-${id}-y`), fz=document.getElementById(`foot-offset-${id}-z`); if(fx) fx.value=fo.x; if(fy) fy.value=fo.y; if(fz) fz.value=fo.z; }); 
+        }
+        
+        function createLimbMesh(start, end, material) { 
+            const d = tempVector.clone().subVectors(end, start); 
+            const l = d.length(); 
+            if(l < 0.01) return null; 
+
+            const g = new THREE.CylinderGeometry(0.5, 0.5, l, 8); 
+            g.translate(0, l / 2, 0); 
+            
+            const m = new THREE.Mesh(g, material); 
+            m.castShadow = true; 
+            
+            const q = new THREE.Quaternion();
+            const a = new THREE.Vector3(0, 1, 0); 
+            q.setFromUnitVectors(a, d.clone().normalize()); 
+            m.quaternion.copy(q); 
+            m.position.copy(start); 
+            
+            return m; 
+        }
+
+        // ★ 모터 제어 UI 3열 배치
+        function createMotorControls() {
+            const container=document.getElementById('motor-controls'); container.innerHTML='';
+            itemSelectDropdown.innerHTML='<option value="-1">-- 선택 --</option>'; 
+            motorInputs.length=0; motorValueDisplays.length=0; motorControlDivs.length=0;
+            const ic="w-full p-1 mt-1 bg-gray-900 border border-gray-600 rounded-md text-white text-center text-[11px]";
+
+            for (let i=0; i<12; i++){
+                const d=document.createElement('div'); d.className="motor-control p-1 bg-gray-700 rounded flex flex-col items-center"; d.dataset.index=i;
+                const l=document.createElement('label'); l.className="block text-[11px] font-medium pointer-events-none"; l.innerText=`M${i+1}`;
+                
+                const offset = UIWLstF[i] - CoreWLstF[i];
+                const vS=document.createElement('span'); vS.id=`motor-value-${i}`; vS.className="text-[10px] text-gray-300 pointer-events-none"; vS.innerText=`${Math.round(WorkLst[i] + offset)}°`;
+                
+                const inp=document.createElement('input'); inp.type="number"; inp.id=`motor-input-${i}`; inp.placeholder="변화"; inp.className=ic; inp.dataset.index=i;
+                d.appendChild(l); d.appendChild(vS); d.appendChild(inp); container.appendChild(d);
+                motorInputs.push(inp); motorValueDisplays.push(vS); motorControlDivs.push(d);
+                
+                const opt=document.createElement('option'); opt.value=`motor-${i}`; opt.textContent=`M${i+1} 위치`; itemSelectDropdown.appendChild(opt);
+                const planeOpt=document.createElement('option'); planeOpt.value=`plane-${i}`; planeOpt.textContent=`M${i+1} 수평면`; itemSelectDropdown.appendChild(planeOpt);
+            }
+
+            robotStructure.footOffsets.forEach((fo, i) => {
+                const opt=document.createElement('option');
+                opt.value=`foot-${i}`;
+                opt.textContent=`End ${i+1} (${fo.id})`;
+                itemSelectDropdown.appendChild(opt);
+            });
+            itemSelectDropdown.addEventListener('change', handleItemSelectChange);
+        }
+
+        function handleItemSelectChange(event) {
+            const value = event.target.value;
+            if (selectedIndex !== null) {
+                if (selectedType === 'motor' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.remove('selected'); } 
+                else if (selectedType === 'plane' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.remove('selected'); }
+                else if (selectedType === 'foot') {
+                     const footData = robotStructure.footOffsets[selectedIndex];
+                     const wrapperId = `foot-offset-${footData.id}-wrapper`;
+                     const wrapper = structureControlWrappers[wrapperId];
+                     if (wrapper) wrapper.classList.remove('selected');
+                }
+            }
+            if (value === "-1") { selectedIndex = null; selectedType = null; positionButtons.forEach(b => b.disabled = true); } 
+            else {
+                const [type, indexStr] = value.split('-'); selectedIndex = parseInt(indexStr, 10); selectedType = type; positionButtons.forEach(b => b.disabled = false);
+                if (selectedType === 'motor' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.add('selected'); } 
+                else if (selectedType === 'plane' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.add('selected'); }
+                else if (selectedType === 'foot') {
+                     const footData = robotStructure.footOffsets[selectedIndex];
+                     const wrapperId = `foot-offset-${footData.id}-wrapper`;
+                     const wrapper = structureControlWrappers[wrapperId];
+                     if (wrapper) wrapper.classList.add('selected');
+                }
+            }
+        }
+
+        function initPositionControls() {
+            const c=document.getElementById('position-controls');
+            c.querySelectorAll('.pos-btn').forEach(b=>{
+                positionButtons.push(b);
+                b.addEventListener('click', ()=>{
+                    if(selectedIndex === null || isAnimating) return;
+                    const axis=b.dataset.axis, amount=parseFloat(b.dataset.amount);
+                    
+                    if (selectedType === 'motor') {
+                        const jG=joints[selectedIndex];
+                        if(jG && axis){ jG.position[axis]+=amount; robotStructure.motorPositions[selectedIndex][axis]=parseFloat(jG.position[axis].toFixed(2)); }
+                    } 
+                    else if (selectedType === 'plane') {
+                        if(axis) {
+                            const degAmount = amount * 10; 
+                            robotStructure.motorPlanes[selectedIndex][axis] = parseFloat((robotStructure.motorPlanes[selectedIndex][axis] + degAmount).toFixed(2));
+                            updateVisualPlanes(); 
+                            applyCurrentAngles(); 
+                        }
+                    }
+                    else if (selectedType === 'foot') {
+                        const footData = robotStructure.footOffsets[selectedIndex];
+                        if (footData && axis) {
+                            footData[axis] = parseFloat((footData[axis] + amount).toFixed(2));
+                            const knee2Joint = joints[footData.motorIndex];
+                            if (knee2Joint) {
+                                const footPlaceholder = knee2Joint.children.find(c => c.userData && c.userData.legIndex === selectedIndex && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject));
+                                if (footPlaceholder) footPlaceholder.position[axis] += amount;
+                            }
+                        }
+                    }
+                    updateStructureUI(); 
+                    if(selectedType !== 'plane') updateJointPositionsAndCreateLimbs();
+                });
+            });
+        }
+
+        function createStructureControls() {
+            const container = document.getElementById('structure-controls'); container.innerHTML = '';
+            for (const key in structureControlWrappers) { delete structureControlWrappers[key]; }
+            const ic="structure-input p-1 bg-gray-900 border border-gray-600 rounded-md text-white text-center text-xs", lc="structure-label text-xs font-medium", wc="structure-wrapper flex items-center justify-between space-x-1";
+            
+            robotStructure.motorPositions.forEach((pos, i) => {
+                const wrapper=document.createElement('div'); wrapper.className = wc; const l=document.createElement('label'); l.className = lc + " font-mono"; l.innerText = `Pos M${i+1}`; wrapper.appendChild(l);
+                const id=`motor-pos-${i}`, ix=document.createElement('input'); ix.type="number"; ix.step=0.1; ix.id=`${id}-x`; ix.value=pos.x; ix.className=ic; const iy=document.createElement('input'); iy.type="number"; iy.step=0.1; iy.id=`${id}-y`; iy.value=pos.y; iy.className=ic; const iz=document.createElement('input'); iz.type="number"; iz.step=0.1; iz.id=`${id}-z`; iz.value=pos.z; iz.className=ic;
+                wrapper.appendChild(ix); wrapper.appendChild(iy); wrapper.appendChild(iz); container.appendChild(wrapper);
+            });
+
+            const planeTitle = document.createElement('div'); planeTitle.className = "text-sm font-semibold mt-3 pt-2 border-t border-gray-700 text-center"; planeTitle.textContent = "모터 수평면(Plane) 각도"; container.appendChild(planeTitle);
+            robotStructure.motorPlanes.forEach((pl, i) => {
+                const wrapper=document.createElement('div'); wrapper.className = wc; const l=document.createElement('label'); l.className = lc + " font-mono text-yellow-400"; l.innerText = `Pln M${i+1}`; wrapper.appendChild(l);
+                const id=`plane-pos-${i}`, ix=document.createElement('input'); ix.type="number"; ix.step=1; ix.id=`${id}-x`; ix.value=pl.x; ix.className=ic; const iy=document.createElement('input'); iy.type="number"; iy.step=1; iy.id=`${id}-y`; iy.value=pl.y; iy.className=ic; const iz=document.createElement('input'); iz.type="number"; iz.step=1; iz.id=`${id}-z`; iz.value=pl.z; iz.className=ic;
+                wrapper.appendChild(ix); wrapper.appendChild(iy); wrapper.appendChild(iz); container.appendChild(wrapper);
+            });
+
+            const footTitle = document.createElement('div'); footTitle.className = "text-sm font-semibold mt-3 pt-2 border-t border-gray-700 text-center"; footTitle.textContent = "발끝 오프셋 (End)"; container.appendChild(footTitle);
+            robotStructure.footOffsets.forEach((fo, i) => {
+                const wrapper = document.createElement('div'); wrapper.className = wc + " mt-1"; const wrapperId = `foot-offset-${fo.id}-wrapper`; wrapper.id = wrapperId; structureControlWrappers[wrapperId] = wrapper;
+                const l = document.createElement('label'); l.className = lc; l.innerText = `End ${i+1} (${fo.id})`; wrapper.appendChild(l);
+                const idP = `foot-offset-${fo.id}`, ix=document.createElement('input'); ix.type="number"; ix.step=0.1; ix.id=`${idP}-x`; ix.value=fo.x; ix.className=ic; const iy=document.createElement('input'); iy.type="number"; iy.step=0.1; iy.id=`${idP}-y`; iy.value=fo.y; iy.className=ic; const iz=document.createElement('input'); iz.type="number"; iz.step=0.1; iz.id=`${idP}-z`; iz.value=fo.z; iz.className=ic;
+                wrapper.appendChild(ix); wrapper.appendChild(iy); wrapper.appendChild(iz); container.appendChild(wrapper);
+            });
+        }
+
+        function applyStructure() { 
+            if(isAnimating) return; 
+            try{ 
+                for(let i=0; i<12; i++){ 
+                    robotStructure.motorPositions[i].x=parseFloat(document.getElementById(`motor-pos-${i}-x`).value)||0; 
+                    robotStructure.motorPositions[i].y=parseFloat(document.getElementById(`motor-pos-${i}-y`).value)||0; 
+                    robotStructure.motorPositions[i].z=parseFloat(document.getElementById(`motor-pos-${i}-z`).value)||0; 
+
+                    robotStructure.motorPlanes[i].x=parseFloat(document.getElementById(`plane-pos-${i}-x`).value)||0; 
+                    robotStructure.motorPlanes[i].y=parseFloat(document.getElementById(`plane-pos-${i}-y`).value)||0; 
+                    robotStructure.motorPlanes[i].z=parseFloat(document.getElementById(`plane-pos-${i}-z`).value)||0; 
+                } 
+                robotStructure.footOffsets.forEach(fo=>{ const id=fo.id; fo.x=parseFloat(document.getElementById(`foot-offset-${id}-x`).value)||0; fo.y=parseFloat(document.getElementById(`foot-offset-${id}-y`).value)||0; fo.z=parseFloat(document.getElementById(`foot-offset-${id}-z`).value)||0; }); 
+                
+                updateJointPositionsAndCreateLimbs(); 
+                updateVisualPlanes(); 
+                applyCurrentAngles(); 
+                console.log("Robot structure updated."); 
+            } catch (e){ console.error(e); }
+        }
+        
+        function updateJointPositionsAndCreateLimbs() { 
+            if(!body) return;
+            body.updateMatrixWorld(true);
+
+            while(limbsGroup.children.length > 0){ 
+                const child = limbsGroup.children[0];
+                if(child.geometry && child.geometry !== footGeo) child.geometry.dispose();
+                limbsGroup.remove(child); 
+            } 
+            
+            const lmi = [ [2, 1, 0], [5, 4, 3], [8, 7, 6], [11, 10, 9] ]; 
+            
+            lmi.forEach(([s_idx, k1_idx, k2_idx], legIdx) => { 
+                const jS = joints[s_idx], jK1 = joints[k1_idx], jK2 = joints[k2_idx]; 
+                if (!jS || !jK1 || !jK2) return; 
+
+                const s_p = robotStructure.motorPositions[s_idx], k1_p = robotStructure.motorPositions[k1_idx], k2_p = robotStructure.motorPositions[k2_idx]; 
+                const fo_d = robotStructure.footOffsets[legIdx], f_p = {x: fo_d.x, y: fo_d.y, z: fo_d.z}; 
+
+                jS.position.set(s_p.x, s_p.y, s_p.z); 
+                jK1.position.set(k1_p.x, k1_p.y, k1_p.z); 
+                jK2.position.set(k2_p.x, k2_p.y, k2_p.z); 
+
+                const fp = jK2.children.find(c => c.userData && c.userData.legIndex === legIdx && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject)); 
+                if(fp) fp.position.set(f_p.x, f_p.y, f_p.z); 
+
+                body.updateMatrixWorld(true);
+
+                const sW = jS.getWorldPosition(new THREE.Vector3()), k1W = jK1.getWorldPosition(new THREE.Vector3()), k2W = jK2.getWorldPosition(new THREE.Vector3()), fW = fp ? fp.getWorldPosition(new THREE.Vector3()) : k2W; 
+                
+                const bW = body.getWorldPosition(new THREE.Vector3());
+                const sS = bW.clone().add(jS.position); 
+
+                const lBS = createLimbMesh(sS, sW, limbMat); if(lBS) limbsGroup.add(lBS); 
+                const lSK1 = createLimbMesh(sW, k1W, limbMat); if(lSK1) limbsGroup.add(lSK1); 
+                const lK1K2 = createLimbMesh(k1W, k2W, limbMat); if(lK1K2) limbsGroup.add(lK1K2); 
+                const lK2F = createLimbMesh(k2W, fW, limbMat); if(lK2F) limbsGroup.add(lK2F); 
+
+                const fmsh = new THREE.Mesh(footGeo, footMat); fmsh.position.copy(fW); limbsGroup.add(fmsh); 
+            }); 
+        }
+
+        function updateVisualPlanes() {
+            for(let i=0; i<12; i++) {
+                if(!planeVisuals[i]) continue;
+                
+                const pos = robotStructure.motorPositions[i];
+                planeVisuals[i].position.set(pos.x, pos.y, pos.z);
+
+                const pl = robotStructure.motorPlanes[i];
+                const qPlane = new THREE.Quaternion().setFromEuler(new THREE.Euler(pl.x * DEG_TO_RAD, pl.y * DEG_TO_RAD, pl.z * DEG_TO_RAD, 'XYZ'));
+                
+                const eBase = new THREE.Euler(0,0,0);
+                if ([0,1,3,4,6,7,9,10].includes(i)) {
+                    eBase.z = Math.PI/2;
+                } else if ([2,5,8,11].includes(i)) {
+                    // 선생님 베이스 코드 원본 유지!
+                    eBase.x = -Math.PI / 2;
+                }
+                const qBaseVis = new THREE.Quaternion().setFromEuler(eBase);
+                
+                planeVisuals[i].quaternion.copy(qPlane).multiply(qBaseVis);
+            }
+        }
+
+        // 선생님 베이스 코드 원본 100% 동일
+        function applyCurrentAngles() { 
+            for (let i=0; i<12; i++){ 
+                const j=joints[i]; if(!j) continue; 
+                
+                const a = jointAxes[i]; 
+                
+                const baseRot = CoreWLstF[i] * DEG_TO_RAD;
+                const axisVec = new THREE.Vector3(a==='x'?1:0, a==='y'?1:0, a==='z'?1:0);
+                const qBase = new THREE.Quaternion().setFromAxisAngle(axisVec, baseRot);
+                
+                const pl = robotStructure.motorPlanes[i];
+                const qPlane = new THREE.Quaternion().setFromEuler(new THREE.Euler(pl.x * DEG_TO_RAD, pl.y * DEG_TO_RAD, pl.z * DEG_TO_RAD, 'XYZ'));
+                
+                const customAxis = axisVec.clone().applyQuaternion(qPlane);
+                
+                const cur = WorkLst[i];
+                const deltaRot = (cur - CoreWLstF[i]) * DEG_TO_RAD * motorDir[i];
+                
+                const qDelta = new THREE.Quaternion().setFromAxisAngle(customAxis, deltaRot);
+                
+                const finalQuat = qDelta.clone().multiply(qBase);
+                j.quaternion.copy(finalQuat);
+            }
+        }
+        
+        function exportStructure() { const d={ structure: robotStructure, axes: jointAxes, WLstF: UIWLstF }; const j=JSON.stringify(d, null, 2); document.getElementById('export-data').value = j; }
+        
+        async function applyChanges() { 
+            if(isAnimating) return; 
+            let c=new Array(12).fill(0), h=false; 
+            for(let i=0; i<12; i++){ 
+                const chg=parseFloat(motorInputs[i].value)||0; 
+                if(chg!==0){ 
+                    const offset = UIWLstF[i] - CoreWLstF[i];
+                    const cur=WorkLst[i]; 
+                    const nxt=cur+chg; 
+                    const ui_nxt = nxt + offset;
+                    const ui_clmp = Math.max(0,Math.min(180,ui_nxt));
+                    const clmp = ui_clmp - offset;
+                    const act_ui = ui_clmp - (cur + offset);
+                    if(Math.abs(act_ui)>0.01){ c[i]=act_ui; h=true; }
+                } 
+                motorInputs[i].value=""; 
+            } 
+            if(h) await Work(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11], 10); 
+        }
+
+        function updateMotorDisplays() { 
+            for(let i=0; i<12; i++) { 
+                const offset = UIWLstF[i] - CoreWLstF[i];
+                const v=Math.round(WorkLst[i] + offset); 
+                if (motorValueDisplays[i]) motorValueDisplays[i].innerText = `현재: ${v}°`; 
+            } 
+        }
+
+        function resetPosition(animate=true) { 
+            if(isAnimating) return; isAnimating=true; statusLight.classList.remove('bg-gray-500','bg-green-500'); statusLight.classList.add('bg-yellow-500'); 
+            const tl=gsap.timeline({ onComplete: ()=>{ isAnimating=false; statusLight.classList.remove('bg-yellow-500'); statusLight.classList.add('bg-gray-500'); updateMotorDisplays(); } }); 
+            
+            const d = 0.5;
+            const proxy = {};
+            for(let i=0; i<12; i++) proxy[`m${i}`] = WorkLst[i];
+
+            for (let i=0; i<12; i++){ 
+                if (animate) {
+                    tl.to(proxy, {
+                        [`m${i}`]: CoreWLstF[i],
+                        duration: d, ease: "power2.out",
+                        onUpdate: () => {
+                            const j=joints[i]; if(!j) return;
+                            
+                            const a=jointAxes[i];
+                            const baseRot = CoreWLstF[i]*DEG_TO_RAD;
+                            const deltaRot = (proxy[`m${i}`] - CoreWLstF[i]) * DEG_TO_RAD * motorDir[i];
+                            
+                            const axisVec = new THREE.Vector3(a==='x'?1:0, a==='y'?1:0, a==='z'?1:0);
+                            const qBase = new THREE.Quaternion().setFromAxisAngle(axisVec, baseRot);
+                            
+                            const pl = robotStructure.motorPlanes[i];
+                            const qPlane = new THREE.Quaternion().setFromEuler(new THREE.Euler(pl.x*DEG_TO_RAD, pl.y*DEG_TO_RAD, pl.z*DEG_TO_RAD, 'XYZ'));
+                            
+                            const customAxis = axisVec.clone().applyQuaternion(qPlane);
+                            const qDelta = new THREE.Quaternion().setFromAxisAngle(customAxis, deltaRot);
+                            
+                            j.quaternion.copy(qDelta.clone().multiply(qBase));
+                        }
+                    }, 0);
+                } else {
+                    const j=joints[i]; if(!j) continue;
+                    const a=jointAxes[i];
+                    const axisVec = new THREE.Vector3(a==='x'?1:0, a==='y'?1:0, a==='z'?1:0);
+                    j.quaternion.setFromAxisAngle(axisVec, CoreWLstF[i]*DEG_TO_RAD);
+                }
+            } 
+            WorkLst=[...CoreWLstF]; 
+            if (!animate){ isAnimating=false; statusLight.classList.remove('bg-yellow-500'); statusLight.classList.add('bg-gray-500'); updateMotorDisplays(); }
+        }
+
+        function onWindowResize() { const c=document.getElementById('canvas-container'), l=document.getElementById('label-container'); if (!c||!l) return; camera.aspect=c.clientWidth/c.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(c.clientWidth, c.clientHeight); labelRenderer.setSize(c.clientWidth, c.clientHeight); }
+        
+        function animate() { 
+            requestAnimationFrame(animate); 
+            if(orbitControls) orbitControls.update(); 
+            if(robot) robot.updateMatrixWorld(true);
+            
+            if(joints.length===12 && joints.every(j=>j)) {
+                updateVisualPlanes(); 
+                if(selectedType !== 'plane') {
+                    updateJointPositionsAndCreateLimbs(); 
+                }
+            }
+            
+            if(renderer&&scene&&camera) renderer.render(scene, camera); 
+            if(labelRenderer&&scene&&camera) labelRenderer.render(scene, camera); 
+        }
+        
+        async function Work(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12, speed) { 
+            while (isAnimating) { await new Promise(r=>setTimeout(r, 50)); } 
+            isAnimating=true; statusLight.classList.remove('bg-gray-500','bg-yellow-500'); statusLight.classList.add('bg-green-500'); 
+            const t=[s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12], nW=[...WorkLst], d=(speed*25)/1000, tl=gsap.timeline(); 
+            
+            const proxy = {};
+            for(let i=0; i<12; i++) proxy[`m${i}`] = WorkLst[i];
+
+            for (let i=0; i<12; i++){ 
+                const chg=t[i]; 
+                const cur=WorkLst[i];
+                const nxt=cur+chg; 
+                
+                const offset = UIWLstF[i] - CoreWLstF[i];
+                const ui_nxt = nxt + offset;
+                const ui_clmp = Math.max(0,Math.min(180,ui_nxt));
+                const clmp = ui_clmp - offset;
+
+                nW[i]=clmp; 
+                
+                tl.to(proxy, {
+                    [`m${i}`]: clmp,
+                    duration: d, ease: "linear",
+                    onUpdate: () => {
+                        const j=joints[i]; if(!j) return;
+                        
+                        const a=jointAxes[i];
+                        const baseRot = CoreWLstF[i]*DEG_TO_RAD;
+                        const deltaRot = (proxy[`m${i}`] - CoreWLstF[i]) * DEG_TO_RAD * motorDir[i];
+                        
+                        const axisVec = new THREE.Vector3(a==='x'?1:0, a==='y'?1:0, a==='z'?1:0);
+                        const qBase = new THREE.Quaternion().setFromAxisAngle(axisVec, baseRot);
+                        
+                        const pl = robotStructure.motorPlanes[i];
+                        const qPlane = new THREE.Quaternion().setFromEuler(new THREE.Euler(pl.x*DEG_TO_RAD, pl.y*DEG_TO_RAD, pl.z*DEG_TO_RAD, 'XYZ'));
+                        
+                        const customAxis = axisVec.clone().applyQuaternion(qPlane);
+                        const qDelta = new THREE.Quaternion().setFromAxisAngle(customAxis, deltaRot);
+                        
+                        j.quaternion.copy(qDelta.clone().multiply(qBase));
+                    }
+                }, 0); 
+            } 
+            WorkLst=nW; 
+            return Promise.resolve(new Promise(r=>{ tl.eventCallback("onComplete", ()=>{ isAnimating=false; statusLight.classList.remove('bg-green-500'); statusLight.classList.add('bg-gray-500'); updateMotorDisplays(); r(); }); })); 
+        }
+        
+        async function pause(ms) { return new Promise(r=>setTimeout(r, ms)); }
+        
+        // ★ 새로 추가된 동작 매크로 함수
+        async function macroSitStand() {
+            await Work(20, 40, 0, -20, -40, 0, -20, -40, 0, 20, 40, 0, 10);
+            await Work(-20, -40, 0, 20, 40, 0, 20, 40, 0, -20, -40, 0, 10);
+        }
+
+        async function macroSitSpread() {
+            await Work(0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, -45, 9);
+            await Work(-108, -36, 0, 108, 36, 0, 108, 36, 0, -108, -36, 0, 12);
+            await pause(3000);
+            await Work(108, 36, 0, -108, -36, 0, -108, -36, 0, 108, 36, 0, 12);
+            await Work(0, 0, 0, 0, 0, -45, 0, 0, 0, 0, 0, 45, 9);
+        }
+
+        async function macroStandSpread() {
+            await Work(0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, -45, 9);
+            await Work(-108, -72, 0, 108, 72, 0, 108, 72, 0, -108, -72, 0, 12);
+            await pause(3000);
+            await Work(108, 72, 0, -108, -72, 0, -108, -72, 0, 108, 72, 0, 12);
+            await Work(0, 0, 0, 0, 0, -45, 0, 0, 0, 0, 0, 45, 9);
+        }
+
+        // ★ 새로 추가된 커스텀 로봇 코드 파서
+        async function executeCustomCode(codeStr) {
+            if (isAnimating) return;
+            const lines = codeStr.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line || line.startsWith('//')) continue;
+
+                const workMatch = line.match(/Work\s*\(([^)]+)\)/);
+                if (workMatch) {
+                    const args = workMatch[1].split(',').map(s => parseFloat(s.trim()));
+                    if (args.length === 13) {
+                        await Work(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
+                    }
+                    continue;
+                }
+
+                const pauseMatch = line.match(/(?:basic\.)?pause\s*\(\s*(\d+)\s*\)/);
+                if (pauseMatch) {
+                    const ms = parseInt(pauseMatch[1], 10);
+                    await pause(ms);
+                    continue;
+                }
+            }
+        }
+
+        // 기존 버튼 연결
+        document.getElementById('btn-reset').addEventListener('click', () => resetPosition(true));
+        document.getElementById('btn-apply-changes').addEventListener('click', applyChanges);
+        
+        // 새로 추가된 UI 버튼 연결
+        document.getElementById('btn-macro-sitstand').addEventListener('click', async () => { if (!isAnimating) await macroSitStand(); });
+        document.getElementById('btn-macro-sitspread').addEventListener('click', async () => { if (!isAnimating) await macroSitSpread(); });
+        document.getElementById('btn-macro-standspread').addEventListener('click', async () => { if (!isAnimating) await macroStandSpread(); });
+        
+        document.getElementById('btn-exec-single').addEventListener('click', async () => { 
+            const val = document.getElementById('input-single-code').value;
+            if(val) await executeCustomCode(val);
+        });
+        document.getElementById('btn-exec-multi').addEventListener('click', async () => { 
+            const val = document.getElementById('input-multi-code').value;
+            if(val) await executeCustomCode(val);
+        });
+
+        document.getElementById('btn-apply-structure').addEventListener('click', applyStructure);
+        document.getElementById('btn-export-structure').addEventListener('click', exportStructure);
+
+        init();
+
+    </script>
+</body>
+</html>
