@@ -115,7 +115,7 @@
                 <textarea id="input-multi-code" class="w-full h-24 p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
                 <button id="btn-exec-multi" class="w-full mt-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행</button>
                 <button id="btn-export-gif" class="w-full mt-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행 후 GIF 저장</button>
-                <p id="gif-status" class="mt-1 text-[11px] text-amber-300 min-h-[1rem] text-center"> GIF 저장 준비</p>
+                <p id="gif-status" class="mt-1 text-[11px] text-amber-300 min-h-[1rem] text-center">60fps 부드러운 캡처</p>
             </div>
             <!-- 5. 조정 대상 및 위치 제어 -->
             <h2 class="text-lg font-semibold mb-2 text-center">조정 대상 선택</h2>
@@ -832,7 +832,8 @@
             const targetWorkValues = startWorkValues.map((current, index) => getClampedWorkTarget(current, changes[index], index));
 
             // 기존 speed 체계는 유지하되, 너무 짧아 반복이 1번처럼 보이는 것을 줄이기 위해 최소 표시 시간을 둡니다.
-            const durationMs = Math.max(180, (Number(speed) || 0) * 25);
+            const baseDurationMs = Math.max(180, (Number(speed) || 0) * 25);
+            const durationMs = isGifExporting ? baseDurationMs * GIF_EXPORT_MOTION_SLOWDOWN : baseDurationMs;
             const startTime = performance.now();
 
             while (true) {
@@ -974,8 +975,10 @@
                 .trim();
         }
 
-        const GIF_EXPORT_FPS = 8;
+        const GIF_EXPORT_FPS = 60;
         const GIF_EXPORT_MAX_WIDTH = 640;
+        const GIF_EXPORT_MOTION_SLOWDOWN = 1;
+        let isGifExporting = false;
         let gifRecorder = null;
         let gifCaptureTimer = null;
         let gifCapturedFrameCount = 0;
@@ -1092,6 +1095,7 @@
             try {
                 if (gifButton) gifButton.disabled = true;
                 if (multiButton) multiButton.disabled = true;
+                isGifExporting = true;
                 startGifRecording();
                 await executeCustomCode(codeStr);
                 stopGifFrameTimerOnly();
@@ -1111,6 +1115,7 @@
                 alert('GIF 저장 중 오류가 발생했습니다.\n\n' + error.message);
             } finally {
                 gifRecorder = null;
+                isGifExporting = false;
                 if (gifButton) gifButton.disabled = false;
                 if (multiButton) multiButton.disabled = false;
             }
