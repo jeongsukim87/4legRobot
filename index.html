@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>다관절 사족보행 로봇 시뮬레이터</title>
+    <title>GitHub Pages용 GIF 저장 - 다관절 사족보행 로봇 시뮬레이터</title>
     <!-- Tailwind CSS 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter 폰트 로드 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <!-- GSAP (애니메이션 라이브러리) 로드 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- GIF 저장 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
         
@@ -112,6 +114,8 @@
             <div class="mb-4 border-b border-gray-700 pb-4">
                 <textarea id="input-multi-code" class="w-full h-24 p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
                 <button id="btn-exec-multi" class="w-full mt-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행</button>
+                <button id="btn-export-gif" class="w-full mt-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행 후 GIF 저장</button>
+                <p id="gif-status" class="mt-1 text-[11px] text-amber-300 min-h-[1rem] text-center">GitHub Pages용 · GIF 저장 준비</p>
             </div>
             <!-- 5. 조정 대상 및 위치 제어 -->
             <h2 class="text-lg font-semibold mb-2 text-center">조정 대상 선택</h2>
@@ -329,7 +333,7 @@
             camera=new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000); 
             camera.position.set(25, 25, 25);
             
-            renderer=new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
+            renderer=new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); 
             renderer.setSize(container.clientWidth, container.clientHeight); 
             renderer.setPixelRatio(window.devicePixelRatio); 
             renderer.shadowMap.enabled = true; 
@@ -970,6 +974,148 @@
                 .trim();
         }
 
+        const GIF_EXPORT_FPS = 8;
+        const GIF_EXPORT_MAX_WIDTH = 640;
+        let gifRecorder = null;
+        let gifCaptureTimer = null;
+        let gifCapturedFrameCount = 0;
+
+        function setGifStatus(message) {
+            const status = document.getElementById('gif-status');
+            if (status) status.textContent = message;
+        }
+
+        function getGifCaptureCanvas() {
+            if (!renderer || !renderer.domElement) return null;
+
+            const sourceCanvas = renderer.domElement;
+            const scale = Math.min(1, GIF_EXPORT_MAX_WIDTH / sourceCanvas.width);
+            const captureCanvas = document.createElement('canvas');
+            captureCanvas.width = Math.max(1, Math.round(sourceCanvas.width * scale));
+            captureCanvas.height = Math.max(1, Math.round(sourceCanvas.height * scale));
+            const ctx = captureCanvas.getContext('2d', { willReadFrequently: true });
+            ctx.drawImage(sourceCanvas, 0, 0, captureCanvas.width, captureCanvas.height);
+            return captureCanvas;
+        }
+
+        let gifWorkerBlobUrl = null;
+
+        function getGifWorkerScriptUrl() {
+            // Worker는 보안 정책상 http://127.0.0.1:5500에서 https://cdnjs... 파일을 직접 실행할 수 없습니다.
+            // 그래서 같은 출처(blob:)의 작은 worker를 만든 뒤, 그 안에서 gif.worker.js를 불러오게 합니다.
+            if (gifWorkerBlobUrl) return gifWorkerBlobUrl;
+            const workerLoaderCode = "importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');";
+            const blob = new Blob([workerLoaderCode], { type: 'application/javascript' });
+            gifWorkerBlobUrl = URL.createObjectURL(blob);
+            return gifWorkerBlobUrl;
+        }
+
+        function startGifRecording() {
+            if (typeof GIF === 'undefined') {
+                throw new Error('GIF 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결 또는 CDN 차단 여부를 확인해 주세요.');
+            }
+            if (!renderer || !renderer.domElement) {
+                throw new Error('시뮬레이터 캔버스가 아직 준비되지 않았습니다.');
+            }
+
+            stopGifFrameTimerOnly();
+            gifCapturedFrameCount = 0;
+            const firstCanvas = getGifCaptureCanvas();
+            if (!firstCanvas) throw new Error('GIF 캡처용 캔버스를 만들 수 없습니다.');
+
+            gifRecorder = new GIF({
+                workers: 2,
+                quality: 12,
+                width: firstCanvas.width,
+                height: firstCanvas.height,
+                workerScript: getGifWorkerScriptUrl()
+            });
+
+            const delay = Math.round(1000 / GIF_EXPORT_FPS);
+            const addCurrentFrame = () => {
+                if (!gifRecorder || !renderer || !renderer.domElement) return;
+                if (renderer && scene && camera) renderer.render(scene, camera);
+                const frameCanvas = getGifCaptureCanvas();
+                if (!frameCanvas) return;
+                gifRecorder.addFrame(frameCanvas, { copy: true, delay });
+                gifCapturedFrameCount += 1;
+                if (gifCapturedFrameCount % GIF_EXPORT_FPS === 0) {
+                    setGifStatus(`GIF 녹화 중... ${Math.round(gifCapturedFrameCount / GIF_EXPORT_FPS)}초`);
+                }
+            };
+
+            addCurrentFrame();
+            gifCaptureTimer = setInterval(addCurrentFrame, delay);
+            setGifStatus('GIF 녹화 시작');
+        }
+
+        function stopGifFrameTimerOnly() {
+            if (gifCaptureTimer) {
+                clearInterval(gifCaptureTimer);
+                gifCaptureTimer = null;
+            }
+        }
+
+        function renderGifToBlob() {
+            return new Promise((resolve, reject) => {
+                if (!gifRecorder) {
+                    reject(new Error('렌더링할 GIF 녹화 데이터가 없습니다.'));
+                    return;
+                }
+                gifRecorder.on('finished', blob => resolve(blob));
+                gifRecorder.on('abort', () => reject(new Error('GIF 생성이 중단되었습니다.')));
+                gifRecorder.render();
+            });
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function makeGifFilename() {
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return `robot_simulation_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.gif`;
+        }
+
+        async function executeCustomCodeAndSaveGif(codeStr) {
+            if (isAnimating) return;
+            const gifButton = document.getElementById('btn-export-gif');
+            const multiButton = document.getElementById('btn-exec-multi');
+            try {
+                if (gifButton) gifButton.disabled = true;
+                if (multiButton) multiButton.disabled = true;
+                startGifRecording();
+                await executeCustomCode(codeStr);
+                stopGifFrameTimerOnly();
+
+                if (gifCapturedFrameCount < 2) {
+                    throw new Error('캡처된 프레임이 너무 적습니다. 실행할 Work() 코드가 있는지 확인해 주세요.');
+                }
+
+                setGifStatus(`GIF 생성 중... ${gifCapturedFrameCount}프레임`);
+                const blob = await renderGifToBlob();
+                downloadBlob(blob, makeGifFilename());
+                setGifStatus(`GIF 저장 완료 (${gifCapturedFrameCount}프레임)`);
+            } catch (error) {
+                stopGifFrameTimerOnly();
+                console.error('GIF 저장 오류:', error);
+                setGifStatus('GIF 저장 오류');
+                alert('GIF 저장 중 오류가 발생했습니다.\n\n' + error.message);
+            } finally {
+                gifRecorder = null;
+                if (gifButton) gifButton.disabled = false;
+                if (multiButton) multiButton.disabled = false;
+            }
+        }
+
         async function executeCustomCode(codeStr) {
             if (isAnimating) return;
 
@@ -1087,6 +1233,11 @@
         document.getElementById('btn-exec-multi').addEventListener('click', async () => { 
             const val = document.getElementById('input-multi-code').value;
             if(val) await executeCustomCode(val);
+        });
+        document.getElementById('btn-export-gif').addEventListener('click', async () => { 
+            const val = document.getElementById('input-multi-code').value;
+            if(val) await executeCustomCodeAndSaveGif(val);
+            else alert('GIF로 저장할 여러 줄 코드를 입력해 주세요.');
         });
         document.getElementById('btn-apply-structure').addEventListener('click', applyStructure);
         document.getElementById('btn-export-structure').addEventListener('click', exportStructure);
