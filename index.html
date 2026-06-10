@@ -606,18 +606,51 @@
             }); 
             body.updateMatrixWorld(true);
             if (useGravity) {
-                let minFootY = Infinity;
+                // 기존 방식은 '발끝 4개 중 가장 낮은 점'만 기준으로 몸통을 보정했습니다.
+                // 그러면 앉기/엎드리기처럼 몸통이 발끝보다 아래로 내려가는 동작에서
+                // 몸통이 기준면 아래로 파고드는 문제가 생길 수 있습니다.
+                //
+                // 수정 방식:
+                // 1) 발끝 4개의 최저점
+                // 2) 몸통 박스의 최저점
+                // 3) 주요 관절점의 최저점
+                // 위 값 중 가장 낮은 지점을 기준면 위로 올립니다.
+
+                let minRobotY = Infinity;
+
+                // 1. 발끝 4개 최저점
                 lmi.forEach(([s_idx, k1_idx, k2_idx], legIdx) => {
                     const jK2 = joints[k2_idx];
                     const fp = jK2.children.find(c => c.userData && c.userData.legIndex === legIdx && !(c instanceof THREE.Mesh) && !(c instanceof CSS2DObject));
                     if (fp) {
                         const fW = fp.getWorldPosition(new THREE.Vector3());
-                        if (fW.y < minFootY) minFootY = fW.y;
+                        minRobotY = Math.min(minRobotY, fW.y);
                     }
                 });
+
+                // 2. 몸통 자체의 최저점
+                if (body.geometry) {
+                    if (!body.geometry.boundingBox) body.geometry.computeBoundingBox();
+
+                    const bodyBox = body.geometry.boundingBox.clone();
+                    bodyBox.applyMatrix4(body.matrixWorld);
+
+                    minRobotY = Math.min(minRobotY, bodyBox.min.y);
+                }
+
+                // 3. 관절점 최저점
+                joints.forEach(joint => {
+                    if (joint) {
+                        const jW = joint.getWorldPosition(new THREE.Vector3());
+                        minRobotY = Math.min(minRobotY, jW.y);
+                    }
+                });
+
+                // 기준면보다 살짝 위에 두기 위한 여유값
                 const targetY = 0.8;
-                if (minFootY !== Infinity) {
-                    body.position.y += (targetY - minFootY);
+
+                if (minRobotY !== Infinity) {
+                    body.position.y += (targetY - minRobotY);
                     body.updateMatrixWorld(true);
                 }
             }
