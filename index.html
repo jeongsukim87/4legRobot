@@ -713,7 +713,7 @@
                 
                 const customAxis = axisVec.clone().applyQuaternion(qPlane);
                 
-                const cur = WorkLst[i];
+                const cur = getVisibleWorkValue(i, WorkLst[i]);
                 const deltaRot = (cur - CoreWLstF[i]) * DEG_TO_RAD * motorDir[i];
                 
                 const qDelta = new THREE.Quaternion().setFromAxisAngle(customAxis, deltaRot);
@@ -731,16 +731,10 @@
             for(let i=0; i<12; i++){ 
                 const chg=parseFloat(motorInputs[i].value)||0; 
                 if(chg!==0){ 
-                    const offset = UIWLstF[i] - CoreWLstF[i];
-                    const cur=WorkLst[i]; 
-                    const nxt=cur+chg; 
-                    const ui_nxt = nxt + offset;
-                    const ui_clmp = Math.max(0,Math.min(180,ui_nxt));
-                    const clmp = ui_clmp - offset;
-                    const act_ui = ui_clmp - (cur + offset);
-                    
-                    const final_chg = parseFloat(act_ui.toFixed(1));
-                    if(Math.abs(final_chg)>0){ c[i]=final_chg; h=true; }
+                    // 마이크로비트 실제 코드와 동일하게 변화값은 그대로 누적합니다.
+                    // 0~180 제한은 화면에 표시할 때만 적용하고, WorkLst 자체는 제한하지 않습니다.
+                    c[i] = parseFloat(chg.toFixed(1));
+                    h = true;
                 } 
                 motorInputs[i].value=""; 
             } 
@@ -754,8 +748,15 @@
         function updateMotorDisplays() { 
             for(let i=0; i<12; i++) { 
                 const offset = UIWLstF[i] - CoreWLstF[i];
-                const v=Math.round(WorkLst[i] + offset); 
-                if (motorValueDisplays[i]) motorValueDisplays[i].innerText = `현재: ${v}°`; 
+                const rawDisplayValue = Math.round(WorkLst[i] + offset);
+                const visibleDisplayValue = Math.round(clampServoDisplayValue(WorkLst[i] + offset));
+                if (motorValueDisplays[i]) {
+                    if (rawDisplayValue !== visibleDisplayValue) {
+                        motorValueDisplays[i].innerText = `현재: ${visibleDisplayValue}° / 내부: ${rawDisplayValue}°`;
+                    } else {
+                        motorValueDisplays[i].innerText = `현재: ${visibleDisplayValue}°`;
+                    }
+                } 
             } 
         }
         function resetPosition(animate=true) { 
@@ -817,13 +818,29 @@
             if(labelRenderer&&scene&&camera) labelRenderer.render(scene, camera); 
         }
         
+        function clampServoDisplayValue(displayValue) {
+            return Math.max(0, Math.min(180, displayValue));
+        }
+
+        function getVisibleWorkValue(index, workValue) {
+            // WorkLst는 내부 누적값이므로 180을 넘거나 0보다 작아도 그대로 유지합니다.
+            // 다만 실제 서보처럼 화면에 반영할 때만 0~180 범위로 제한합니다.
+            // 예: 내부값이 190이면 화면은 180 위치에 멈추지만,
+            // 다음에 -30을 만나면 내부값은 160이 되어 자연스럽게 돌아옵니다.
+            const offset = UIWLstF[index] - CoreWLstF[index];
+            const displayValue = workValue + offset;
+            const clampedDisplayValue = clampServoDisplayValue(displayValue);
+            return clampedDisplayValue - offset;
+        }
+
         function setJointAngleByWorkValue(index, workValue) {
             const j = joints[index];
             if (!j) return;
 
+            const visibleWorkValue = getVisibleWorkValue(index, workValue);
             const a = jointAxes[index];
             const baseRot = CoreWLstF[index] * DEG_TO_RAD;
-            const deltaRot = (workValue - CoreWLstF[index]) * DEG_TO_RAD * motorDir[index];
+            const deltaRot = (visibleWorkValue - CoreWLstF[index]) * DEG_TO_RAD * motorDir[index];
 
             const axisVec = new THREE.Vector3(a === 'x' ? 1 : 0, a === 'y' ? 1 : 0, a === 'z' ? 1 : 0);
             const qBase = new THREE.Quaternion().setFromAxisAngle(axisVec, baseRot);
@@ -836,12 +853,9 @@
             j.quaternion.copy(qDelta.clone().multiply(qBase));
         }
 
-        function getClampedWorkTarget(currentWorkValue, changeValue, index) {
-            const offset = UIWLstF[index] - CoreWLstF[index];
-            const nextWorkValue = currentWorkValue + (Number(changeValue) || 0);
-            const nextDisplayValue = nextWorkValue + offset;
-            const clampedDisplayValue = Math.max(0, Math.min(180, nextDisplayValue));
-            return clampedDisplayValue - offset;
+        function getRawWorkTarget(currentWorkValue, changeValue) {
+            // 목표값도 제한하지 않습니다. 제한은 setJointAngleByWorkValue()에서 화면 표시 시에만 적용합니다.
+            return currentWorkValue + (Number(changeValue) || 0);
         }
 
         function waitAnimationFrame() {
@@ -862,7 +876,7 @@
 
             const changes = [s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12].map(v => Number(v) || 0);
             const startWorkValues = [...WorkLst];
-            const targetWorkValues = startWorkValues.map((current, index) => getClampedWorkTarget(current, changes[index], index));
+            const targetWorkValues = startWorkValues.map((current, index) => getRawWorkTarget(current, changes[index]));
 
             // 기존 speed 체계는 유지하되, 너무 짧아 반복이 1번처럼 보이는 것을 줄이기 위해 최소 표시 시간을 둡니다.
             const baseDurationMs = Math.max(180, (Number(speed) || 0) * 25);
