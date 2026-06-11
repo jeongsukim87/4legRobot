@@ -44,6 +44,33 @@
         .structure-input { width: 3rem; } 
         .structure-label { width: 4.5rem; }
         .structure-wrapper { justify-content: space-around; padding: 2px 0; }
+
+        /* 데스크톱 제어판 폭 조절 핸들 */
+        #control-panel-resizer {
+            width: 8px;
+            cursor: col-resize;
+            background: linear-gradient(to right, rgba(31,41,55,0.2), rgba(75,85,99,0.95), rgba(31,41,55,0.2));
+            position: relative;
+            z-index: 20;
+            flex: 0 0 8px;
+        }
+        #control-panel-resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 48px;
+            transform: translate(-50%, -50%);
+            border-left: 1px solid rgba(255,255,255,0.35);
+            border-right: 1px solid rgba(255,255,255,0.25);
+        }
+        #control-panel-resizer:hover { background-color: rgba(96,165,250,0.35); }
+        body.resizing-panel { cursor: col-resize; user-select: none; }
+        @media (max-width: 767px) {
+            #control-panel { width: 100% !important; min-width: 0 !important; max-width: none !important; }
+            #control-panel-resizer { display: none; }
+        }
     </style>
     <script type="importmap">
     {
@@ -58,7 +85,7 @@
     <div class="flex flex-col md:flex-row h-screen">
         
         <!-- 제어판 (좌측) -->
-        <div class="w-full md:w-80 h-1/3 md:h-screen bg-gray-800 p-4 overflow-y-auto shadow-lg rounded-lg md:rounded-r-lg md:rounded-l-none z-10 flex-shrink-0">
+        <div id="control-panel" class="w-full md:w-80 h-1/3 md:h-screen bg-gray-800 p-4 overflow-y-auto shadow-lg rounded-lg md:rounded-r-lg md:rounded-l-none z-10 flex-shrink-0">
             <h1 class="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-2">
                 사족보행로봇 제어
                 <div id="status-light" class="w-3 h-3 rounded-full bg-gray-500" title="애니메이션 상태"></div>
@@ -112,10 +139,25 @@
                 <button id="btn-exec-single" class="bg-green-600 hover:bg-green-700 px-3 rounded-lg text-sm font-bold transition whitespace-nowrap">실행</button>
             </div>
             <div class="mb-4 border-b border-gray-700 pb-4">
-                <textarea id="input-multi-code" class="w-full h-24 p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
+                <textarea id="input-multi-code" class="w-full h-48 p-2 bg-gray-900 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
                 <button id="btn-exec-multi" class="w-full mt-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행</button>
                 <button id="btn-export-gif" class="w-full mt-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">순차 실행 후 GIF 저장</button>
-                <p id="gif-status" class="mt-1 text-[11px] text-amber-300 min-h-[1rem] text-center">60fps 부드러운 캡처</p>
+                <p id="gif-status" class="mt-1 mb-2 text-[11px] text-amber-300 min-h-[1rem] text-center">60fps 부드러운 캡처</p>
+                <div id="return-correction-panel" class="mt-2 p-2 bg-gray-950 border border-gray-700 rounded-lg">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <p class="text-[11px] font-semibold text-gray-200 pt-1">기본 자세 복귀 보정값</p>
+                        <div class="flex flex-col gap-1 min-w-[7.5rem]">
+                            <button id="btn-add-return-correction" type="button" class="bg-sky-600 hover:bg-sky-700 disabled:bg-gray-600 disabled:opacity-60 text-white font-bold py-1 px-2 rounded text-[11px] transition">보정 Work 추가</button>
+                            <button id="btn-add-return-function" type="button" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-1 px-2 rounded text-[11px] transition">복귀 함수 추가</button>
+                        </div>
+                    </div>
+                    <p id="return-correction-summary" class="text-[10px] text-gray-400 mb-1">여러 줄 코드를 입력하면 12개 모터의 누적 변화값과 0으로 되돌릴 보정값을 보여줍니다.</p>
+                    <p class="text-[10px] text-violet-200/90 mb-2">복귀 함수는 동작 변화가 커서 합계가 0이어도 기본 자세로 정확히 돌아오지 않을 때 사용합니다.</p>
+                    <div class="text-[10px] text-gray-400 mb-1">입력 코드 합계</div>
+                    <div id="return-total-values" class="grid grid-cols-4 gap-1 mb-2"></div>
+                    <div class="text-[10px] text-gray-400 mb-1">추가할 보정 Work 값</div>
+                    <div id="return-correction-values" class="grid grid-cols-4 gap-1"></div>
+                </div>
             </div>
             <!-- 5. 조정 대상 및 위치 제어 -->
             <h2 class="text-lg font-semibold mb-2 text-center">조정 대상 선택</h2>
@@ -155,6 +197,8 @@
                 </button>
             </div>
         </div>
+        <div id="control-panel-resizer" class="hidden md:block" title="드래그해서 제어판 폭 조절"></div>
+
         <!-- 3D 캔버스 (우측) -->
         <div class="flex-1 h-2/3 md:h-screen relative">
             <div id="canvas-container" class="w-full h-full absolute top-0 left-0"></div>
@@ -364,6 +408,7 @@
             createMotorControls(); 
             createStructureControls(); 
             initPositionControls(); 
+            initResizableControlPanel();
             
             resetPosition(false); 
             updateJointPositionsAndCreateLimbs();
@@ -800,6 +845,84 @@
             WorkLst=[...CoreWLstF]; 
             if (!animate){ isAnimating=false; statusLight.classList.remove('bg-yellow-500'); statusLight.classList.add('bg-gray-500'); updateMotorDisplays(); }
         }
+
+        function initResizableControlPanel() {
+            const panel = document.getElementById('control-panel');
+            const resizer = document.getElementById('control-panel-resizer');
+            if (!panel || !resizer) return;
+
+            const storageKey = 'robotSimulatorControlPanelWidthV2';
+            const minWidth = 320;
+            const maxWidthRatio = 0.55;
+            const defaultWidthRatio = 1 / 3;
+
+            function isDesktopLayout() {
+                return window.matchMedia('(min-width: 768px)').matches;
+            }
+
+            function applyPanelWidth(width) {
+                if (!isDesktopLayout()) {
+                    panel.style.width = '';
+                    panel.style.minWidth = '';
+                    panel.style.maxWidth = '';
+                    return;
+                }
+                const maxWidth = Math.max(minWidth, Math.floor(window.innerWidth * maxWidthRatio));
+                const nextWidth = Math.min(maxWidth, Math.max(minWidth, Math.round(width)));
+                panel.style.width = `${nextWidth}px`;
+                panel.style.minWidth = `${nextWidth}px`;
+                panel.style.maxWidth = `${nextWidth}px`;
+                onWindowResize();
+            }
+
+            const savedWidth = parseInt(localStorage.getItem(storageKey), 10);
+            const defaultWidth = Math.floor(window.innerWidth * defaultWidthRatio);
+            applyPanelWidth(Number.isFinite(savedWidth) ? savedWidth : defaultWidth);
+
+            let startX = 0;
+            let startWidth = 0;
+            let isResizing = false;
+
+            function handlePointerMove(event) {
+                if (!isResizing) return;
+                const dx = event.clientX - startX;
+                applyPanelWidth(startWidth + dx);
+            }
+
+            function handlePointerUp() {
+                if (!isResizing) return;
+                isResizing = false;
+                document.body.classList.remove('resizing-panel');
+                window.removeEventListener('pointermove', handlePointerMove);
+                window.removeEventListener('pointerup', handlePointerUp);
+                const currentWidth = Math.round(panel.getBoundingClientRect().width);
+                if (isDesktopLayout()) localStorage.setItem(storageKey, String(currentWidth));
+            }
+
+            resizer.addEventListener('pointerdown', (event) => {
+                if (!isDesktopLayout()) return;
+                event.preventDefault();
+                isResizing = true;
+                startX = event.clientX;
+                startWidth = panel.getBoundingClientRect().width;
+                document.body.classList.add('resizing-panel');
+                window.addEventListener('pointermove', handlePointerMove);
+                window.addEventListener('pointerup', handlePointerUp);
+            });
+
+            window.addEventListener('resize', () => {
+                if (!isDesktopLayout()) {
+                    panel.style.width = '';
+                    panel.style.minWidth = '';
+                    panel.style.maxWidth = '';
+                    onWindowResize();
+                    return;
+                }
+                const currentWidth = panel.getBoundingClientRect().width || savedWidth || Math.floor(window.innerWidth * defaultWidthRatio);
+                applyPanelWidth(currentWidth);
+            });
+        }
+
         function onWindowResize() { const c=document.getElementById('canvas-container'), l=document.getElementById('label-container'); if (!c||!l) return; camera.aspect=c.clientWidth/c.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(c.clientWidth, c.clientHeight); labelRenderer.setSize(c.clientWidth, c.clientHeight); }
         
         function animate() { 
@@ -910,6 +1033,16 @@
 
         async function Work(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12, speed) {
             return runWorkNow(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12, speed);
+        }
+
+        function setWorkListToBasicPose() {
+            // 마이크로비트 코드의 WorkLst = [149, 70, ...] 초기화와 같은 역할입니다.
+            // 이 시뮬레이터는 내부 기준값(CoreWLstF)과 화면 표시 기준값(UIWLstF)을 분리해서 쓰므로
+            // 실제 내부 누적값은 CoreWLstF로 되돌립니다.
+            WorkLst = [...CoreWLstF];
+            for (let i = 0; i < 12; i++) setJointAngleByWorkValue(i, WorkLst[i]);
+            updateJointPositionsAndCreateLimbs();
+            updateMotorDisplays();
         }
 
         async function pause(ms) { return new Promise(r=>setTimeout(r, ms)); }
@@ -1168,9 +1301,7 @@
             }
         }
 
-        async function executeCustomCode(codeStr) {
-            if (isAnimating) return;
-
+        async function buildCommandQueueFromUserCode(codeStr) {
             const commandQueue = [];
             const queuedWork = (...args) => {
                 if (args.length !== 13) {
@@ -1189,22 +1320,178 @@
                 commandQueue.push({ type: 'pause', args: [pauseMs] });
                 return Promise.resolve();
             };
+            const queuedBasicPoseReset = () => {
+                commandQueue.push({ type: 'returnBase', args: [] });
+                return Promise.resolve();
+            };
+            const queuedReturnFunction = async () => {
+                queuedBasicPoseReset();
+                return queuedWork(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4);
+            };
             const basic = { pause: queuedPause };
 
-            try {
-                const cleanCode = normalizeUserCode(codeStr);
-                const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-                const runner = new AsyncFunction(
-                    'Work',
-                    'pause',
-                    'basic',
-                    `"use strict";\n${cleanCode}`
-                );
+            const cleanCode = normalizeUserCode(codeStr);
+            if (!cleanCode) return commandQueue;
 
-                // 1단계: 사용자가 입력한 JS를 먼저 실행합니다.
-                // 이때 Work는 실제 애니메이션 함수가 아니라 큐 등록 함수이므로,
-                // for문이 3회 돌면 Work 명령도 정확히 3회분 누적됩니다.
-                await runner(queuedWork, queuedPause, basic);
+            const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+            const runner = new AsyncFunction(
+                'Work',
+                'pause',
+                'basic',
+                '기본자세로초기화',
+                '기본자세초기화',
+                '복귀',
+                `"use strict";\n${cleanCode}`
+            );
+
+            // 사용자가 입력한 JS를 먼저 실행합니다.
+            // 이때 Work는 실제 애니메이션 함수가 아니라 큐 등록 함수이므로,
+            // for문이 3회 돌면 Work 명령도 정확히 3회분 누적됩니다.
+            // 복귀()는 이미 준비된 함수처럼 사용할 수 있게 하여, 입력창에는 호출 코드만 넣어도 됩니다.
+            await runner(queuedWork, queuedPause, basic, queuedBasicPoseReset, queuedBasicPoseReset, queuedReturnFunction);
+            return commandQueue;
+        }
+
+        function roundCorrectionValue(value) {
+            const rounded = Math.round((Number(value) || 0) * 10) / 10;
+            return Object.is(rounded, -0) ? 0 : rounded;
+        }
+
+        function formatCorrectionValue(value, showPlus = true) {
+            const rounded = roundCorrectionValue(value);
+            if (rounded > 0 && showPlus) return `+${rounded}`;
+            return `${rounded}`;
+        }
+
+        function renderCorrectionCells(containerId, values) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            values.forEach((value, index) => {
+                const rounded = roundCorrectionValue(value);
+                const cell = document.createElement('div');
+                const isNonZero = rounded !== 0;
+                cell.className = `px-1 py-1 rounded border text-center font-mono ${isNonZero ? 'border-red-500 bg-red-950/50 text-red-300 font-bold' : 'border-gray-700 bg-gray-900 text-gray-400'}`;
+                cell.textContent = `M${index + 1} ${formatCorrectionValue(rounded)}`;
+                container.appendChild(cell);
+            });
+        }
+
+        let latestReturnCorrection = new Array(12).fill(0);
+        let correctionPreviewTimer = null;
+        let correctionPreviewVersion = 0;
+
+        async function calculateReturnCorrectionFromCode(codeStr) {
+            const commandQueue = await buildCommandQueueFromUserCode(codeStr);
+            const totals = new Array(12).fill(0);
+            commandQueue.forEach(command => {
+                if (command.type === 'returnBase') {
+                    totals.fill(0);
+                    return;
+                }
+                if (command.type !== 'work') return;
+                for (let i = 0; i < 12; i++) {
+                    totals[i] += Number(command.args[i]) || 0;
+                }
+            });
+            const correction = totals.map(value => roundCorrectionValue(-value));
+            return { commandQueue, totals: totals.map(roundCorrectionValue), correction };
+        }
+
+        async function updateReturnCorrectionPreview() {
+            const version = ++correctionPreviewVersion;
+            const textarea = document.getElementById('input-multi-code');
+            const summary = document.getElementById('return-correction-summary');
+            const button = document.getElementById('btn-add-return-correction');
+            const codeStr = textarea ? textarea.value : '';
+
+            if (!normalizeUserCode(codeStr)) {
+                latestReturnCorrection = new Array(12).fill(0);
+                renderCorrectionCells('return-total-values', latestReturnCorrection);
+                renderCorrectionCells('return-correction-values', latestReturnCorrection);
+                if (summary) summary.textContent = '여러 줄 코드를 입력하면 12개 모터의 누적 변화값과 0으로 되돌릴 보정값을 보여줍니다.';
+                if (button) button.disabled = true;
+                return;
+            }
+
+            try {
+                const result = await calculateReturnCorrectionFromCode(codeStr);
+                if (version !== correctionPreviewVersion) return;
+
+                latestReturnCorrection = result.correction;
+                renderCorrectionCells('return-total-values', result.totals);
+                renderCorrectionCells('return-correction-values', result.correction);
+
+                const nonZeroCount = result.totals.filter(value => value !== 0).length;
+                if (summary) {
+                    if (nonZeroCount === 0) {
+                        summary.textContent = `입력된 Work ${result.commandQueue.filter(c => c.type === 'work').length}개 기준, 이미 기본 자세로 돌아옵니다.`;
+                    } else {
+                        summary.textContent = `입력된 Work ${result.commandQueue.filter(c => c.type === 'work').length}개 기준, ${nonZeroCount}개 모터에 보정이 필요합니다. 빨간색 값은 0이 아닌 값입니다.`;
+                    }
+                }
+                if (button) button.disabled = nonZeroCount === 0;
+            } catch (error) {
+                if (version !== correctionPreviewVersion) return;
+                latestReturnCorrection = new Array(12).fill(0);
+                renderCorrectionCells('return-total-values', latestReturnCorrection);
+                renderCorrectionCells('return-correction-values', latestReturnCorrection);
+                if (summary) summary.textContent = '보정값 계산 오류: ' + error.message;
+                if (button) button.disabled = true;
+            }
+        }
+
+        function scheduleReturnCorrectionPreview() {
+            clearTimeout(correctionPreviewTimer);
+            correctionPreviewTimer = setTimeout(updateReturnCorrectionPreview, 250);
+        }
+
+        async function appendReturnCorrectionWork() {
+            const textarea = document.getElementById('input-multi-code');
+            if (!textarea || isAnimating) return;
+
+            try {
+                const result = await calculateReturnCorrectionFromCode(textarea.value);
+                latestReturnCorrection = result.correction;
+                const hasCorrection = latestReturnCorrection.some(value => value !== 0);
+                if (!hasCorrection) {
+                    alert('이미 12개 모터의 누적 변화값이 모두 0입니다.');
+                    await updateReturnCorrectionPreview();
+                    return;
+                }
+
+                const correctionCode = `Work(${latestReturnCorrection.map(value => roundCorrectionValue(value)).join(', ')}, 10)`;
+                const currentCode = textarea.value.trimEnd();
+                textarea.value = currentCode ? `${currentCode}\n${correctionCode}` : correctionCode;
+                textarea.focus();
+                await updateReturnCorrectionPreview();
+            } catch (error) {
+                alert('보정 Work를 추가할 수 없습니다.\n\n' + error.message);
+            }
+        }
+
+        function makeReturnFunctionCode() {
+            return `복귀()`;
+        }
+
+        async function appendReturnFunctionCode() {
+            const textarea = document.getElementById('input-multi-code');
+            if (!textarea || isAnimating) return;
+
+            const returnCode = makeReturnFunctionCode();
+            const currentCode = textarea.value.trimEnd();
+            textarea.value = currentCode ? `${currentCode}
+
+${returnCode}` : returnCode;
+            textarea.focus();
+            await updateReturnCorrectionPreview();
+        }
+
+        async function executeCustomCode(codeStr) {
+            if (isAnimating) return;
+
+            try {
+                const commandQueue = await buildCommandQueueFromUserCode(codeStr);
 
                 console.clear();
                 console.log(`등록된 명령 수: ${commandQueue.length}`, commandQueue);
@@ -1214,12 +1501,14 @@
                     return;
                 }
 
-                // 2단계: 큐에 쌓인 명령을 하나씩 끝까지 실행합니다.
+                // 큐에 쌓인 명령을 하나씩 끝까지 실행합니다.
                 // 여기서는 원래 Work()를 다시 호출하지 않고 runWorkNow()만 호출하여 중복 대기/상태 충돌을 없앴습니다.
                 for (let i = 0; i < commandQueue.length; i++) {
                     const command = commandQueue[i];
                     console.log(`실행 중: ${i + 1}/${commandQueue.length}`, command);
-                    if (command.type === 'work') {
+                    if (command.type === 'returnBase') {
+                        setWorkListToBasicPose();
+                    } else if (command.type === 'work') {
                         await runWorkNow(...command.args);
                     } else if (command.type === 'pause') {
                         await pause(command.args[0]);
@@ -1282,10 +1571,16 @@
             const val = document.getElementById('input-single-code').value;
             if(val) await executeCustomCode(val);
         });
+        const multiCodeInput = document.getElementById('input-multi-code');
+        multiCodeInput.addEventListener('input', scheduleReturnCorrectionPreview);
+        multiCodeInput.addEventListener('blur', updateReturnCorrectionPreview);
+        document.getElementById('btn-add-return-correction').addEventListener('click', appendReturnCorrectionWork);
+        document.getElementById('btn-add-return-function').addEventListener('click', appendReturnFunctionCode);
         document.getElementById('btn-exec-multi').addEventListener('click', async () => { 
             const val = document.getElementById('input-multi-code').value;
             if(val) await executeCustomCode(val);
         });
+        updateReturnCorrectionPreview();
         document.getElementById('btn-export-gif').addEventListener('click', async () => { 
             const val = document.getElementById('input-multi-code').value;
             if(val) await executeCustomCodeAndSaveGif(val);
