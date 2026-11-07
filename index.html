@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>다관절 사족보행 로봇 시뮬레이터</title>
+    <title>다관절 사족보행 로봇 시뮬레이터V2.1</title>
     <!-- Tailwind CSS 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter 폰트 로드 -->
@@ -288,6 +288,11 @@
                     <button id="btn-apply-structure" class="w-full mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">구조 적용 (뼈대 재생성)</button>
                     <button id="btn-export-structure" class="w-full mt-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm">구조 데이터 내보내기</button>
                     <textarea id="export-data" readonly class="w-full mt-2 p-2 bg-gray-950 border border-gray-600 rounded-md text-xs h-32" placeholder="여기에 구조 데이터가 JSON으로 표시됩니다..."></textarea>
+                    <div class="mt-3 pt-3 border-t border-gray-700">
+                        <p id="structure-lock-status" class="text-[10px] text-amber-300 text-center mb-2">🔒 구조 위치 잠금 중</p>
+                        <button id="btn-toggle-structure-lock" type="button" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-3 rounded-lg transition duration-200 text-xs">🔓 구조 위치 잠금 풀기</button>
+                        <p class="mt-1 text-[9px] text-gray-500 text-center">기본 상태에서는 관절 위치가 고정됩니다. 구조를 다시 조정할 때만 잠금을 풀어주세요.</p>
+                    </div>
                 </div>
             </details>
             <!-- 6. 저작권 및 제작자 정보 (CCL) -->
@@ -313,8 +318,8 @@
             <div class="absolute top-2 left-2 bg-gray-900 bg-opacity-70 p-2 rounded-lg text-xs z-10">
                 <p>뷰 이동: 마우스 드래그 / 줌: 휠</p>
                 <p>다리 각도: 파란 다리 클릭 & 드래그 → 변화값 자동 입력</p>
-                <p>구조 이동: 빨간 모터 구체 클릭 & 드래그</p>
-                <p>수평면 제어: '조정 대상' 메뉴에서 [수평면] 선택 후 X, Y, Z 버튼 클릭</p>
+                <p>구조 이동: 기본 잠금 · '로봇 구조(고급)'에서 잠금 해제 후 조정</p>
+                <p>수평면 제어: 구조 잠금 해제 후 '조정 대상' 메뉴에서 [수평면] 선택</p>
             </div>
         </div>
     </div>
@@ -428,6 +433,9 @@
         const limbRaycaster = new THREE.Raycaster();
         const limbPointer = new THREE.Vector2();
         let limbAngleDrag = null;
+        // 관절/수평면/발끝의 구조 위치 편집은 기본적으로 잠급니다.
+        // 학생이 노란 수평면이나 관절 주변을 잘못 눌러도 뼈대 위치가 분리되지 않도록 하기 위한 안전장치입니다.
+        let structureEditUnlocked = false;
         let selectedIndex = null; 
         let selectedType = null; 
         const positionButtons = [];
@@ -525,6 +533,7 @@
             createMotorControls(); 
             createStructureControls(); 
             initPositionControls(); 
+            syncStructureEditLockUI();
             initResizableControlPanel();
             
             resetPosition(false); 
@@ -659,18 +668,20 @@
         function addLegLabel(joint, text) { const d=document.createElement('div'); d.className='leg-label'; d.textContent=text; const l=new CSS2DObject(d); l.position.set(0, 3.5, 0); joint.add(l); } 
         function initDragControls() {
             dragControls = new DragControls(draggableObjects, camera, labelRenderer.domElement);
+            // 기본값은 구조 잠금이므로 모터 위치 DragControls를 비활성화합니다.
+            dragControls.enabled = structureEditUnlocked;
             dragControls.addEventListener('dragstart', (e) => {
-                if (limbAngleDrag) return;
+                if (!structureEditUnlocked || limbAngleDrag) return;
                 orbitControls.enabled = false;
                 e.object.material.emissive.set(0xaaaa00);
             });
             dragControls.addEventListener('drag', (e) => {
-                if (limbAngleDrag) return;
+                if (!structureEditUnlocked || limbAngleDrag) return;
                 updateStructureFromDrag(e.object);
                 updateJointPositionsAndCreateLimbs();
             });
             dragControls.addEventListener('dragend', (e) => {
-                if (limbAngleDrag) return;
+                if (!structureEditUnlocked || limbAngleDrag) return;
                 orbitControls.enabled = true;
                 e.object.material.emissive.set(0x000000);
                 updateStructureFromDrag(e.object);
@@ -849,7 +860,7 @@
                 try { dom.releasePointerCapture(limbAngleDrag.pointerId); } catch (_) {}
                 limbAngleDrag = null;
                 orbitControls.enabled = true;
-                if (dragControls) dragControls.enabled = true;
+                if (dragControls) dragControls.enabled = structureEditUnlocked;
                 motorControlDivs[index]?.classList.toggle('angle-active', Math.abs(getMotorPreviewChange(index)) > 0.0001);
                 updateJointPositionsAndCreateLimbs();
                 event?.preventDefault?.();
@@ -861,6 +872,7 @@
         }
         
         function updateStructureFromDrag(draggedObject) { 
+            if (!structureEditUnlocked) return;
             const idx=draggedObject.userData.index; 
             const jG=joints[idx]; 
             if(!jG||!jG.parent) return; 
@@ -937,7 +949,7 @@
             }
             if (value === "-1") { selectedIndex = null; selectedType = null; positionButtons.forEach(b => b.disabled = true); } 
             else {
-                const [type, indexStr] = value.split('-'); selectedIndex = parseInt(indexStr, 10); selectedType = type; positionButtons.forEach(b => b.disabled = false);
+                const [type, indexStr] = value.split('-'); selectedIndex = parseInt(indexStr, 10); selectedType = type; positionButtons.forEach(b => b.disabled = !structureEditUnlocked);
                 if (selectedType === 'motor' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.add('selected'); } 
                 else if (selectedType === 'plane' && motorControlDivs[selectedIndex]) { motorControlDivs[selectedIndex].classList.add('selected'); }
                 else if (selectedType === 'foot') {
@@ -953,7 +965,7 @@
             c.querySelectorAll('.pos-btn').forEach(b=>{
                 positionButtons.push(b);
                 b.addEventListener('click', ()=>{
-                    if(selectedIndex === null || isAnimating) return;
+                    if(selectedIndex === null || isAnimating || !structureEditUnlocked) return;
                     const axis=b.dataset.axis, amount=parseFloat(b.dataset.amount);
                     
                     if (selectedType === 'motor') {
@@ -1008,8 +1020,49 @@
                 wrapper.appendChild(ix); wrapper.appendChild(iy); wrapper.appendChild(iz); container.appendChild(wrapper);
             });
         }
+        function syncStructureEditLockUI() {
+            const button = document.getElementById('btn-toggle-structure-lock');
+            const status = document.getElementById('structure-lock-status');
+            const applyButton = document.getElementById('btn-apply-structure');
+            const structureInputs = document.querySelectorAll('#structure-controls input');
+
+            if (dragControls && !limbAngleDrag) {
+                dragControls.enabled = structureEditUnlocked && !isAnimating && !isSequenceExecuting;
+            }
+
+            structureInputs.forEach(input => { input.disabled = !structureEditUnlocked; });
+            if (applyButton) applyButton.disabled = !structureEditUnlocked;
+            positionButtons.forEach(buttonEl => {
+                buttonEl.disabled = !structureEditUnlocked || selectedIndex === null;
+            });
+
+            if (button) {
+                if (structureEditUnlocked) {
+                    button.textContent = '🔒 구조 위치 다시 잠그기';
+                    button.className = 'w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-lg transition duration-200 text-xs';
+                } else {
+                    button.textContent = '🔓 구조 위치 잠금 풀기';
+                    button.className = 'w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-3 rounded-lg transition duration-200 text-xs';
+                }
+            }
+            if (status) {
+                status.textContent = structureEditUnlocked
+                    ? '🔓 구조 위치 편집 가능 · 관절/수평면 위치를 조정할 수 있습니다.'
+                    : '🔒 구조 위치 잠금 중 · 실수로 눌러도 관절 위치가 움직이지 않습니다.';
+                status.className = structureEditUnlocked
+                    ? 'text-[10px] text-emerald-300 text-center mb-2'
+                    : 'text-[10px] text-amber-300 text-center mb-2';
+            }
+        }
+
+        function toggleStructureEditLock() {
+            if (isAnimating || isSequenceExecuting || isGifExporting) return;
+            structureEditUnlocked = !structureEditUnlocked;
+            syncStructureEditLockUI();
+        }
+
         function applyStructure() { 
-            if(isAnimating) return; 
+            if(isAnimating || !structureEditUnlocked) return; 
             try{ 
                 for(let i=0; i<12; i++){ 
                     robotStructure.motorPositions[i].x=parseFloat(document.getElementById(`motor-pos-${i}-x`).value)||0; 
@@ -2344,6 +2397,7 @@ ${returnCode}` : returnCode;
         updateExecutionControlState();
         updateReturnCorrectionPreview();
         updateCodeAnalysisPreview();
+        document.getElementById('btn-toggle-structure-lock').addEventListener('click', toggleStructureEditLock);
         document.getElementById('btn-apply-structure').addEventListener('click', applyStructure);
         document.getElementById('btn-export-structure').addEventListener('click', exportStructure);
         init();
