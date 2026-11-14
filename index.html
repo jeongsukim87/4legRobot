@@ -201,7 +201,19 @@
                         </div>
                         <button id="btn-toggle-editor-size" type="button" class="bg-gray-700 hover:bg-gray-600 text-gray-100 font-semibold py-1 px-2 rounded text-[10px] whitespace-nowrap">⛶ 크게 보기</button>
                     </div>
-                    <textarea id="input-multi-code" class="w-full h-52 p-2 bg-gray-950 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre transition-all" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
+                    <div class="relative">
+                        <textarea id="input-multi-code" style="line-height:18px" class="w-full h-52 p-2 bg-gray-950 border border-gray-600 rounded-md text-white text-xs font-mono whitespace-pre transition-all" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력"></textarea>
+                        <!-- 실행 중인 줄을 표시하는 막대 (textarea 위에 겹치며 클릭은 통과시킵니다) -->
+                        <div id="exec-line-clip" class="absolute overflow-hidden pointer-events-none">
+                            <div id="seg-markers"></div>
+                            <div id="exec-line-bar" class="hidden absolute left-0 right-0 border-l-4 border-amber-400 bg-amber-300/25"></div>
+                            <div id="select-line-bar" class="hidden absolute left-0 right-0 border-l-4 border-violet-400 bg-violet-400/25"></div>
+                        </div>
+                    </div>
+                    <div class="mt-1 flex items-center gap-1">
+                        <p id="exec-line-indicator" class="flex-1 min-w-0 text-[11px] font-mono text-amber-300 min-h-[1rem] truncate"></p>
+                        <button id="btn-exec-select-cancel" type="button" class="hidden shrink-0 bg-gray-700 hover:bg-gray-600 text-gray-100 font-semibold py-0.5 px-1.5 rounded text-[10px]">↩ 선택 취소</button>
+                    </div>
 
                     <div class="grid grid-cols-3 gap-1 mt-1">
                         <button id="btn-add-return-function" type="button" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-1.5 px-1 rounded text-[10px] transition">복귀() 추가</button>
@@ -209,12 +221,15 @@
                         <button id="btn-clear-multi-code" type="button" class="bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-1.5 px-1 rounded text-[10px] transition">입력 지우기</button>
                     </div>
                     <div class="grid grid-cols-2 gap-1 mt-1">
-                        <button id="btn-exec-multi" class="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:opacity-60 text-white font-bold py-2 px-2 rounded-lg transition text-sm">▶ 순차 실행</button>
+                        <button id="btn-exec-multi" class="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:opacity-60 text-white font-bold py-2 px-2 rounded-lg transition text-sm">▶ 처음부터 실행</button>
                         <button id="btn-export-gif" class="bg-amber-600 hover:bg-amber-700 disabled:bg-gray-600 disabled:opacity-60 text-white font-bold py-2 px-2 rounded-lg transition text-sm">GIF 저장</button>
                     </div>
                     <div class="grid grid-cols-2 gap-1 mt-1">
-                        <button id="btn-reset-pose-multi" type="button" class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-2 rounded-lg transition text-sm">↺ 자세 초기화</button>
+                        <button id="btn-pause-execution" type="button" disabled class="bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-2 rounded-lg transition text-sm">⏸ 일시정지</button>
                         <button id="btn-stop-execution" type="button" disabled class="bg-red-700 hover:bg-red-800 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-2 rounded-lg transition text-sm">■ 실행 중지</button>
+                    </div>
+                    <div class="mt-1">
+                        <button id="btn-reset-pose-multi" type="button" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-2 rounded-lg transition text-sm">↺ 자세 초기화</button>
                     </div>
 
                     <!-- 입력 코드 합계는 핵심 정보이므로 항상 표시 -->
@@ -230,6 +245,12 @@
                     <p id="execution-status" class="mt-2 text-[11px] text-green-300 min-h-[1rem] text-center">실행 대기</p>
                     <p id="code-validation-status" class="mt-1 text-[11px] min-h-[1rem] text-gray-400">코드를 입력하면 실행 가능 여부를 확인합니다.</p>
                     <p id="code-analysis-summary" class="mt-1 text-[11px] text-sky-200 min-h-[1rem]">Work 0개 · 대기 0초 · 예상 실행시간 0초</p>
+                    <p id="robot-limit-summary" class="mt-1 text-[10px] text-amber-300 whitespace-pre-line leading-snug"></p>
+                    <details id="segment-details" class="mt-1 hidden">
+                        <summary id="segment-summary" class="cursor-pointer select-none text-[10px] text-cyan-300 hover:text-cyan-200"></summary>
+                        <p class="mt-1 text-[10px] text-gray-400 leading-snug">모든 서보의 누적 변화가 0이 되는 곳은 시작 자세로 돌아온 지점입니다. 입력창에 하늘색 선으로 표시되고, 이 지점마다 코드를 끊어 읽을 수 있습니다. 구간을 누르면 그 줄로 이동합니다.</p>
+                        <div id="segment-list" class="mt-1 max-h-40 overflow-y-auto space-y-0.5"></div>
+                    </details>
                     <p id="gif-plan-preview" class="mt-1 text-[10px] text-amber-300 min-h-[1rem]">GIF: 코드 길이에 따라 FPS와 프레임 수를 자동 조절합니다.</p>
                     <p id="gif-status" class="mt-1 text-[10px] text-amber-300 min-h-[1rem] text-center">delay 20ms 기본 · GIF 9MB 이하 자동 조절</p>
 
@@ -445,13 +466,38 @@
         let isAnimating = false;
         let isSequenceExecuting = false;
         let executionStopRequested = false;
+        let executionPaused = false;   // 일시정지 중이면 true (계속 진행을 누르면 false)
+        // 일시정지 중에 코드 줄을 골라 그 시점의 자세를 보고, 거기서부터 이어서 실행하기 위한 상태
+        let currentRunQueue = null;    // 지금 실행 중인 명령 목록 (입력창 코드를 실행할 때만)
+        let runStartWork = null;       // 이번 실행을 시작할 때의 서보 누적값
+        let currentCommandIndex = 0;   // 지금 실행 중인 명령 번호(0부터)
+        let pendingJump = null;        // 고른 위치 { idx, line, work, phys, ms, occ, occTotal }
+        let pauseSnapshot = null;      // 일시정지한 순간의 자세 (선택을 취소하면 되돌립니다)
+        let commandAbortRequested = false;
+        let selectionOccurrence = null;
+        let selectedLine = null;
         let codeAnalysisTimer = null;
         const DEG_TO_RAD = Math.PI / 180;
         
         const jointAxes = ["x", "x", "z", "x", "x", "z", "x", "x", "z", "x", "x", "z"];
         const motorDir = [1, 1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1];
         const UIWLstF = [149, 70, 60, 40, 95, 58, 33, 90, 85, 141, 69, 83];
-        let WorkLst = [...CoreWLstF]; 
+        let WorkLst = [...CoreWLstF];
+        // WorkLst = 코드가 계산하는 "소프트웨어 누적값"
+        // ServoPhys = 서보에 실제로 마지막으로 쓴 값 (화면에 보이는 각도)
+        // 실제 로봇은 speed가 소수일 때 목표에 100% 닿지 못하고, 변화값이 0인 서보는 다시 쓰지 않으므로 두 값이 달라질 수 있습니다.
+        let ServoPhys = [...CoreWLstF];
+        // ServoActual = 서보가 실제로 도달해 있는 각도. 서보는 명령을 받아도 순간이동하지 못하고
+        // 일정한 속도(ROBOT_SERVO_MAX_SPEED_DPS)로만 움직이므로, 화면에는 이 값을 그립니다.
+        // 화면에서 바꾸는 설정은 아니고 고정값입니다. (추정값, 0이면 순간이동)
+        let ServoActual = [...CoreWLstF];
+        const ROBOT_SERVO_MAX_SPEED_DPS = 400;
+        let slewSettling = false;   // 시퀀스가 끝난 뒤에도 서보가 목표에 닿을 때까지 계속 그리기 위한 표시
+        let lastSlewTime = 0;
+        // 순차 실행의 기준 시계: 명령마다 "프레임이 끝난 시각"이 아니라 "이론상 시작 시각"에 맞춰 이어붙여
+        // 프레임(약 16ms) 단위 반올림 오차가 곡 전체에 쌓이지 않게 합니다.
+        let seqClock = null;
+        let lateStreak = 0;
         let robotStructure = {
             motorPositions: [
                 { "x": 4.5, "y": -1.5, "z": -4.5 },
@@ -1231,6 +1277,7 @@
 
         function commitMotorPreviewChanges(changes) {
             WorkLst = WorkLst.map((current, index) => getRawWorkTarget(current, changes[index]));
+            resyncServoState();
             for (let i = 0; i < 12; i++) {
                 motorInputs[i].value = '';
                 setJointAngleByWorkValue(i, WorkLst[i]);
@@ -1322,7 +1369,9 @@ ${code}` : code;
                     j.quaternion.setFromAxisAngle(axisVec, CoreWLstF[i]*DEG_TO_RAD);
                 }
             } 
-            WorkLst=[...CoreWLstF]; 
+            WorkLst=[...CoreWLstF];
+            // 초기화 애니메이션이 서보 추적(animate 루프)과 부딪히지 않도록 추적 상태도 기본 자세로 맞춥니다.
+            resyncServoState();
             if (!animate){ isAnimating=false; statusLight.classList.remove('bg-yellow-500'); statusLight.classList.add('bg-gray-500'); updateMotorDisplays(); }
         }
 
@@ -1411,7 +1460,9 @@ ${code}` : code;
             if(robot) robot.updateMatrixWorld(true);
             
             if(joints.length===12 && joints.every(j=>j)) {
-                updateVisualPlanes(); 
+                // 시퀀스 실행 중(대기 시간 포함)이거나 서보가 아직 목표로 가는 중이면 서보 속도를 적용해 그립니다.
+                if ((seqClock || slewSettling) && !executionPaused) renderServoSlew(performance.now());
+                updateVisualPlanes();
                 if(selectedType !== 'plane') {
                     updateJointPositionsAndCreateLimbs(); 
                 }
@@ -1480,31 +1531,63 @@ ${code}` : code;
             const changes = [s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12].map(v => Number(v) || 0);
             const startWorkValues = [...WorkLst];
             const targetWorkValues = startWorkValues.map((current, index) => getRawWorkTarget(current, changes[index]));
-            const baseDurationMs = getWorkDurationMs(speed);
-            const durationMs = isGifExporting ? baseDurationMs * GIF_EXPORT_MOTION_SLOWDOWN : baseDurationMs;
-            const startTime = performance.now();
-            let lastProgress = 0;
+            const timing = getWorkTiming(changes, speed);
+            const slow = isGifExporting ? GIF_EXPORT_MOTION_SLOWDOWN : 1;
+            const iterMs = timing.iterMs * slow;
+            const durationMs = timing.totalMs * slow;
+
+            // 기준 시계가 있으면 "이론상 시작 시각"에 이어 붙이고, 없으면(직접 호출) 지금부터 시작합니다.
+            // 직접 호출은 시퀀스가 서보 상태를 맞춰 주지 않으므로 여기서 현재 자세 기준으로 맞춥니다.
+            if (!seqClock) beginServoTracking();
+            const clock = seqClock || { t0: performance.now(), vt: 0 };
+            let startTime = clock.t0 + clock.vt;
+            clock.vt += durationMs;
+            let endTime = startTime + durationMs;
+
+            const isActive = changes.map(v => v !== 0);
+            const drawAt = (now) => {
+                // k = 지금까지 서보에 쓴 스텝 번호(연속값). 마지막 스텝은 floor(speed)입니다.
+                const k = iterMs > 0 ? Math.min(timing.steps, Math.max(0, (now - startTime) / iterMs)) : timing.steps;
+                const fraction = timing.speed > 0 ? k / timing.speed : 0;
+                for (let i = 0; i < 12; i++) {
+                    // 변화값이 0인 서보는 실제 로봇에서도 servoWrite를 하지 않으므로 그대로 둡니다.
+                    if (isActive[i]) ServoPhys[i] = startWorkValues[i] + changes[i] * fraction;
+                }
+                renderServoSlew(now);   // 명령값(ServoPhys)을 서보 속도로 따라가며 그립니다.
+                updateJointPositionsAndCreateLimbs();
+            };
 
             try {
+                let behind = performance.now() >= endTime;
                 while (true) {
-                    const now = performance.now();
-                    const progress = Math.min(1, (now - startTime) / durationMs);
-                    lastProgress = progress;
-
-                    for (let i = 0; i < 12; i++) {
-                        const value = startWorkValues[i] + (targetWorkValues[i] - startWorkValues[i]) * progress;
-                        setJointAngleByWorkValue(i, value);
+                    if (executionPaused) {
+                        // 일시정지 중에는 화면을 그대로 두고, 쉰 시간만큼 이 명령과 뒤 명령의 시각을 모두 뒤로 밉니다.
+                        const waited = await waitWhilePaused();
+                        if (waited > 0) { clock.t0 += waited; startTime += waited; endTime += waited; }
                     }
-                    updateJointPositionsAndCreateLimbs();
-
-                    if (progress >= 1 || executionStopRequested) break;
+                    if (commandAbortRequested) break;   // 일시정지 중에 고른 줄로 옮겨 가는 경우
+                    const now = performance.now();
+                    drawAt(now);
+                    if (now >= endTime || executionStopRequested) break;
+                    behind = false;
                     await waitAnimationFrame();
                 }
 
+                if (behind) {
+                    // 이미 시간이 지나 있던 명령(탭을 숨겼다 돌아온 경우 등)은 화면 갱신 없이 연달아 처리되므로
+                    // 가끔 브라우저에 숨 쉴 틈을 줍니다.
+                    lateStreak++;
+                    if (lateStreak % 8 === 0) await new Promise(r => setTimeout(r, 0));
+                } else {
+                    lateStreak = 0;
+                }
+
+                // WorkLst(소프트웨어 값)는 목표 전체가 더해지지만, 화면 각도(ServoPhys)는 서보에 마지막으로 쓴 값입니다.
+                // 중지했다면 지금 보이는 각도를 그대로 현재 값으로 삼습니다.
                 WorkLst = executionStopRequested
-                    ? startWorkValues.map((value, index) => value + (targetWorkValues[index] - value) * lastProgress)
+                    ? startWorkValues.map((value, index) => (isActive[index] ? ServoPhys[index] : value))
                     : targetWorkValues;
-                for (let i = 0; i < 12; i++) setJointAngleByWorkValue(i, WorkLst[i]);
+                for (let i = 0; i < 12; i++) setJointAngleByWorkValue(i, ServoActual[i]);
                 updateJointPositionsAndCreateLimbs();
                 updateMotorDisplays();
             } finally {
@@ -1523,12 +1606,84 @@ ${code}` : code;
             // 이 시뮬레이터는 내부 기준값(CoreWLstF)과 화면 표시 기준값(UIWLstF)을 분리해서 쓰므로
             // 실제 내부 누적값은 CoreWLstF로 되돌립니다.
             WorkLst = [...CoreWLstF];
+            ServoPhys = [...CoreWLstF];
+            if (seqClock) {
+                // 실행 중이면 서보가 기본 자세로 "움직여서" 돌아가게 합니다. (복귀 시간만큼 뒤에서 기다립니다)
+                updateMotorDisplays();
+                return;
+            }
+            ServoActual = [...CoreWLstF];
             for (let i = 0; i < 12; i++) setJointAngleByWorkValue(i, WorkLst[i]);
             updateJointPositionsAndCreateLimbs();
             updateMotorDisplays();
         }
 
-        async function pause(ms) { return new Promise(r=>setTimeout(r, ms)); }
+        // 실제 로봇의 복귀(): WorkLst = WLstF 로 되돌린 뒤 Work(1,1,1,1,1,1,1,1,1,1,1,1, 4)
+        // (공연 코드는 5를 쓰기도 합니다.) 서보 12개가 모두 움직이므로 시간이 걸립니다.
+        // 화면 각도는 바로 기본 자세로 맞추고 걸리는 시간만 반영합니다.
+        const RETURN_BASE_WORK_SPEED = 4;
+        function getReturnBaseDurationMs() {
+            return getWorkDurationMs(RETURN_BASE_WORK_SPEED, new Array(12).fill(1));
+        }
+
+        // 서보를 명령값(ServoPhys)을 향해 일정한 속도로 움직여 화면에 반영합니다.
+        function renderServoSlew(now) {
+            const dt = Math.max(0, Math.min(0.1, (now - lastSlewTime) / 1000));
+            // 같은 프레임에 animate()와 runWorkNow()가 번갈아 부르며 시각이 뒤섞여도 시계가 거꾸로 가서 시간이 이중 계산되지 않게 합니다.
+            if (now > lastSlewTime) lastSlewTime = now;
+            const maxStep = ROBOT_SERVO_MAX_SPEED_DPS > 0 ? ROBOT_SERVO_MAX_SPEED_DPS * dt : Infinity;
+            let settled = true;
+            for (let i = 0; i < 12; i++) {
+                // 실제 서보는 0~180° 밖의 명령을 받아도 그 범위 끝에서 멈추므로, 잘린 값을 목표로 삼습니다.
+                const target = getVisibleWorkValue(i, ServoPhys[i]);
+                const diff = target - ServoActual[i];
+                if (Math.abs(diff) <= maxStep) {
+                    ServoActual[i] = target;
+                } else {
+                    ServoActual[i] += Math.sign(diff) * maxStep;
+                    settled = false;
+                }
+                setJointAngleByWorkValue(i, ServoActual[i]);
+            }
+            slewSettling = !settled;
+        }
+
+        function isServoSettled() {
+            return ServoActual.every((v, i) => v === getVisibleWorkValue(i, ServoPhys[i]));
+        }
+
+        // 시퀀스(또는 매크로)를 시작할 때 서보 상태를 맞춥니다.
+        // 앞 동작이 끝나고도 서보가 아직 이동 중이었다면 그 위치에서 이어서 움직입니다.
+        function beginServoTracking() {
+            if (!slewSettling) ServoActual = WorkLst.map((v, i) => getVisibleWorkValue(i, v));
+            ServoPhys = [...WorkLst];
+            lastSlewTime = performance.now();
+        }
+
+        // 초기화·직접 각도 입력처럼 WorkLst를 따로 바꾼 뒤에는 서보 상태도 같은 값으로 맞춰야
+        // 다음 Work가 옛 자세로 끌려가지 않습니다.
+        function resyncServoState() {
+            ServoPhys = [...WorkLst];
+            ServoActual = WorkLst.map((v, i) => getVisibleWorkValue(i, v));
+            slewSettling = false;
+            lastSlewTime = performance.now();
+        }
+
+        // 매크로 버튼처럼 Work()를 직접 이어서 부르는 경우에도 같은 기준 시계를 쓰게 합니다.
+        async function withSequenceClock(fn) {
+            if (seqClock) return fn();
+            if (!isSequenceExecuting) executionStopRequested = false; // 이전 '중지'가 매크로를 막지 않도록
+            beginServoTracking();
+            seqClock = { t0: performance.now(), vt: 0 };
+            try {
+                return await fn();
+            } finally {
+                seqClock = null;
+                slewSettling = !isServoSettled();
+            }
+        }
+
+        async function pause(ms) { return pauseInterruptibly(ms); }
         
         async function macroSitStand() {
             await Work(20, 40, 0, -20, -40, 0, -20, -40, 0, 20, 40, 0, 10);
@@ -1644,6 +1799,10 @@ ${code}` : code;
         const ROBOT_WORK_STEP_DELAY_OPTIONS_MS = [20, 25];
         let robotWorkStepDelayMs = ROBOT_WORK_STEP_DELAY_DEFAULT_MS;
 
+        // 실제 Work()는 스텝마다 "변화값이 0이 아닌 서보"를 하나씩 servoWrite(I2C)하기 때문에
+        // 서보 하나당 통신 시간이 듭니다. 화면에서 바꾸는 설정은 아니고 고정값입니다. (추정값, 0이면 delay만 반영)
+        const ROBOT_SERVO_WRITE_MS = 1;
+
         function getRobotWorkStepDelayMs() {
             return robotWorkStepDelayMs;
         }
@@ -1661,12 +1820,37 @@ ${code}` : code;
             return robotWorkStepDelayMs;
         }
 
-        function getWorkDurationMs(speed) {
-            const normalizedSpeed = Math.max(0, Math.round(Number(speed) || 0));
-            const stepDelayMs = getRobotWorkStepDelayMs();
-            // micro:bit 원본 코드: for (index = 0; index <= speed; index++) basic.pause(delay)
-            // 따라서 한 Work의 기준 실행시간은 총 (speed + 1) × delay 입니다.
-            return Math.max(stepDelayMs, (normalizedSpeed + 1) * stepDelayMs);
+        // 실제 micro:bit Work() 한 번의 타이밍을 그대로 계산합니다.
+        //
+        //   for (index9 = 0; index9 <= speed; index9++) {
+        //       변화값 != 0 인 서보마다 servoWrite(WorkLst[i] + s * index9 / speed)
+        //       basic.pause(delay)
+        //   }
+        //
+        // - 반복 횟수는 floor(speed) + 1 (speed가 6.5면 0~6, 7번)
+        // - 서보에 마지막으로 쓰이는 값은 s * floor(speed) / speed 라서, speed가 소수면 목표에 100% 닿지 못합니다.
+        //   (그래도 WorkLst에는 s 전체가 더해집니다 → 변화값이 0인 서보는 다음 Work에서도 안 써서 그대로 남습니다)
+        // - 한 스텝 시간 = delay + (움직이는 서보 수 × ROBOT_SERVO_WRITE_MS)
+        function getWorkTiming(changes, speed) {
+            const sp = Number(speed);
+            const iterations = Number.isFinite(sp) && sp >= 0 ? Math.floor(sp) + 1 : 0;
+            const steps = Math.max(0, iterations - 1);          // 마지막으로 서보에 쓰는 스텝 번호
+            const activeCount = (changes || []).filter(v => (Number(v) || 0) !== 0).length;
+            const iterMs = getRobotWorkStepDelayMs() + activeCount * ROBOT_SERVO_WRITE_MS;
+            return {
+                speed: sp > 0 ? sp : 0,
+                steps,
+                iterations,
+                activeCount,
+                iterMs,
+                totalMs: iterations * iterMs,
+                // 서보가 실제로 도달하는 비율 (speed가 정수면 1, 소수면 1보다 작음)
+                finalFraction: sp > 0 ? steps / sp : 0
+            };
+        }
+
+        function getWorkDurationMs(speed, changes) {
+            return getWorkTiming(changes || [], speed).totalMs;
         }
 
         function setExecutionStatus(message, tone = 'idle') {
@@ -1690,11 +1874,78 @@ ${code}` : code;
             if (singleButton) singleButton.disabled = busy;
             if (resetPoseButton) resetPoseButton.disabled = busy;
             if (stopButton) stopButton.disabled = !isSequenceExecuting;
+            updatePauseButton();
+            // 실행 중에 코드를 고치면 줄 번호가 어긋나므로 읽기 전용으로 잠급니다.
+            const multiInput = document.getElementById('input-multi-code');
+            if (multiInput) multiInput.readOnly = busy;
             motorAngleOverlayInputs.forEach(input => { if (input) input.disabled = busy; });
+        }
+
+        // 일시정지 중이면 풀리거나 중지가 올 때까지 기다리고, 기다린 시간(ms)을 돌려줍니다.
+        async function waitWhilePaused() {
+            if (!executionPaused) return 0;
+            const startedAt = performance.now();
+            while (executionPaused && !executionStopRequested) {
+                await new Promise(resolve => setTimeout(resolve, 30));
+            }
+            return performance.now() - startedAt;
+        }
+
+        function updatePauseButton() {
+            const button = document.getElementById('btn-pause-execution');
+            if (!button) return;
+            button.disabled = !isSequenceExecuting || isGifExporting;   // GIF 저장 중에는 녹화가 어긋나므로 쓰지 않습니다.
+            button.textContent = executionPaused ? (pendingJump ? `▶ ${pendingJump.line}번째 줄 다음부터 계속` : '▶ 계속 진행') : '⏸ 일시정지';
+            button.classList.toggle('bg-yellow-600', !executionPaused);
+            button.classList.toggle('hover:bg-yellow-700', !executionPaused);
+            button.classList.toggle('bg-green-600', executionPaused);
+            button.classList.toggle('hover:bg-green-700', executionPaused);
+        }
+
+        function setExecutionPaused(paused) {
+            if (paused && (!isSequenceExecuting || isGifExporting || executionStopRequested)) return;
+            if (paused === executionPaused) return;
+            executionPaused = paused;
+            if (!paused) lastSlewTime = performance.now();   // 쉰 시간이 서보 이동에 한꺼번에 더해지지 않게
+            updatePauseButton();
+            if (paused) {
+                // 선택을 취소하면 이 자세로 되돌립니다.
+                pauseSnapshot = { work: [...WorkLst], phys: [...ServoPhys], actual: [...ServoActual] };
+                applyOverlayBarState('paused');
+                setExecutionStatus(`⏸ 일시정지 · ${lastExecutedCommandNo || '-'}번째 명령 · 코드 줄을 누르면 그 시점의 모습을 보여 줍니다`, 'idle');
+                showPausedIndicator();
+            } else {
+                if (pendingJump) {
+                    // 고른 줄이 있으면 지금 하던 명령을 접고 그 줄부터 이어서 실행합니다.
+                    commandAbortRequested = true;
+                    selectedLine = null;
+                    positionCodeOverlay();
+                }
+                pauseSnapshot = null;
+                updateSelectCancelButton();
+                applyOverlayBarState('run');
+                if (lastShownLine) showExecutingLine(...lastShownLine);
+                else setExecutionStatus('실행 중...', 'working');
+            }
+        }
+
+        function showPausedIndicator() {
+            const indicator = document.getElementById('exec-line-indicator');
+            if (!indicator) return;
+            indicator.textContent = executingLine !== null
+                ? `⏸ ${executingLine}번째 줄에서 일시정지 · ${sourceLineText(executingLine)}`
+                : '⏸ 일시정지';
+        }
+
+        function toggleExecutionPause() {
+            setExecutionPaused(!executionPaused);
         }
 
         function requestExecutionStop() {
             if (!isSequenceExecuting) return;
+            cancelPoseSelection();     // 고른 줄이 있으면 먼저 일시정지했던 자세로 되돌립니다.
+            executionPaused = false;   // 일시정지 중에 중지해도 바로 빠져나오게 합니다.
+            updatePauseButton();
             executionStopRequested = true;
             setExecutionStatus('■ 중지 요청됨 · 현재 동작을 멈추는 중...', 'error');
             setGifStatus(isGifExporting ? 'GIF 저장 취소 요청됨' : '실행 중지 요청됨');
@@ -1702,10 +1953,31 @@ ${code}` : code;
 
         async function pauseInterruptibly(ms) {
             const totalMs = Math.max(0, Number(ms) || 0);
-            const start = performance.now();
-            while (!executionStopRequested && performance.now() - start < totalMs) {
-                const remaining = totalMs - (performance.now() - start);
+            // 기준 시계가 있으면 "이론상 끝나는 시각"까지만 기다립니다. (앞 명령이 조금 늦었어도 여기서 따라잡습니다)
+            let endTime;
+            if (seqClock) {
+                endTime = seqClock.t0 + seqClock.vt + totalMs;
+                seqClock.vt += totalMs;
+            } else {
+                endTime = performance.now() + totalMs;
+            }
+            let waited = false;
+            while (!executionStopRequested && !commandAbortRequested) {
+                if (executionPaused) {
+                    waited = true;
+                    const pausedMs = await waitWhilePaused();
+                    endTime += pausedMs;
+                    if (seqClock) seqClock.t0 += pausedMs;
+                    continue;
+                }
+                const remaining = endTime - performance.now();
+                if (remaining <= 0) break;
+                waited = true;
                 await new Promise(resolve => setTimeout(resolve, Math.min(50, Math.max(1, remaining))));
+            }
+            if (!waited && !executionStopRequested) {
+                lateStreak++;
+                if (lateStreak % 8 === 0) await new Promise(r => setTimeout(r, 0));
             }
         }
 
@@ -1774,10 +2046,13 @@ ${code}` : code;
         function estimateCommandQueueDurationMs(commandQueue) {
             return commandQueue.reduce((total, command) => {
                 if (command.type === 'work') {
-                    return total + getWorkDurationMs(command.args[12]);
+                    return total + getWorkDurationMs(command.args[12], command.args.slice(0, 12));
                 }
                 if (command.type === 'pause') {
                     return total + Math.max(0, Number(command.args[0]) || 0);
+                }
+                if (command.type === 'returnBase') {
+                    return total + getReturnBaseDurationMs();
                 }
                 return total;
             }, 0);
@@ -1795,7 +2070,55 @@ ${code}` : code;
             return { estimatedDurationMs, fps, estimatedFrames };
         }
 
+        // 입력 코드를 실제로 실행하지 않고 훑어서, 서보 각도가 0~180°를 벗어나는 동작을 찾습니다.
+        // (실제 서보는 끝에서 멈추므로 동작이 작아지거나 틀어집니다)
+        function analyzeRobotLimits(commandQueue) {
+            const cur = [...CoreWLstF];
+            const limitHits = [];
+            let t = 0;
+            let workNo = 0;
+            commandQueue.forEach(command => {
+                if (command.type === 'returnBase') {
+                    for (let i = 0; i < 12; i++) cur[i] = CoreWLstF[i];
+                    t += getReturnBaseDurationMs();
+                    return;
+                }
+                if (command.type === 'pause') {
+                    t += Math.max(0, Number(command.args[0]) || 0);
+                    return;
+                }
+                if (command.type !== 'work') return;
+                workNo++;
+                const changes = command.args.slice(0, 12).map(v => Number(v) || 0);
+                const timing = getWorkTiming(changes, command.args[12]);
+                for (let i = 0; i < 12; i++) {
+                    if (changes[i] === 0) continue;
+                    const offset = UIWLstF[i] - CoreWLstF[i];
+                    const before = cur[i] + offset;
+                    cur[i] += changes[i];
+                    const after = cur[i] + offset;
+                    const loss = after < 0 ? -after : after > 180 ? after - 180 : 0;
+                    if (loss > 0) limitHits.push({ workNo, t, motor: i + 1, before, after, loss });
+                }
+                t += timing.totalMs;
+            });
+            return { limitHits };
+        }
+
+        function formatLimitSummary(result) {
+            const lines = [];
+            const { limitHits } = result;
+            if (limitHits.length) {
+                const big = limitHits.filter(h => h.loss >= 5);
+                const worst = limitHits.reduce((a, b) => (b.loss > a.loss ? b : a));
+                const first = (big[0] || limitHits[0]);
+                lines.push(`⚠ 서보 각도 한계(0~180°) 초과 ${limitHits.length}건 (5° 이상 ${big.length}건) · 최대 ${Math.round(worst.loss)}° 초과 (${(worst.t / 1000).toFixed(1)}초, M${worst.motor}) · 처음 큰 곳 ${(first.t / 1000).toFixed(1)}초 M${first.motor}`);
+            }
+            return lines.join('\n');
+        }
+
         async function updateCodeAnalysisPreview() {
+            const limitSummaryEl = document.getElementById('robot-limit-summary');
             const textarea = document.getElementById('input-multi-code');
             const validation = document.getElementById('code-validation-status');
             const summary = document.getElementById('code-analysis-summary');
@@ -1808,6 +2131,8 @@ ${code}` : code;
                     validation.className = 'mt-2 text-[11px] min-h-[1rem] text-gray-400';
                 }
                 if (summary) summary.textContent = 'Work 0개 · 대기 0초 · 예상 실행시간 0초';
+                if (limitSummaryEl) limitSummaryEl.textContent = '';
+                renderSegmentList([]);
                 if (gifPreview) gifPreview.textContent = 'GIF: 코드 길이에 따라 FPS와 프레임 수를 자동 조절합니다.';
                 return;
             }
@@ -1829,6 +2154,8 @@ ${code}` : code;
                 if (summary) {
                     summary.textContent = `Work ${workCount}개 · 대기 ${formatDurationForUi(pauseMs)} · 복귀 ${returnCount}회 · 예상 실행시간 ${formatDurationForUi(totalMs)}`;
                 }
+                if (limitSummaryEl) limitSummaryEl.textContent = formatLimitSummary(analyzeRobotLimits(queue));
+                renderSegmentList(findZeroSumSegments(queue));
                 if (gifPreview) {
                     gifPreview.textContent = `GIF 예상: 자동 ${plan.fps}fps · 약 ${plan.estimatedFrames}프레임 · 9MB 이하 자동 최적화`;
                 }
@@ -1838,6 +2165,8 @@ ${code}` : code;
                     validation.className = 'mt-2 text-[11px] min-h-[1rem] text-red-300';
                 }
                 if (summary) summary.textContent = '코드를 수정하면 실행시간을 다시 계산합니다.';
+                if (limitSummaryEl) limitSummaryEl.textContent = '';
+                renderSegmentList([]);
                 if (gifPreview) gifPreview.textContent = 'GIF 예상 정보를 계산할 수 없습니다.';
             }
         }
@@ -2041,6 +2370,24 @@ ${code}` : code;
 
         async function buildCommandQueueFromUserCode(codeStr) {
             const commandQueue = [];
+
+            // 사용자 코드의 몇 번째 줄에서 Work()/pause()를 불렀는지 에러 스택에서 읽습니다.
+            // 코드 맨 앞에서 __probe()를 한 번 불러 그 줄 번호를 기준점으로 삼으므로,
+            // 감싸는 함수가 몇 줄을 차지하든 상관없이 "입력창 몇 번째 줄"로 환산됩니다.
+            const lineOfStack = (stack) => {
+                for (const frame of String(stack || '').split('\n')) {
+                    const m = /<anonymous>:(\d+):\d+/.exec(frame);
+                    if (m) return Number(m[1]);
+                }
+                return null;
+            };
+            let probeLine = null;
+            let leadingBlankLines = 0;
+            const currentUserLine = () => {
+                if (probeLine === null) return null;
+                const raw = lineOfStack(new Error().stack);
+                return raw === null ? null : raw - probeLine + leadingBlankLines;
+            };
             const queuedWork = (...args) => {
                 if (args.length !== 13) {
                     throw new Error(`Work()에는 각도 변화값 12개와 speed 1개, 총 13개의 값이 필요합니다. 현재 ${args.length}개가 입력되었습니다.`);
@@ -2050,16 +2397,16 @@ ${code}` : code;
                     if (!Number.isFinite(numberValue)) throw new Error(`Work() 안에 숫자가 아닌 값이 있습니다: ${value}`);
                     return numberValue;
                 });
-                commandQueue.push({ type: 'work', args: numericArgs });
+                commandQueue.push({ type: 'work', args: numericArgs, line: currentUserLine() });
                 return Promise.resolve(); // 사용자가 await Work(...)라고 써도 동작하도록 합니다.
             };
             const queuedPause = (ms) => {
                 const pauseMs = Number(ms) || 0;
-                commandQueue.push({ type: 'pause', args: [pauseMs] });
+                commandQueue.push({ type: 'pause', args: [pauseMs], line: currentUserLine() });
                 return Promise.resolve();
             };
             const queuedBasicPoseReset = () => {
-                commandQueue.push({ type: 'returnBase', args: [] });
+                commandQueue.push({ type: 'returnBase', args: [], line: currentUserLine() });
                 return Promise.resolve();
             };
             const queuedReturnFunction = async () => {
@@ -2072,6 +2419,8 @@ ${code}` : code;
 
             const cleanCode = normalizeUserCode(codeStr);
             if (!cleanCode) return commandQueue;
+            // normalizeUserCode()가 앞쪽 빈 줄을 잘라내므로, 그만큼을 줄 번호에 더해 입력창 기준으로 맞춥니다.
+            leadingBlankLines = (String(codeStr).replace(/\r\n?/g, '\n').match(/^\s*/)[0].match(/\n/g) || []).length;
 
             const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
             const runner = new AsyncFunction(
@@ -2081,14 +2430,16 @@ ${code}` : code;
                 '기본자세로초기화',
                 '기본자세초기화',
                 '복귀',
-                `"use strict";\n${cleanCode}`
+                '__probe',
+                `"use strict";__probe();\n${cleanCode}`
             );
 
             // 사용자가 입력한 JS를 먼저 실행합니다.
             // 이때 Work는 실제 애니메이션 함수가 아니라 큐 등록 함수이므로,
             // for문이 3회 돌면 Work 명령도 정확히 3회분 누적됩니다.
             // 복귀()는 이미 준비된 함수처럼 사용할 수 있게 하여, 입력창에는 호출 코드만 넣어도 됩니다.
-            await runner(queuedWork, queuedPause, basic, queuedBasicPoseReset, queuedBasicPoseReset, queuedReturnFunction);
+            const probe = () => { probeLine = lineOfStack(new Error().stack); };
+            await runner(queuedWork, queuedPause, basic, queuedBasicPoseReset, queuedBasicPoseReset, queuedReturnFunction, probe);
             return commandQueue;
         }
 
@@ -2234,6 +2585,7 @@ ${returnCode}` : returnCode;
             isSequenceExecuting = true;
             executionStopRequested = false;
             updateExecutionControlState();
+            let trackedRun = false;   // 입력창 코드를 실행 중이라 줄 표시를 쓰는 실행인지
 
             try {
                 const commandQueue = preparedCommandQueue || await buildCommandQueueFromUserCode(codeStr);
@@ -2245,15 +2597,54 @@ ${returnCode}` : returnCode;
                     return { stopped: false, empty: true };
                 }
 
+                // 입력창 코드를 그대로 실행하는 경우에만 "지금 실행 중인 줄"을 표시합니다.
+                const trackLines = codeStr === document.getElementById('input-multi-code').value;
+                if (trackLines) {
+                    clearExecutingLine(); trackedRun = true;   // 이전에 중지했던 표시를 지웁니다.
+                    currentRunQueue = commandQueue; runStartWork = [...WorkLst]; currentCommandIndex = 0;
+                }
+                const segments = trackLines ? findZeroSumSegments(commandQueue) : [];
+                const segmentLabelOf = (commandIndex) => {
+                    if (!segments.length) return '';
+                    const sg = segments.find(x => commandIndex >= x.startIdx && commandIndex <= x.endIdx);
+                    return sg ? `구간 ${sg.no}/${segments.length}` : '';
+                };
+
+                // 이 순간부터의 시간을 기준 시계로 삼아 모든 Work/대기를 이론상 시각에 맞춰 이어 붙입니다.
+                beginServoTracking();
+                seqClock = { t0: performance.now(), vt: 0 };
+                lateStreak = 0;
+
                 for (let i = 0; i < commandQueue.length; i++) {
+                    if (executionPaused) {
+                        const pausedMs = await waitWhilePaused();
+                        if (pausedMs > 0 && seqClock) seqClock.t0 += pausedMs;
+                    }
+                    if (pendingJump && !executionPaused) {
+                        // 일시정지 중에 고른 줄: 그 줄을 실행한 직후의 자세로 바꾸고, 다음 명령부터 이어서 실행합니다.
+                        const jp = pendingJump;
+                        pendingJump = null; selectionOccurrence = null; selectedLine = null; commandAbortRequested = false;
+                        updateSelectCancelButton();
+                        WorkLst = [...jp.work];
+                        ServoPhys = [...jp.phys];
+                        ServoActual = jp.phys.map((v, k) => getVisibleWorkValue(k, v));
+                        slewSettling = false; lastSlewTime = performance.now();
+                        seqClock = { t0: performance.now(), vt: 0 };
+                        lateStreak = 0;
+                        updateMotorDisplays();
+                        i = jp.idx - 1;
+                        continue;
+                    }
                     if (executionStopRequested) break;
+                    currentCommandIndex = i;
                     const command = commandQueue[i];
                     const typeText = command.type === 'work' ? 'Work' : command.type === 'pause' ? '대기' : '복귀';
                     setExecutionStatus(`실행 중... ${i + 1} / ${commandQueue.length} · ${typeText}`, 'working');
-                    console.log(`실행 중: ${i + 1}/${commandQueue.length}`, command);
+                    if (trackLines) showExecutingLine(command.line, i + 1, commandQueue.length, segmentLabelOf(i));
 
                     if (command.type === 'returnBase') {
                         setWorkListToBasicPose();
+                        await pauseInterruptibly(getReturnBaseDurationMs());
                     } else if (command.type === 'work') {
                         await runWorkNow(...command.args);
                     } else if (command.type === 'pause') {
@@ -2278,6 +2669,13 @@ ${returnCode}` : returnCode;
                 }
                 return { stopped: false, error };
             } finally {
+                // 중지했다면 멈춘 줄을 표시로 남기고, 끝까지 돌았거나 오류면 표시를 지웁니다.
+                if (trackedRun && executionStopRequested && lastExecutedCommandNo > 0) freezeExecutingLine();
+                else clearExecutingLine();
+                resetLineSelectionState();
+                executionPaused = false;
+                seqClock = null;
+                slewSettling = !isServoSettled();
                 isSequenceExecuting = false;
                 updateExecutionControlState();
             }
@@ -2319,16 +2717,16 @@ ${returnCode}` : returnCode;
             }
             if (useGravity && !isAnimating) updateJointPositionsAndCreateLimbs();
         });
-        document.getElementById('btn-macro-sitstand').addEventListener('click', async () => { if (!isAnimating) await macroSitStand(); });
-        document.getElementById('btn-macro-sitspread').addEventListener('click', async () => { if (!isAnimating) await macroSitSpread(); });
-        document.getElementById('btn-macro-standspread').addEventListener('click', async () => { if (!isAnimating) await macroStandSpread(); });
+        document.getElementById('btn-macro-sitstand').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroSitStand); });
+        document.getElementById('btn-macro-sitspread').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroSitSpread); });
+        document.getElementById('btn-macro-standspread').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroStandSpread); });
         
-        document.getElementById('btn-macro-forward').addEventListener('click', async () => { if (!isAnimating) await macroForward(); });
-        document.getElementById('btn-macro-backward').addEventListener('click', async () => { if (!isAnimating) await macroBackward(); });
-        document.getElementById('btn-macro-left').addEventListener('click', async () => { if (!isAnimating) await macroLeft(); });
-        document.getElementById('btn-macro-right').addEventListener('click', async () => { if (!isAnimating) await macroRight(); });
-        document.getElementById('btn-macro-wave1').addEventListener('click', async () => { if (!isAnimating) await macroWave1(); });
-        document.getElementById('btn-macro-wave2').addEventListener('click', async () => { if (!isAnimating) await macroWave2(); });
+        document.getElementById('btn-macro-forward').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroForward); });
+        document.getElementById('btn-macro-backward').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroBackward); });
+        document.getElementById('btn-macro-left').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroLeft); });
+        document.getElementById('btn-macro-right').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroRight); });
+        document.getElementById('btn-macro-wave1').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroWave1); });
+        document.getElementById('btn-macro-wave2').addEventListener('click', async () => { if (!isAnimating) await withSequenceClock(macroWave2); });
         
         document.getElementById('btn-exec-single').addEventListener('click', async () => {
             const val = document.getElementById('input-single-code').value;
@@ -2343,8 +2741,348 @@ ${returnCode}` : returnCode;
             scheduleCodeAnalysisPreview();
         });
 
+        // ---- 코드 입력창 위에 겹치는 표시: 실행 중인 줄(막대) + 구간 경계(하늘색 선) ----
+        let executingLine = null;        // 1부터 세는 입력창 줄 번호
+        let executionStoppedMark = false; // true면 "여기서 중지됨"(빨간 막대)
+        let lastExecutedCommandNo = 0;
+        let lastShownLine = null;        // showExecutingLine()에 마지막으로 넘긴 값들 (계속 진행 때 복원)
+        let segmentMarkerLines = [];     // 구간이 끝나는 줄 번호들
+        let segmentMarkerEls = [];
+
+        function getEditorMetrics() {
+            const ta = document.getElementById('input-multi-code');
+            const cs = getComputedStyle(ta);
+            return { ta, lineHeight: parseFloat(cs.lineHeight) || 18, padTop: parseFloat(cs.paddingTop) || 0 };
+        }
+
+        function positionCodeOverlay() {
+            const clip = document.getElementById('exec-line-clip');
+            const bar = document.getElementById('exec-line-bar');
+            if (!clip || !bar) return;
+            const { ta, lineHeight, padTop } = getEditorMetrics();
+            // 스크롤바를 뺀 "글자가 보이는 영역"에 딱 맞춰 잘라냅니다.
+            clip.style.left = ta.clientLeft + 'px';
+            clip.style.top = ta.clientTop + 'px';
+            clip.style.width = ta.clientWidth + 'px';
+            clip.style.height = ta.clientHeight + 'px';
+            segmentMarkerEls.forEach((el, i) => {
+                el.style.top = (padTop + segmentMarkerLines[i] * lineHeight - ta.scrollTop - 1) + 'px';
+            });
+            const selectBar = document.getElementById('select-line-bar');
+            if (selectBar) {
+                if (selectedLine === null) selectBar.classList.add('hidden');
+                else {
+                    selectBar.style.height = lineHeight + 'px';
+                    selectBar.style.top = (padTop + (selectedLine - 1) * lineHeight - ta.scrollTop) + 'px';
+                    selectBar.classList.remove('hidden');
+                }
+            }
+            if (executingLine === null) { bar.classList.add('hidden'); return; }
+            bar.style.height = lineHeight + 'px';
+            bar.style.top = (padTop + (executingLine - 1) * lineHeight - ta.scrollTop) + 'px';
+            bar.classList.remove('hidden');
+        }
+        // 이전 이름으로 부르는 곳이 있어도 동작하도록 별칭을 둡니다.
+        const positionExecutingLineBar = positionCodeOverlay;
+
+        function setSegmentMarkers(lines) {
+            const holder = document.getElementById('seg-markers');
+            if (!holder) return;
+            holder.innerHTML = '';
+            segmentMarkerLines = [...new Set(lines.filter(n => Number.isFinite(n) && n >= 1))];
+            segmentMarkerEls = segmentMarkerLines.map(() => {
+                const el = document.createElement('div');
+                el.className = 'absolute left-0 right-0 border-b-2 border-dashed border-cyan-400/80';
+                holder.appendChild(el);
+                return el;
+            });
+            positionCodeOverlay();
+        }
+
+        function jumpToCodeLine(line) {
+            const { ta, lineHeight, padTop } = getEditorMetrics();
+            const lines = ta.value.split(/\r\n?|\n/);
+            if (!Number.isFinite(line) || line < 1 || line > lines.length) return;
+            let start = 0;
+            for (let i = 0; i < line - 1; i++) start += lines[i].length + 1;
+            ta.focus();
+            ta.setSelectionRange(start, start + lines[line - 1].length);
+            ta.scrollTop = Math.max(0, padTop + (line - 1) * lineHeight - ta.clientHeight / 3);
+            positionCodeOverlay();
+            if (executionPaused && currentRunQueue) selectLineWhilePaused(line);
+        }
+
+        function scrollExecutingLineIntoView() {
+            if (executingLine === null) return;
+            const { ta, lineHeight, padTop } = getEditorMetrics();
+            const top = padTop + (executingLine - 1) * lineHeight;
+            // 이미 보이면 건드리지 않고, 벗어났을 때만 그 줄이 가운데 오게 스크롤합니다.
+            if (top < ta.scrollTop || top + lineHeight > ta.scrollTop + ta.clientHeight) {
+                ta.scrollTop = Math.max(0, top - ta.clientHeight / 2);
+            }
+        }
+
+        // 막대 색: 실행 중 = 노랑, 일시정지 = 하늘, 중지 = 빨강
+        function applyOverlayBarState(state) {
+            const bar = document.getElementById('exec-line-bar');
+            if (!bar) return;
+            bar.classList.toggle('border-amber-400', state === 'run');
+            bar.classList.toggle('bg-amber-300/25', state === 'run');
+            bar.classList.toggle('border-sky-400', state === 'paused');
+            bar.classList.toggle('bg-sky-400/30', state === 'paused');
+            bar.classList.toggle('border-red-500', state === 'stopped');
+            bar.classList.toggle('bg-red-500/30', state === 'stopped');
+        }
+
+        function setOverlayBarStopped(stopped) {
+            executionStoppedMark = stopped;
+            applyOverlayBarState(stopped ? 'stopped' : 'run');
+        }
+
+        function sourceLineText(line) {
+            const ta = document.getElementById('input-multi-code');
+            return ((ta ? ta.value.split(/\r\n?|\n/)[line - 1] : '') || '').trim();
+        }
+
+        function showExecutingLine(line, commandNo, commandTotal, segmentLabel = '') {
+            const indicator = document.getElementById('exec-line-indicator');
+            lastExecutedCommandNo = commandNo;
+            lastShownLine = [line, commandNo, commandTotal, segmentLabel];
+            setOverlayBarStopped(false);
+            const segText = segmentLabel ? ` (${segmentLabel})` : '';
+            if (!Number.isFinite(line) || line < 1) {
+                // 줄 번호를 못 읽는 브라우저에서는 막대 없이 진행 상황만 보여줍니다.
+                executingLine = null;
+                positionCodeOverlay();
+                if (indicator) indicator.textContent = `▶ 명령 ${commandNo} / ${commandTotal}${segText}`;
+                return;
+            }
+            executingLine = line;
+            scrollExecutingLineIntoView();
+            positionCodeOverlay();
+            if (indicator) {
+                indicator.textContent = `▶ ${line}번째 줄${segText} · ${sourceLineText(line)}`;
+                indicator.title = `명령 ${commandNo} / ${commandTotal}`;
+            }
+        }
+
+        // 실행을 중지하면 지우지 않고, 멈춘 줄에 빨간 막대와 안내를 남깁니다.
+        function freezeExecutingLine() {
+            const indicator = document.getElementById('exec-line-indicator');
+            setOverlayBarStopped(true);
+            positionCodeOverlay();
+            if (indicator) {
+                indicator.textContent = executingLine !== null
+                    ? `■ ${executingLine}번째 줄에서 중지 · ${sourceLineText(executingLine)}`
+                    : `■ 명령 ${lastExecutedCommandNo}번째에서 중지`;
+            }
+        }
+
+        function clearExecutingLine() {
+            executingLine = null;
+            lastExecutedCommandNo = 0;
+            lastShownLine = null;
+            setOverlayBarStopped(false);
+            positionCodeOverlay();
+            const indicator = document.getElementById('exec-line-indicator');
+            if (indicator) { indicator.textContent = ''; indicator.title = ''; }
+        }
+
+        // ---- 일시정지 중에 코드 줄을 골라 "그 줄을 실행한 직후의 모습"을 계산해 보여 줍니다 ----
+        // 시작 자세에서 그 줄 앞의 명령들을 시간 없이 차례로 적용해 구하므로 실제로 돌려 볼 필요가 없습니다.
+        function computeStateBeforeCommand(queue, idx, startWork) {
+            const work = [...startWork];
+            const phys = [...startWork];
+            let ms = 0;
+            for (let k = 0; k < idx; k++) {
+                const c = queue[k];
+                if (c.type === 'pause') { ms += Math.max(0, Number(c.args[0]) || 0); continue; }
+                if (c.type === 'returnBase') {
+                    ms += getReturnBaseDurationMs();
+                    for (let i = 0; i < 12; i++) { work[i] = CoreWLstF[i]; phys[i] = CoreWLstF[i]; }
+                    continue;
+                }
+                if (c.type !== 'work') continue;
+                const changes = c.args.slice(0, 12).map(v => Number(v) || 0);
+                const timing = getWorkTiming(changes, c.args[12]);
+                for (let i = 0; i < 12; i++) {
+                    // runWorkNow()와 같은 규칙: 변화값이 0이 아닌 서보만 쓰고, speed가 소수면 목표에 다 못 닿습니다.
+                    if (changes[i] !== 0) phys[i] = work[i] + changes[i] * timing.finalFraction;
+                    work[i] += changes[i];
+                }
+                ms += timing.totalMs;
+            }
+            return { work, phys, ms };
+        }
+
+        function applyPoseDisplay(work, phys, actual = null) {
+            WorkLst = [...work];
+            ServoPhys = [...phys];
+            ServoActual = actual ? [...actual] : phys.map((v, i) => getVisibleWorkValue(i, v));
+            for (let i = 0; i < 12; i++) setJointAngleByWorkValue(i, ServoActual[i]);
+            updateJointPositionsAndCreateLimbs();
+            updateMotorDisplays();
+        }
+
+        function updateSelectCancelButton() {
+            const btn = document.getElementById('btn-exec-select-cancel');
+            if (btn) btn.classList.toggle('hidden', !pendingJump);
+            updatePauseButton();
+        }
+
+        function selectLineWhilePaused(line) {
+            if (!executionPaused || !currentRunQueue || executionStopRequested) return;
+            const indicator = document.getElementById('exec-line-indicator');
+            const occurrences = [];
+            currentRunQueue.forEach((c, k) => { if (c.line === line) occurrences.push(k); });
+            if (!occurrences.length) {
+                if (indicator) indicator.textContent = `${line}번째 줄에는 실행되는 명령이 없습니다 (Work·대기·복귀 줄을 눌러 주세요)`;
+                return;
+            }
+            // 반복문 안의 줄은 여러 번 실행되므로, 지금 위치와 가장 가까운 다음 실행을 고르고 다시 누르면 그다음 실행으로 넘어갑니다.
+            let pick;
+            if (selectionOccurrence && selectionOccurrence.line === line) pick = (selectionOccurrence.n + 1) % occurrences.length;
+            else { pick = occurrences.findIndex(k => k >= currentCommandIndex); if (pick < 0) pick = occurrences.length - 1; }
+            selectionOccurrence = { line, n: pick };
+            // 고른 줄의 명령까지 모두 적용한 "실행 직후"의 모습을 보여 주고, 계속하면 그 다음 명령부터 이어서 실행합니다.
+            const nextIdx = occurrences[pick] + 1;
+            const state = computeStateBeforeCommand(currentRunQueue, nextIdx, runStartWork || CoreWLstF);
+            pendingJump = { idx: nextIdx, line, work: state.work, phys: state.phys, ms: state.ms, occ: pick + 1, occTotal: occurrences.length };
+            applyPoseDisplay(state.work, state.phys);
+            selectedLine = line;
+            positionCodeOverlay();
+            scrollLineIntoViewIfNeeded(line);
+            const occText = occurrences.length > 1 ? ` (${pick + 1}/${occurrences.length}번째 실행 · 다시 누르면 다음)` : '';
+            if (indicator) {
+                indicator.textContent = `👁 ${line}번째 줄 실행 직후의 모습 · ${(state.ms / 1000).toFixed(1)}초 지점${occText} · ${sourceLineText(line)}`;
+                indicator.title = '[계속] 버튼을 누르면 이 줄 다음 명령부터 이어서 실행합니다';
+            }
+            updateSelectCancelButton();
+        }
+
+        function scrollLineIntoViewIfNeeded(line) {
+            const { ta, lineHeight, padTop } = getEditorMetrics();
+            const top = padTop + (line - 1) * lineHeight;
+            if (top < ta.scrollTop || top + lineHeight > ta.scrollTop + ta.clientHeight) {
+                ta.scrollTop = Math.max(0, top - ta.clientHeight / 2);
+                positionCodeOverlay();
+            }
+        }
+
+        // 고른 줄을 취소하고 일시정지한 순간의 자세로 되돌립니다.
+        function cancelPoseSelection() {
+            if (!pendingJump) return;
+            pendingJump = null; selectionOccurrence = null; selectedLine = null; commandAbortRequested = false;
+            if (pauseSnapshot) applyPoseDisplay(pauseSnapshot.work, pauseSnapshot.phys, pauseSnapshot.actual);
+            positionCodeOverlay();
+            updateSelectCancelButton();
+            if (executionPaused) showPausedIndicator();
+        }
+
+        function resetLineSelectionState() {
+            currentRunQueue = null; runStartWork = null; currentCommandIndex = 0;
+            pendingJump = null; pauseSnapshot = null; commandAbortRequested = false;
+            selectionOccurrence = null; selectedLine = null;
+            positionCodeOverlay();
+            updateSelectCancelButton();
+        }
+
+        function onEditorCaretMoved() {
+            if (!executionPaused || !currentRunQueue) return;
+            const ta = document.getElementById('input-multi-code');
+            const line = ta.value.slice(0, ta.selectionStart).split(/\r\n?|\n/).length;
+            selectLineWhilePaused(line);
+        }
+
+        // ---- 누적 변화가 모두 0이 되는 지점(= 시작 자세로 돌아온 곳)으로 코드를 구간으로 나눕니다 ----
+        function findZeroSumSegments(queue) {
+            const sums = new Array(12).fill(0);
+            const segments = [];
+            let startIdx = 0, startMs = 0, t = 0, moved = false, works = 0;
+            let minLine = Infinity, maxLine = 0;
+            const closeSegment = (endIdx, closed, endLine) => {
+                segments.push({
+                    no: segments.length + 1, startIdx, endIdx, startMs, endMs: t, works, closed,
+                    firstLine: Number.isFinite(minLine) ? minLine : null,
+                    lastLine: maxLine || null,
+                    endLine: Number.isFinite(endLine) ? endLine : null
+                });
+                startIdx = endIdx + 1; startMs = t; moved = false; works = 0; minLine = Infinity; maxLine = 0;
+            };
+            queue.forEach((c, i) => {
+                if (Number.isFinite(c.line)) { minLine = Math.min(minLine, c.line); maxLine = Math.max(maxLine, c.line); }
+                if (c.type === 'pause') { t += Math.max(0, Number(c.args[0]) || 0); return; }
+                if (c.type === 'returnBase') {
+                    t += getReturnBaseDurationMs();
+                    sums.fill(0);
+                    if (moved) closeSegment(i, true, c.line);
+                    return;
+                }
+                if (c.type !== 'work') return;
+                const changes = c.args.slice(0, 12).map(v => Number(v) || 0);
+                t += getWorkTiming(changes, c.args[12]).totalMs;
+                works++;
+                changes.forEach((v, k) => { sums[k] += v; });
+                if (changes.some(v => v !== 0)) moved = true;
+                if (moved && sums.every(v => Math.abs(v) < 1e-6)) closeSegment(i, true, c.line);
+            });
+            if (startIdx < queue.length) {
+                if (moved) closeSegment(queue.length - 1, false, queue[queue.length - 1].line);
+                else if (segments.length) {
+                    // 마지막 구간 뒤에 움직임 없이 남은 대기 등은 마지막 구간에 붙입니다.
+                    const last = segments[segments.length - 1];
+                    last.endIdx = queue.length - 1; last.endMs = t;
+                }
+            }
+            return segments;
+        }
+
+        function renderSegmentList(segments) {
+            const details = document.getElementById('segment-details');
+            const summaryEl = document.getElementById('segment-summary');
+            const list = document.getElementById('segment-list');
+            if (!details || !summaryEl || !list) return;
+            list.innerHTML = '';
+            const closedCount = segments.filter(sg => sg.closed).length;
+            // 구간이 하나뿐이고 끝까지 안 돌아오는 코드는 나눌 곳이 없으니 숨깁니다.
+            if (!closedCount) {
+                details.classList.add('hidden');
+                setSegmentMarkers([]);
+                return;
+            }
+            details.classList.remove('hidden');
+            summaryEl.textContent = `🔹 시작 자세로 돌아오는 지점 ${closedCount}곳 · 구간 ${segments.length}개 (눌러서 보기)`;
+            const MAX_ROWS = 80;
+            segments.slice(0, MAX_ROWS).forEach(sg => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-1.5 py-0.5 rounded bg-gray-900 hover:bg-gray-800 border border-gray-700 text-[10px] font-mono text-cyan-200';
+                const range = sg.firstLine === null ? '' : (sg.firstLine === sg.lastLine ? `${sg.firstLine}줄` : `${sg.firstLine}~${sg.lastLine}줄`);
+                const secs = ((sg.endMs - sg.startMs) / 1000).toFixed(1);
+                btn.textContent = `구간 ${sg.no} · ${range} · Work ${sg.works}개 · ${secs}초${sg.closed ? '' : ' · 시작 자세로 안 돌아옴'}`;
+                btn.addEventListener('click', () => jumpToCodeLine(sg.firstLine));
+                list.appendChild(btn);
+            });
+            if (segments.length > MAX_ROWS) {
+                const more = document.createElement('p');
+                more.className = 'text-[10px] text-gray-500 px-1';
+                more.textContent = `… 외 ${segments.length - MAX_ROWS}개 구간`;
+                list.appendChild(more);
+            }
+            setSegmentMarkers(segments.filter(sg => sg.closed).map(sg => sg.endLine));
+        }
+
         const multiCodeInput = document.getElementById('input-multi-code');
+        multiCodeInput.addEventListener('scroll', positionCodeOverlay);
+        multiCodeInput.addEventListener('click', onEditorCaretMoved);
+        multiCodeInput.addEventListener('keyup', (e) => {
+            if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) onEditorCaretMoved();
+        });
+        document.getElementById('btn-exec-select-cancel').addEventListener('click', cancelPoseSelection);
+        window.addEventListener('resize', positionCodeOverlay);
         multiCodeInput.addEventListener('input', () => {
+            // 중지된 줄 표시는 코드를 고치면 줄 번호가 어긋나므로 지웁니다.
+            if (executionStoppedMark) clearExecutingLine();
             scheduleReturnCorrectionPreview();
             scheduleCodeAnalysisPreview();
         });
@@ -2381,11 +3119,15 @@ ${returnCode}` : returnCode;
             setExecutionStatus('자세를 기본 자세로 초기화했습니다.', 'success');
         });
         document.getElementById('btn-stop-execution').addEventListener('click', requestExecutionStop);
+        document.getElementById('btn-pause-execution').addEventListener('click', toggleExecutionPause);
 
         document.getElementById('btn-exec-multi').addEventListener('click', async () => {
             const val = multiCodeInput.value;
-            if (val) await executeCustomCode(val);
-            else setExecutionStatus('먼저 여러 줄 코드를 입력해 주세요.', 'error');
+            if (val) {
+                // 항상 기본 자세에서 시작합니다. (구간·시간 계산과 "그 줄의 모습" 계산이 시작 자세를 기준으로 하기 때문입니다)
+                if (!isSequenceExecuting && !isAnimating) { setWorkListToBasicPose(); slewSettling = false; }
+                await executeCustomCode(val);
+            } else setExecutionStatus('먼저 여러 줄 코드를 입력해 주세요.', 'error');
         });
 
         document.getElementById('btn-export-gif').addEventListener('click', async () => {
