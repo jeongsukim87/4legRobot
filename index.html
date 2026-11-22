@@ -819,7 +819,7 @@ $('#pBasic').onclick=()=>{ if(!ensureRobot())return; stopMotion(); ensureFlat();
 $('#pRun').onclick=()=>{ if(!ensureRobot())return; ensureFlat(); runMotion($('#pText').value,Number($('#pDelay').value)||25); };
 $('#pStop').onclick=stopMotion;
 $('#pOne').onclick=()=>{ const m=$('#pText').value.match(/Work\s*\(([^)]*)\)/); if(!m){toast('Work(...) 가 없어요');return;} const a=m[1].split(',').map(Number); if(a.length<12){toast('값이 12개 필요해요');return;} if(!ensureRobot())return; stopMotion(); ensureFlat(); applyD(a.slice(0,12)); toast('Work 자세 적용'); };
-const pm=$('#pMacros'); Object.keys(MACROS).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>{$('#pText').value=MACROS[k];$('#pRun').click();};pm.appendChild(b);});
+const pm=$('#pMacros'); Object.keys(MACROS).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>{ const dm=(MACROS[k].match(/delay\s*(\d+)\s*ms/)||[])[1]||'20'; if(dm&&[...$('#pDelay').options].some(o=>o.value===dm))$('#pDelay').value=dm; $('#pText').value=MACROS[k]; $('#pText').dispatchEvent(new Event('input')); $('#pRun').click(); };       /* 기본 동작(예시)은 모두 delay 20ms 가 기본 — 동작 안에 «delay ○○ms» 가 적혀 있으면 그 값 */pm.appendChild(b);});
 $('#pGround').onchange=e=>{groundOn=e.target.checked;};
 
 /* ---------- 조립 설명서 v3 : 조립 영상 순서 · 유닛 1개씩(×개수, 거울 짝은 따로) · 선 연결·배터리 확대 · 전원 → 기본 자세 → 혼 ---------- */
