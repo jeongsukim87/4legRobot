@@ -765,6 +765,7 @@ function applyD(D){
 function flatten(){ items.forEach(i=>{if(i._flat){i.obj.position.copy(i._flat.p);i.obj.quaternion.copy(i._flat.q);}}); }
 function resetFlatCache(){items.forEach(i=>{delete i._flat;});}
 // ---- 코드 해석: Work(12개, 속도) · basic.pause(ms) · pause(ms) · 복귀()
+const SERVO_WRITE_MS=1;       /* 실제 로봇이 서보 하나에 값을 보내는 데 드는 시간(ms) — 예제 곡 1~7번 영상 길이로 맞춘 값(0.8~1.0ms). 예전 시뮬레이터와 같다 */
 function parseMotion(code,delay){
   // for (let i = 0; i < 3; i++) { ... } 는 안의 줄을 반복 횟수만큼 펼친다(중첩 가능). 각 단계에 원래 줄 번호 ln 을 붙인다.
   const root={n:1,items:[]}, stack=[root], MAXS=4000; let cur=root;
@@ -775,7 +776,8 @@ function parseMotion(code,delay){
     if(m){ const n=Math.max(0,Number(m[3])-Number(m[1])+(m[2]==='<='?1:0)); cur={n,items:[]}; stack.push(cur); return; }
     if(l==='}'){ if(stack.length>1){ const f=stack.pop(), par=stack[stack.length-1]; for(let r=0;r<f.n&&par.items.length<MAXS;r++)f.items.forEach(o=>par.items.push(Object.assign({},o))); cur=par; } return; }
     m=l.match(/^(?:await\s+)?Work\s*\(([^)]*)\)/);
-    if(m){const a=m[1].split(',').map(x=>Number(x.trim())); if(a.length>=12&&a.slice(0,12).every(isFinite))add({t:'work',d:a.slice(0,12),ms:(((a[12]!==undefined&&isFinite(a[12]))?a[12]:10)+1)*delay,ln});return;}
+    if(m){const a=m[1].split(',').map(x=>Number(x.trim())); if(a.length>=12&&a.slice(0,12).every(isFinite)){ const sp=(a[12]!==undefined&&isFinite(a[12]))?a[12]:10, it=Math.floor(Math.max(0,sp))+1, act=a.slice(0,12).filter(v=>v!==0).length;
+      add({t:'work',d:a.slice(0,12),ms:it*(delay+act*SERVO_WRITE_MS),ln}); } return;}       // 실제 로봇: 스텝 floor(speed)+1 번 × (delay + 움직이는 서보 수 × 서보 쓰기 시간)
     m=l.match(/(?:basic\.)?pause\s*\(\s*([\d.]+)\s*\)/); if(m){add({t:'pause',ms:Number(m[1]),ln});return;}
     m=l.match(/strip\.showColor\s*\(\s*neopixel\.rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\s*\)/); if(m){add({t:'led',c:[+m[1],+m[2],+m[3]],ms:0,ln});return;}      // 네오픽셀 색
     m=l.match(/strip\.setBrightness\s*\(\s*(\d+)\s*\)/); if(m){add({t:'bright',v:+m[1],ms:0,ln});return;}
@@ -2703,12 +2705,12 @@ const _restoreC=restore; restore=function(){ const r=_restoreC.apply(this,argume
    · 음원 파일은 이 앱에 들어 있지 않다 — 소리는 유튜브(youtube-nocookie.com 플레이어)에서 나온다.
    · 곡마다 «코드가 음악보다 먼저 시작하는 시간» 은 SONG_LEAD, 선생님이 화면에서 바꾼 미세 조정(ms)은 이 브라우저에만 저장된다. */
 const SONG_YT={1:'GRX7lKSikbA',2:'XXZB_mGyXW0',3:'ZeCfyiZhofw',4:'excdzI03ius',5:'KOc9kfD7qPI',6:'tDBVkTsexI4',7:'K6MsMxW6whA'};
-const SONG_LEAD={12:0.3};       // 초. 12번은 코드가 300ms 먼저 시작한다
+const SONG_LEAD={1:-1,2:-1,3:-1,4:-1,5:-1,6:-1,7:-1,12:0.3};       // 초. + 는 코드가 먼저, − 는 음악이 먼저. 1~7번 유튜브 영상은 앞에 약 1초 여유가 있다(선생님 4번 곡 확인). 12번은 코드가 300ms 먼저
 const MUS_WEB='https://jeongsukim87.github.io/4legRobot/';       /* 인터넷 주소 — 파일을 더블클릭해서 열면(file://) 유튜브가 재생을 막아서(오류 153) 이 주소로 안내한다 */
 const MUS={yt:null,ready:false,apiP:null,cur:null,active:false,vidOn:false,off:0,wall0:0,lastT:0,lastWall:0,run:null,n:null,kPaused:false,playT:0};
 function musSongNo(){ const v=$('#songSel').value; if(!v||v[0]!=='s')return null; const s=SONGS[+v.slice(1)]; const m=s&&(s.n||'').match(/^(\d+)/); return m?+m[1]:null; }
 function musVideo(){ const n=musSongNo(); return n&&SONG_YT[n]?{n,id:SONG_YT[n]}:null; }
-function musUserOff(n){ try{ return Number(localStorage.getItem('mus_off_'+n))||0; }catch(e){ return 0; } }
+function musUserOff(n){ try{ const v=localStorage.getItem('mus_off_'+n); if(v!=null&&v!=='')return Number(v)||0; }catch(e){} return Math.round((SONG_LEAD[n]||0)*1000); }       // 화면의 «싱크» 값(ms) = 코드 시작 차이 전체. 바꾸지 않았으면 곡 기본값
 function musMsg(t,bad){ const m=$('#musMsg'); if(m){ m.textContent=t; m.style.color=bad?'#ff9a8a':''; } }
 function musApi(){
   if(MUS.apiP)return MUS.apiP;
@@ -2735,7 +2737,7 @@ function musFileNote(){        // 파일로 열었을 때(또는 오류 153): �
 function musStop(){ MUS.active=false; MUS.vidOn=false; MUS.run=null; try{ if(MUS.ready&&MUS.yt)MUS.yt.pauseVideo(); }catch(e){} }
 function musArm(){             // «처음부터 실행» 을 누른 순간: 영상을 처음으로 돌리고(필요하면 조금 늦게) 재생, 로봇 시계를 영상에 묶는다
   const v=musVideo(); if(!v||!$('#musOn').checked||!MUS.ready||!/^https?:$/.test(location.protocol))return false; if(typeof LAB!=='undefined'&&LAB.open)return false;
-  MUS.n=v.n; MUS.off=(SONG_LEAD[v.n]||0)+musUserOff(v.n)/1000; MUS.active=true; MUS.vidOn=false; MUS.run=null; MUS.kPaused=false; MUS.wall0=performance.now(); MUS.lastT=0; MUS.lastWall=MUS.wall0;
+  MUS.n=v.n; MUS.off=musUserOff(v.n)/1000; MUS.base=null; MUS.active=true; MUS.vidOn=false; MUS.run=null; MUS.kPaused=false; MUS.wall0=performance.now(); MUS.lastT=0; MUS.lastWall=MUS.wall0;
   try{ MUS.yt.seekTo(0,true); }catch(e){}
   const lead=Math.max(0,MUS.off); if(lead>0){ try{ MUS.yt.pauseVideo(); }catch(e){} setTimeout(()=>{ if(MUS.active)try{ MUS.yt.playVideo(); }catch(e){} },lead*1000); } else { try{ MUS.yt.playVideo(); }catch(e){} }
   setTimeout(()=>{ if(MUS.active&&!MUS.vidOn)musMsg('음악이 시작되지 않으면 유튜브 창의 ▶ 단추를 한 번 눌러 주세요 — 로봇은 음악을 기다려요',true); },2500+lead*1000);
@@ -2746,8 +2748,11 @@ function musClock(){            // 코드 시간(초). 음악과 함께 재생 �
   if(typeof PH!=='undefined'&&PH.run){ if(!MUS.run)MUS.run=PH.run; else if(MUS.run!==PH.run){ musStop(); return null; } }       // 타임라인을 옮기는 등 다른 실행으로 바뀌면 음악 맞춤을 끈다
   let t=0,st=-1; try{ t=MUS.yt.getCurrentTime()||0; st=MUS.yt.getPlayerState(); }catch(e){ return null; }
   const now=performance.now();
-  if(!MUS.vidOn){ if(st===1&&t>0){ MUS.vidOn=true; MUS.lastT=t; MUS.lastWall=now; musMsg('음악에 맞춰 춤추는 중 ♪'); } else return Math.min((now-MUS.wall0)/1000,Math.max(0,MUS.off)); }       // 영상이 실제로 시작되기 전(광고·버퍼링 포함): 앞서 시작하는 만큼만 가고 기다린다
-  if(st===1){ if(t!==MUS.lastT){ MUS.lastT=t; MUS.lastWall=now; } else t=MUS.lastT+Math.min(0.25,(now-MUS.lastWall)/1000); } else { MUS.lastT=t; MUS.lastWall=now; }       // 재생 중에는 시간 사이를 벽시계로 메운다
+  if(!MUS.vidOn){ if(st===1&&t>0&&t<3){ MUS.vidOn=true; MUS.base=null; musMsg('음악에 맞춰 춤추는 중 ♪'); } else return Math.min((now-MUS.wall0)/1000,Math.max(0,MUS.off)); }       // 영상이 처음부터 실제로 시작되기 전(광고·버퍼링·되감기 중): 앞서 시작하는 만큼만 가고 기다린다
+  if(st===1){       // 재생 중: 유튜브가 알려 주는 시간은 띄엄띄엄 조금씩 늦게 온다 → «영상 0초였던 벽시계 시각(base)» 을 가장 덜 늦은 값으로 잡고, 그 뒤로는 벽시계로 매끄럽게 센다
+    const cand=now-t*1000; if(MUS.base==null||cand<MUS.base||cand-MUS.base>350)MUS.base=cand;       // 더 이른 값이면 받아들이고, 크게 늦어졌으면(끊김) 다시 잡는다
+    t=(now-MUS.base)/1000; }
+  else MUS.base=null;       // 일시정지·버퍼링: 그 자리에서 멈춘다
   return Math.max(0,t+MUS.off);
 }
 async function musKinematic(code,delay){      // 물리를 끈 «단순 재생» 에서도 음악 시간에 맞춰 자세를 정한다
@@ -2770,7 +2775,7 @@ $('#pPause').addEventListener('click',()=>{ if(!MUS.active||!MUS.ready)return; s
     if(physPaused!=null)pause=physPaused; else { MUS.kPaused=!MUS.kPaused; pause=MUS.kPaused; }
     try{ pause?MUS.yt.pauseVideo():MUS.yt.playVideo(); }catch(e){} },0); });
 $('#songSel').addEventListener('change',()=>{ musCue(); });
-$('#musOff').addEventListener('change',()=>{ const n=musSongNo(); if(!n)return; const v=Math.round(Number($('#musOff').value)||0); try{ v?localStorage.setItem('mus_off_'+n,String(v)):localStorage.removeItem('mus_off_'+n); }catch(e){} toast('싱크 조절 '+(v>0?'+':'')+v+'ms — 다음 실행부터 적용돼요'); });
+$('#musOff').addEventListener('change',()=>{ const n=musSongNo(); if(!n)return; const v=Math.round(Number($('#musOff').value)||0); try{ v===Math.round((SONG_LEAD[n]||0)*1000)?localStorage.removeItem('mus_off_'+n):localStorage.setItem('mus_off_'+n,String(v)); }catch(e){} toast('싱크 조절 '+(v>0?'+':'')+v+'ms — 다음 실행부터 적용돼요'); });
 $('#musOn').addEventListener('change',()=>{ if(!$('#musOn').checked)musStop(); });
 /* 3D 화면 위 안내: 음악과 함께 재생 중임을 크게 보여 준다 */
 (function(){ const b=document.createElement('div'); b.id='musBadge'; b.style.cssText='position:absolute;left:50%;top:96px;transform:translateX(-50%);z-index:20;padding:6px 14px;border-radius:999px;background:#1b2236e6;border:1px solid #ffd166;color:#ffd166;font-weight:700;font-size:14px;pointer-events:none;display:none;white-space:nowrap';
