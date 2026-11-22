@@ -289,7 +289,7 @@ body.devmode .nodev{display:none}
         <select id="snapT"><option value="0">이동 자유</option><option value="0.5">0.5mm</option><option value="1" selected>1mm</option><option value="5">5mm</option></select>
         <select id="snapR"><option value="0">회전 자유</option><option value="5">5°</option><option value="15">15°</option><option value="45">45°</option><option value="90" selected>90°</option></select>
       </div>
-      <div class="grp"><button id="helpBtn">? 조작 도움말</button><label style="font-size:12px"><input type="checkbox" id="angChk" checked> 각도 상자</label><label style="font-size:12px" title="바닥 격자(그리드)를 보이거나 숨깁니다. GIF 에도 그대로 적용돼요"><input type="checkbox" id="gridChk"> ▦ 그리드</label><label style="font-size:12px" title="물리로 실행할 때 로봇이 멀리 가면 화면이 따라갑니다"><input type="checkbox" id="followChk" checked> 🎥 로봇 따라가기</label><label class="dev" style="font-size:12px" title="(개발자) 1·4·7·10번 서보 선을 관절 축 위에서 홈으로 잡을 자리 후보를 점으로 보여줍니다"><input type="checkbox" id="clipChk"> 선 홈 자리</label><button id="clipMax" class="dev" title="4번 서보 선이 가장 길어지는 자세로 만들고 구간 길이를 적어 줍니다 (끈으로 재 볼 때 비교용)" style="font-size:11px;padding:2px 6px">4번 선 최장</button><button id="clipMin" class="dev" title="4번 서보 선이 가장 짧아지는 자세" style="font-size:11px;padding:2px 6px">최단</button></div>
+      <div class="grp"><button id="helpBtn">? 조작 도움말</button><label style="font-size:12px"><input type="checkbox" id="angChk" checked> 각도 상자</label><label style="font-size:12px" title="바닥 격자(그리드)를 보이거나 숨깁니다. GIF 에도 그대로 적용돼요"><input type="checkbox" id="gridChk" checked> ▦ 그리드</label><label style="font-size:12px" title="물리로 실행할 때 로봇이 멀리 가면 화면이 따라갑니다"><input type="checkbox" id="followChk" checked> 🎥 로봇 따라가기</label><label class="dev" style="font-size:12px" title="(개발자) 1·4·7·10번 서보 선을 관절 축 위에서 홈으로 잡을 자리 후보를 점으로 보여줍니다"><input type="checkbox" id="clipChk"> 선 홈 자리</label><button id="clipMax" class="dev" title="4번 서보 선이 가장 길어지는 자세로 만들고 구간 길이를 적어 줍니다 (끈으로 재 볼 때 비교용)" style="font-size:11px;padding:2px 6px">4번 선 최장</button><button id="clipMin" class="dev" title="4번 서보 선이 가장 짧아지는 자세" style="font-size:11px;padding:2px 6px">최단</button></div>
       <div class="grp"><b>📷 시점</b>
         <select id="viewSel" title="보는 방향을 바꿉니다"><option value="iso">비스듬히</option><option value="top">위</option><option value="front">앞</option><option value="side">옆</option></select>
       </div>
@@ -369,8 +369,7 @@ const orbit=new THREE.OrbitControls(camera,cv); orbit.enableDamping=true; orbit.
 scene.add(new THREE.HemisphereLight(0xffffff,0x3a3f55,.95));
 const sun=new THREE.DirectionalLight(0xffffff,.9); sun.position.set(120,-220,320); scene.add(sun);
 const sun2=new THREE.DirectionalLight(0xffffff,.35); sun2.position.set(-200,150,-100); scene.add(sun2);
-const grid=new THREE.GridHelper(600,60,0x4a5570,0x2c3446); grid.rotation.x=Math.PI/2; scene.add(grid); grid.visible=false;       /* 그리드는 기본으로 끈다 (도구 줄 «그리드» 로 켜기) */
-const floorPl=new THREE.Mesh(new THREE.PlaneGeometry(4000,4000),new THREE.MeshBasicMaterial({color:0x5a606b})); floorPl.position.z=-0.4; floorPl.renderOrder=-1; scene.add(floorPl);       /* 회색 바닥 — 그리드 자리를 따라다닌다 */
+const grid=new THREE.GridHelper(400,20,0x7a86a3,0x4a5570); grid.rotation.x=Math.PI/2; scene.add(grid);       /* 바닥 격자 400×400mm, 한 칸 20mm (예전 600mm·10mm 칸은 너무 촘촘했다) */
 const axes=new THREE.AxesHelper(40); scene.add(axes);
 const frontArrow=new THREE.ArrowHelper(new THREE.Vector3(-1,0,0),new THREE.Vector3(-70,0,-22),45,0xff3030,10,6); scene.add(frontArrow);   // 로봇 앞쪽 표시
 const tc=new THREE.TransformControls(camera,cv); scene.add(tc);
@@ -2869,7 +2868,7 @@ refresh();
 if(items.some(i=>/^T /.test(i.name))&&items.some(i=>/^C /.test(i.name))){ ensureFlat(); applyD(new Array(12).fill(0)); }   // 저장본으로 열어도 처음엔 기본 자세
 try{ setDev(localStorage.getItem('robot_dev')==='1'); }catch(e){ setDev(false); }
 resize(); camera.position.set(260,-380,300); orbit.target.set(-60,-40,0); orbit.update();
-(function loop(){requestAnimationFrame(loop);orbit.update();if(typeof clipTick==='function')clipTick(); floorPl.position.set(grid.position.x,grid.position.y,grid.position.z-0.4); floorPl.visible=!(typeof PH!=='undefined'&&PH.on&&PH.slope>0); renderer.render(scene,camera);})();
+(function loop(){requestAnimationFrame(loop);orbit.update();if(typeof clipTick==='function')clipTick(); renderer.render(scene,camera);})();
 </script>
 </body>
 </html>
