@@ -369,7 +369,7 @@ const orbit=new THREE.OrbitControls(camera,cv); orbit.enableDamping=true; orbit.
 scene.add(new THREE.HemisphereLight(0xffffff,0x3a3f55,.95));
 const sun=new THREE.DirectionalLight(0xffffff,.9); sun.position.set(120,-220,320); scene.add(sun);
 const sun2=new THREE.DirectionalLight(0xffffff,.35); sun2.position.set(-200,150,-100); scene.add(sun2);
-const grid=new THREE.GridHelper(400,20,0x7a86a3,0x4a5570); grid.rotation.x=Math.PI/2; scene.add(grid);       /* 바닥 격자 400×400mm, 한 칸 20mm (예전 600mm·10mm 칸은 너무 촘촘했다) */
+const grid=new THREE.GridHelper(400,40,0x4a5570,0x2c3446); grid.rotation.x=Math.PI/2; scene.add(grid);       /* 바닥 격자 400×400mm, 한 칸 10mm — 로봇 따라가기가 격자를 10mm 씩 옮기므로 칸도 10mm 여야 선이 튀지 않는다 */
 const axes=new THREE.AxesHelper(40); scene.add(axes);
 const frontArrow=new THREE.ArrowHelper(new THREE.Vector3(-1,0,0),new THREE.Vector3(-70,0,-22),45,0xff3030,10,6); scene.add(frontArrow);   // 로봇 앞쪽 표시
 const tc=new THREE.TransformControls(camera,cv); scene.add(tc);
