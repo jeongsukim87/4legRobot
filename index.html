@@ -860,9 +860,10 @@ function wireArch(a,b,h,oa,ob,n){       /* a→b 를 잇는 둥근 아치: 가�
   const out=[]; for(let k=1;k<=n;k++){ const t=k/(n+1); out.push(a.clone().lerp(b,t).add(V3(0,0,h*Math.sin(Math.PI*t))).add(oa.clone().lerp(ob,t))); } return out;
 }
 const WIRE_MAX=212;       /* 서보 선 실제 길이 약 22cm(220mm) 에서 커넥터·여유 8mm 를 뺀 값 */
-let _obsT=0,_obsB=[];
+let _obsT=0,_obsB=[],_obsK='';
+function obsKey(){ return items.filter(i=>/^(Q |I |R )/.test(i.name)).map(i=>{ i.obj.updateMatrixWorld(true); return i.obj.matrixWorld.elements.map(v=>v.toFixed(2)).join(','); }).join('|'); }
 function obsBoxes(){       /* 마이크로비트·배터리 홀더·배터리 상자 (선 굵기·여유 3mm 만큼 부풀림) — 선이 뚫고 지나가지 않게 아치 높이를 정하는 데 쓴다 */
-  const now=performance.now(); if(now-_obsT<800&&_obsB.length)return _obsB; _obsT=now; _obsB=items.filter(i=>/^(Q |I |R )/.test(i.name)).map(i=>{ i.obj.updateMatrixWorld(true); return meshBox(i.obj).clone().expandByScalar(3); }); return _obsB;
+  const k=obsKey(); if(k===_obsK&&_obsB.length)return _obsB; _obsK=k; _obsB=items.filter(i=>/^(Q |I |R )/.test(i.name)).map(i=>meshBox(i.obj).clone().expandByScalar(3)); return _obsB;       // 세 부품이 움직였을 때만 다시 잰다 (시간으로 재사용하면 자세가 바뀐 직후 옛 자리로 계산되는 문제가 있었다)
 }
 function sidePath(i,G,C){       /* 1·4번(앞다리) 선: 마이크로비트·홀더·배터리 «옆(끝)» 으로 돌아서 소켓 위로 간다 — 위로 넘지 않는다. 가운데 점들은 둥글게 이어진다 */
   const bx=obsBoxes(), side=i===0?-1:1, ye=bx.length?(side<0?Math.min(...bx.map(b=>b.min.y)):Math.max(...bx.map(b=>b.max.y))):side*35, xm=bx.length?Math.min(...bx.map(b=>b.min.x)):-27, zt=Math.max(G.z,C.z)+4;
@@ -875,8 +876,8 @@ function archHeight(a,c,h0,hMax){       /* a→c 아치(+ 핀 위 수직 내려�
 const _ssC={};
 function servoStrands(i){       /* 같은 자세에서는 한 번 구한 선 모양을 그대로 쓴다 (선 모양 계산이 무거워서 프레임마다 다시 하면 느려진다) */
   const sv0=servoOfMotor(i), bd0=boardItem(); if(!sv0||!bd0)return servoStrandsRaw(i);
-  sv0.obj.updateMatrixWorld(true); bd0.obj.updateMatrixWorld(true); const sig=sv0.obj.matrixWorld.elements.join(',')+'|'+bd0.obj.matrixWorld.elements.join(','), c=_ssC[i];
-  if(c&&c.sig===sig&&performance.now()-c.t<4000)return c.res; const res=servoStrandsRaw(i); _ssC[i]={sig,res,t:performance.now()}; return res;
+  sv0.obj.updateMatrixWorld(true); bd0.obj.updateMatrixWorld(true); const sig=sv0.obj.matrixWorld.elements.join(',')+'|'+bd0.obj.matrixWorld.elements.join(',')+'|'+obsKey(), c=_ssC[i];
+  if(c&&c.sig===sig)return c.res; const res=servoStrandsRaw(i); _ssC[i]={sig,res,t:performance.now()}; return res;
 }
 function servoStrandsRaw(i){     // 서보 선 3가닥(S 주황 · V 빨강 · G 검정) — 서보 쪽은 나란히, 보드 쪽은 3핀 간격으로 벌어진다
   const sv=servoOfMotor(i), bd=boardItem(), S=socketTop(i); if(!sv||!S||!bd)return null; sv.obj.updateMatrixWorld(true); bd.obj.updateMatrixWorld(true);
