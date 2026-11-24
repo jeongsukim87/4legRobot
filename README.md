@@ -23,7 +23,7 @@
 - `three.min.js`, `OrbitControls.js`, `TransformControls.js` — 3D 화면(three.js r128)
 - `rapier.js` — 물리엔진(Rapier 0.12, wasm 포함)
 - `parts_data.js` — 3D 프린트 부품(STL) 데이터
-- `부품변형_C.js` — 서보 선 홈이 있는 C 윗다리 변형(C1·C2) 데이터. 앞왼·뒤오른 다리는 C1, 앞오른·뒤왼 다리는 C2로 그려집니다
+- `부품변형_C.js` — 서보 선 홈이 있는 C 윗다리 변형(C1·C2) 데이터. 앞오른·뒤왼 다리는 C1, 앞왼·뒤오른 다리는 C2로 그려집니다 (홈이 아래로)
 - `songs_data.js` — 예제 음악 코드 11곡
 - `examples/` — 예제 음악 코드 원본(.txt)
 

@@ -911,7 +911,7 @@ function servoStrandsRaw(i){     // 서보 선 3가닥(S 주황 · V 빨강 · G
 function slackGeom(i,kk){       /* 1·4·7·10번(아랫다리) 서보 선: 서보 출구 → (느슨한 고리) → C 가로대 홈 → 바로 보드 핀. 고리가 움직이는 구간의 여유(약 55mm)를 맡는다 */
   if(i%3!==0)return null; const tag=LEGTAGS[i/3], C=items.find(x=>/^C /.test(x.name)&&x.name.includes(tag)), sv=servoOfMotor(i); if(!C||!sv)return null;
   C.obj.updateMatrixWorld(true); sv.obj.updateMatrixWorld(true);
-  const P0=sv.obj.localToWorld(V3(14.4,0,-9.5)), Pout=sv.obj.localToWorld(V3(26,0,-9.5)), A=P0.clone().add(Pout.sub(P0).normalize().multiplyScalar(10)), G=C.obj.localToWorld(V3(0.8,-4.4,4));
+  const P0=sv.obj.localToWorld(V3(14.4,0,-9.5)), Pout=sv.obj.localToWorld(V3(26,0,-9.5)), A=P0.clone().add(Pout.sub(P0).normalize().multiplyScalar(10)), G=C.obj.localToWorld(V3(0.8,-4.4,C.obj.userData.cVar==='C2'?-4:4));       /* 홈 자리: C1 은 +z 면, C2 는 −z 면 */
   const dir=G.clone().sub(A), d=dir.length(); dir.normalize(); const mid=A.clone().lerp(G,.5), loopH=Math.max(7,Math.max(16,d*.55)*(kk==null?1:kk));
   return {A,G,a1:A.clone().addScaledVector(dir,d*.18).add(V3(0,0,loopH*.55)),peak:mid.clone().add(V3(0,0,loopH)),a3:G.clone().addScaledVector(dir,-d*.18).add(V3(0,0,loopH*.55))};
 }
@@ -2693,9 +2693,9 @@ function clipPose(L,mode){
 }
 if($('#clipMax'))$('#clipMax').onclick=()=>clipPose(1,'max'); if($('#clipMin'))$('#clipMin').onclick=()=>clipPose(1,'min');
 /* ---------- C 윗다리 변형 C1 · C2 (가로대 선 홈) ----------
-   · 모양 데이터는 부품변형_C.js (window.C_VARIANTS). 다리 이름으로 고른다: 앞왼쪽·뒤오른쪽 = C1(홈 +z 면), 앞오른쪽·뒤왼쪽 = C2(홈 −z 면) → 조립 자세에서 홈이 모두 위로 열린다
+   · 모양 데이터는 부품변형_C.js (window.C_VARIANTS). 다리 이름으로 고른다: 앞오른쪽·뒤왼쪽 = C1(홈 +z 면), 앞왼쪽·뒤오른쪽 = C2(홈 −z 면) → 조립 자세에서 홈이 모두 아래로 열린다
    · 부품 목록·번호·무게는 그대로 «C» 이고, 화면에 그려지는 모양과 물리 충돌 모양만 바뀐다 */
-const CVAR={C1:/앞왼쪽|뒤오른쪽/,C2:/앞오른쪽|뒤왼쪽/}, CVAR_GEO={};
+const CVAR={C1:/앞오른쪽|뒤왼쪽/,C2:/앞왼쪽|뒤오른쪽/}, CVAR_GEO={};       /* 2026-11-24 선생님: C1·C2 자리를 서로 바꿔 홈이 파인 면이 «아래» 로 가게 (전선이 덜 지저분해 보이게). C1 = 홈 +z 면, C2 = 홈 −z 면 */
 function cVarGeo(k){
   if(CVAR_GEO[k])return CVAR_GEO[k]; if(!window.C_VARIANTS||!C_VARIANTS[k])return null;
   const bin=atob(C_VARIANTS[k]),u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
