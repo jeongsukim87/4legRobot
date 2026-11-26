@@ -2015,9 +2015,10 @@ async function phOn_(silent){
   if(!ensureRobot())return; if(!await phLoad())return; stopMotion(); if(typeof ldOverlayOff==='function'){ const c=$('#pStab'); if(c&&c.checked){c.checked=false; ldOverlayOff();} }
   if($('#pman').style.display==='block')endManual();
   LD.mu=PH.mu; phBuild(); PH.on=true; const box=$('#pPhBox'), o=PH.opt, ck=(id,t,v)=>'<label style="white-space:nowrap"><input type="checkbox" id="'+id+'"'+(v?' checked':'')+'> '+t+'</label>';
-  box.innerHTML='<div id="pPhScroll"><div id="pPhDyn"></div><div style="margin:5px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">μ(마찰) <input id="pPhMu" type="number" step="0.05" min="0.05" max="1.2" value="'+PH.mu+'" style="width:54px"><span style="font-size:11px;color:#9aa6c0">PLA·책상 0.25~0.4</span><button id="pPhReset">처음 자세로</button><button id="pPhOff" title="끄면 코드가 물리 없이 단순 재생돼요">물리 끄기</button></div>'
+  box.innerHTML='<div id="pPhScroll"><div id="pPhDyn"></div><div style="margin:5px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">μ(마찰) <input id="pPhMu" title="바닥 마찰계수 μ — 클수록 덜 미끄러져요" type="number" step="0.05" min="0.05" max="1.2" value="'+PH.mu+'" style="width:54px"><span style="font-size:11px;color:#9aa6c0">PLA·책상 0.25~0.4</span><button id="pPhReset" title="로봇을 처음 자세로 다시 세우고 기록을 지웁니다">처음 자세로</button><button id="pPhOff" title="끄면 코드가 물리 없이 단순 재생돼요">물리 끄기</button></div>'
     +'<div style="display:flex;gap:12px;flex-wrap:wrap;margin:2px 0 6px;font-size:12px">'+ck('pPhTrail','이동 자국 보기',o.trail)+ck('pPhSlip','발 미끄러짐 표시',o.slip)+'</div>'
     +'<canvas id="pPhChart" width="306" height="96" style="width:100%;border-radius:6px"></canvas><div style="font-size:11px;line-height:1.75;color:#b8c3de;margin-top:3px"><span style="white-space:nowrap"><b style="color:#e8ecf5">━</b> 무게중심 높이</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff9a3c">━</b> 기울기</span> &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">━</b> 지지 여유</span> &nbsp;<span style="white-space:nowrap"><b style="color:#c0392b">▬</b> 몸통이 바닥에 닿음</span><br>발 색 &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">●</b> 붙어 있음</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ffcf6a">●</b> 조금 미끄러짐</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff6a5a">●</b> 많이 미끄러짐</span></div><div id="pPhSum"></div></div>';
+  $('#pPhTrail').parentElement.title='몸통이 지나간 길을 바닥에 선으로 남깁니다'; $('#pPhSlip').parentElement.title='발이 미끄러지면 발 색을 노랑·빨강으로 바꿔 보여 줍니다';
   box.insertAdjacentHTML('beforeend','<button id="pPhTab" class="phTab" title="물리모드 접기">◀</button>');   // 화면을 가릴 때: 옆으로 쓱 접고, 다시 누르면 나온다
   { const tab=$('#pPhTab'), setHide=h=>{ PH.hidePanel=h; box.classList.toggle('hide',h); tab.textContent=h?'▶':'◀'; tab.title=h?'물리모드 펼치기':'물리모드 접기'; }; setHide(!!PH.hidePanel); tab.onclick=()=>setHide(!PH.hidePanel); }
   $('#pPhReset').onclick=()=>phReset(); $('#pPhOff').onclick=()=>{ PH.userOff=true; phOff(); }; $('#pPhMu').onchange=e=>{ PH.mu=Math.max(0.05,Number(e.target.value)||0.3); LD.mu=PH.mu; phReset(); };
@@ -2223,7 +2224,7 @@ $('#pRun').addEventListener('click',()=>{ statLast='start'; });
 
 /* --- M1~M12 직접 입력 (상자와 같은 값) --- */
 (function(){ const g=$('#motorGrid'); const ins=[];
-  for(let m=0;m<12;m++){ const l=document.createElement('label'); l.innerHTML='<b>M'+(m+1)+'</b><input type="number" step="1" value="0">'; const inp=l.querySelector('input'); inp.oninput=()=>{ angBoxes[m].inp.value=inp.value; angBoxes[m].inp.dispatchEvent(new Event('input')); }; g.appendChild(l); ins.push(inp); }
+  for(let m=0;m<12;m++){ const l=document.createElement('label'); l.title=(m+1)+'번 모터가 기본 자세에서 몇 도 움직였는지 — 숫자를 바꾸면 3D 로봇 다리가 따라 움직여요'; l.innerHTML='<b>M'+(m+1)+'</b><input type="number" step="1" value="0">'; const inp=l.querySelector('input'); inp.oninput=()=>{ angBoxes[m].inp.value=inp.value; angBoxes[m].inp.dispatchEvent(new Event('input')); }; g.appendChild(l); ins.push(inp); }
   setInterval(()=>{ if(!$('#motorGrid').closest('details').open)return; const d=poseDelta(); ins.forEach((i,m)=>{ if(document.activeElement!==i)i.value=String(d[m]); }); },250); })();
 
 /* --- 코드 입력창 위 구간 경계선(하늘색 점선) --- */
@@ -2251,6 +2252,36 @@ $('#sumBox').addEventListener('click',e=>{ const b=e.target.closest('[data-ln]')
   sp.addEventListener('pointerup',end); sp.addEventListener('pointercancel',end);
   sp.addEventListener('dblclick',()=>{ app.style.removeProperty('--sw'); app.classList.remove('bigSide'); try{localStorage.removeItem('robot_sw');}catch(_){} resize(); });
   addEventListener('resize',()=>{ const w=$('#side').getBoundingClientRect().width; if(w>innerWidth-320)setW(innerWidth-320,false); }); })();
+
+/* ---------- 마우스를 올리면 뜨는 설명 (설명이 없는 단추·칸에만 넣는다. 동작 예시 단추는 빼고) ---------- */
+(function(){ const T={
+  bMan:'조립 설명서를 처음부터 한 단계씩 봅니다. 다시 누르면 닫혀요',
+  songSel:'예제 곡의 로봇 코드를 입력창에 불러옵니다. 유튜브 음악과 함께 재생할 수 있어요',
+  bCopyWork:'다리를 끌어 만든 Work 한 줄을 복사합니다',
+  bAppendWork:'다리를 끌어 만든 Work 를 아래 코드 입력창에 넣습니다. 실행을 멈춘 상태였다면 멈춘 줄 바로 뒤에 들어가요',
+  pDelay:'실제 로봇(마이크로비트)의 delay 값과 맞춥니다. 클수록 동작이 느려져요',
+  pRun:'입력창의 코드를 처음 자세부터 실행합니다',
+  pPause:'실행을 잠깐 멈추거나 다시 이어 갑니다. 멈춘 자세에서 다리를 끌어 Work 를 만들 수도 있어요',
+  pStop:'실행을 끝냅니다',
+  pReset:'로봇을 기본 자세로 되돌립니다 (입력한 코드는 그대로예요)',
+  pClear:'코드 입력창을 비웁니다',
+  pAddHome:'입력창 끝에 복귀() 를 넣습니다 — 실제 로봇이 처음 자세로 돌아가는 명령이에요',
+  pLoad:'코드를 실행했을 때 서보모터마다 힘을 얼마나 쓰는지(%) 계산해서 보여 줍니다. 위험선을 넘는 줄을 찾을 수 있어요',
+  pSafe:'부하가 위험선을 넘는 Work 줄의 각도를 기본 자세 쪽으로 자동으로 줄여서 입력창 코드를 고칩니다',
+  pStab:'로봇 발이 만드는 지지 영역과 무게중심을 3D 화면 바닥에 표시합니다',
+  pLimit:'이 % 를 넘는 부하를 «위험»으로 봅니다 (안전하게 줄이기의 기준)',
+  pStall:'서보모터가 낼 수 있는 최대 힘(kgf·cm). MG90S 는 약 2.2',
+  pMu:'바닥 마찰계수 μ — 클수록 덜 미끄러져요 (PLA·책상 0.25~0.4)',
+  btnPrivacy:'이 시뮬레이터의 개인정보 처리방침을 봅니다',
+  helpBtn:'마우스·키보드로 화면을 다루는 방법을 봅니다',
+  angChk:'3D 로봇의 모터마다 각도 숫자 상자를 보이거나 숨깁니다',
+  pBasic:'로봇을 기본 자세(모든 모터 0)로 놓습니다',
+  pAsm:'조립할 때의 자세(다리를 수평으로 편 자세)로 놓습니다',
+  pPhys:'중력·마찰을 계산하는 물리 모드를 켜고 끕니다. 넘어지거나 미끄러지는지 볼 수 있어요',
+  pGround:'로봇의 가장 낮은 곳이 바닥에 닿도록 높이를 맞춥니다' };
+  for(const id in T){ const e=document.getElementById(id); if(!e)continue; const l=e.closest('label')||(e.parentElement&&e.parentElement.tagName==='SPAN'?e.parentElement:null);
+    if(!e.title)e.title=T[id]; if(l&&!l.title)l.title=T[id]; }
+  const f=$('#pFile'), fl=f&&f.closest('label'); if(fl&&!fl.title)fl.title='내 컴퓨터의 코드 파일(.txt)을 «예제 음악 불러오기» 목록에 추가하고 입력창에 불러옵니다. 여러 개를 한 번에 고를 수 있어요'; })();
 /* ---------- GIF 저장: 입력창의 코드를 처음부터 끝까지 화면 없이 돌려서 프레임을 모아 움직이는 GIF 로 만든다 (다른 학생과 코드 동작을 공유하는 용도) ----------
    · 외부 라이브러리 없이 직접 만든 GIF89a 인코더 (프레임마다 바뀐 부분에 맞춘 색 255개 + 투명 1개, 디더링, 2배로 그려 줄이기 → 화질이 좋다, 가만히 있는 구간은 한 프레임으로 합친다)
    · 물리 모드가 켜져 있으면 물리로, «물리 끄기» 상태면 각도만 따라가는 단순 재생으로 찍는다
