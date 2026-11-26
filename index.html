@@ -12,7 +12,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:13px/1.
 #app{--sw:340px;display:grid;grid-template-columns:var(--sw) 6px minmax(0,1fr);height:100%}
 #app.bigSide{--sw:560px}
 #app.bigSide #pText{height:420px}
-#side .sbFoot{margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--line);text-align:center;font-size:11px;color:#9aa6c4;line-height:1.5}
+#side .sbFoot{margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--line);text-align:center;font-size:12px;color:#9aa6c4;line-height:1.5}
 #side .sbFoot .ft{font-weight:700;color:#c9d3ee;margin:0 0 6px;font-size:12px}#side .sbFoot img{opacity:.8;vertical-align:middle}#side .sbFoot img:hover{opacity:1}#side .sbFoot p{margin:6px 0}
 .pvOv{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}.pvOv[hidden]{display:none}
 .pvBox{background:#1b2236;border:1px solid #3d4a73;border-radius:12px;width:min(640px,100%);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.6)}
@@ -23,29 +23,29 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:13px/1.
 .labTab{position:absolute;left:-30px;top:12px;width:30px;height:64px;padding:0;border-radius:10px 0 0 10px;background:#171c28ee;border:1px solid #3d5aa8;border-right:0;color:#8fd3ff;font-size:15px;cursor:pointer}.labTab:hover{background:#243553}
 #labBox{max-height:calc(100vh - 150px);overflow:auto;font-size:12px;background:#171c28ee;border:1px solid #3d5aa8;border-radius:10px;padding:8px 12px;line-height:1.5;scrollbar-width:thin}
 #labBox .labHead{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#8fd3ff;margin-bottom:6px}#labBox .labHead button{background:none;border:0;color:#aab;font-size:16px;cursor:pointer}
-#labBox .labTabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}#labBox .labTabs button{padding:5px 1px;font-size:11.5px;white-space:nowrap;overflow:hidden}#labBox .labTabs button.on{background:#2c4a8c;border-color:#5b86e0;color:#fff}
-#labBox .labQ{margin:8px 0 2px;font-weight:700;color:#ffd27a}#labBox .labSec{margin:9px 0 3px;font-size:11px;font-weight:700;color:#8fa6d8;letter-spacing:.3px}
+#labBox .labTabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}#labBox .labTabs button{padding:5px 1px;font-size:12px;white-space:nowrap;overflow:hidden}#labBox .labTabs button.on{background:#2c4a8c;border-color:#5b86e0;color:#fff}
+#labBox .labQ{margin:8px 0 2px;font-weight:700;color:#ffd27a}#labBox .labSec{margin:9px 0 3px;font-size:12px;font-weight:700;color:#8fa6d8;letter-spacing:.3px}
 #labBox .labRow{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:3px 0}#labBox .labRow input[type=range]{flex:1;min-width:90px}
 #labBox .labChip{padding:4px 8px;font-size:12px}#labBox .labChip.on{background:#2c4a8c;border-color:#5b86e0;color:#fff}
-#labBox .labLive{background:#0e121a;border-radius:6px;padding:6px 8px}#labBox .lbDim{color:#8693b3;font-size:11px}#labBox .labNote{color:#8693b3;font-size:11px;margin:2px 0}
-#labBox .labTb{border-collapse:collapse;width:100%;font-size:11px}#labBox .labTb th,#labBox .labTb td{border:1px solid #34405f;padding:2px 4px;text-align:center}#labBox .labTb th{background:#1e2740;color:#9fb4e6;font-weight:600}#labBox .lbBest{background:#1e4a33;color:#9dffc0}
+#labBox .labLive{background:#0e121a;border-radius:6px;padding:6px 8px}#labBox .lbDim{color:#8693b3;font-size:12px}#labBox .labNote{color:#8693b3;font-size:12px;margin:2px 0}
+#labBox .labTb{border-collapse:collapse;width:100%;font-size:12px}#labBox .labTb th,#labBox .labTb td{border:1px solid #34405f;padding:2px 4px;text-align:center}#labBox .labTb th{background:#1e2740;color:#9fb4e6;font-weight:600}#labBox .lbBest{background:#1e4a33;color:#9dffc0}
 #labBox .labWhy{background:#1d2540;border-left:3px solid #5b86e0;padding:6px 8px 6px 24px;margin:0;border-radius:4px}#labBox .labWhy li{margin:2px 0}#labBox .lbBad{background:#5a2420;color:#ffb3a8}#labBox .labTq{margin-top:3px}#labBox .labTq td{padding:1px 3px}#labBox .labFoot{display:flex;gap:6px;margin-top:8px}#labBox .labFoot button{flex:1}
 #side .sbLab{background:linear-gradient(135deg,#8b5cf6,#c026d3);border-color:#a78bfa;color:#fff;font-weight:700;white-space:normal!important;line-height:1.2}#side .sbLab:hover{filter:brightness(1.12)}#side .sbLab.on{background:linear-gradient(135deg,#6d28d9,#86198f);border-color:#e9d5ff;box-shadow:0 0 0 2px #c4b5fd55}#side .sbLab.dirty{border-color:#ffd27a;color:#fff3c4}
 #side .sbAna{margin:6px 0 8px}#side .sbAna button{padding:8px 4px;font-size:13px;font-weight:700}
 #side .runInfoRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:2px 0 6px}#side .runInfoRow .runInfo{margin:0}
-#side .sumBadge{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:#163a26;color:#7dff9a;border:1px solid #2f7a4a;white-space:nowrap}#side .sumBadge.bad{background:#3d2a0e;color:#ffd27a;border-color:#a8741f}
+#side .sumBadge{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:#163a26;color:#7dff9a;border:1px solid #2f7a4a;white-space:nowrap}#side .sumBadge.bad{background:#3d2a0e;color:#ffd27a;border-color:#a8741f}
 #side .sbFileBox .sbFile{margin:0;padding:4px 8px 6px}
 #pLoadBox{transition:transform .28s ease}#pLoadBox.ldHide{transform:translateY(100%)}
-.ldTab{position:absolute;top:-30px;right:18px;width:64px;height:30px;padding:0;border-radius:10px 10px 0 0;background:#171c28;border:2px solid #c08a2a;border-bottom:0;color:#ffd27a;font-size:14px;cursor:pointer}.ldTab:hover{background:#243553}
-#labBox .labHead{flex-wrap:wrap;gap:4px 6px}#labBox .labHead>b{white-space:nowrap;flex:0 0 auto}#labBox .labChgBox{flex:1 1 100%;order:5;display:flex;flex-wrap:wrap;gap:3px;margin:0;justify-content:flex-start}#labBox .labHead .labHeadReset{margin-left:auto}#labBox .labChg{background:#4a3410;border:1px solid #c08a2a;color:#ffd27a;border-radius:10px;padding:0 6px;font-size:10.5px;white-space:nowrap}
-#labBox .labHead .labHeadReset{border:1px solid #5b86e0;background:#22346a;color:#cfe0ff;font-size:11.5px;padding:3px 8px;border-radius:6px;white-space:nowrap;cursor:pointer}#labBox .labHead .labHeadReset:hover{background:#2c4a8c}#labBox .labHead .labHeadReset:disabled{opacity:.5}
-#labBox .labGoal{background:#2a2410;border:1px solid #c08a2a;border-radius:6px;padding:6px 8px;color:#ffd27a;margin-bottom:4px}#labBox .labGoal span{color:#c9b06a;font-size:11px}#labBox .labPred{background:#0e121a;border-radius:6px;padding:5px 8px;margin:4px 0;font-size:11.5px}
-#labBox .labLegRes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}#labBox .labLegRes div{text-align:center;border-radius:6px;padding:4px 2px;font-size:11px;line-height:1.4}#labBox .labLegRes .ok{background:#1e4a33;color:#9dffc0}#labBox .labLegRes .no{background:#5a2420;color:#ffb3a8}#labBox .labLegRes span{color:#b6bfd6;font-size:10px}
+.ldTab{position:absolute;top:-30px;right:18px;width:64px;height:30px;padding:0;border-radius:10px 10px 0 0;background:#171c28;border:1px solid #3a4560;border-bottom:0;color:#cfe0ff;font-size:14px;cursor:pointer}.ldTab:hover{background:#243553}
+#labBox .labHead{flex-wrap:wrap;gap:4px 6px}#labBox .labHead>b{white-space:nowrap;flex:0 0 auto}#labBox .labChgBox{flex:1 1 100%;order:5;display:flex;flex-wrap:wrap;gap:3px;margin:0;justify-content:flex-start}#labBox .labHead .labHeadReset{margin-left:auto}#labBox .labChg{background:#4a3410;border:1px solid #c08a2a;color:#ffd27a;border-radius:10px;padding:0 6px;font-size:11px;white-space:nowrap}
+#labBox .labHead .labHeadReset{border:1px solid #5b86e0;background:#22346a;color:#cfe0ff;font-size:12px;padding:3px 8px;border-radius:6px;white-space:nowrap;cursor:pointer}#labBox .labHead .labHeadReset:hover{background:#2c4a8c}#labBox .labHead .labHeadReset:disabled{opacity:.5}
+#labBox .labGoal{background:#2a2410;border:1px solid #c08a2a;border-radius:6px;padding:6px 8px;color:#ffd27a;margin-bottom:4px}#labBox .labGoal span{color:#c9b06a;font-size:12px}#labBox .labPred{background:#0e121a;border-radius:6px;padding:5px 8px;margin:4px 0;font-size:12px}
+#labBox .labLegRes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}#labBox .labLegRes div{text-align:center;border-radius:6px;padding:4px 2px;font-size:12px;line-height:1.4}#labBox .labLegRes .ok{background:#1e4a33;color:#9dffc0}#labBox .labLegRes .no{background:#5a2420;color:#ffb3a8}#labBox .labLegRes span{color:#b6bfd6;font-size:11px}
 #labBox .labFastLb{display:block;margin:4px 0;font-size:12px}
-#labBox .labLegRow{gap:6px}#labBox .labLegN{width:58px;font-size:12px}#labBox .labMini{padding:0 6px;font-size:10px;margin-left:4px}
+#labBox .labLegRow{gap:6px}#labBox .labLegN{width:58px;font-size:12px}#labBox .labMini{padding:0 6px;font-size:11px;margin-left:4px}
 #side .sbTitle{margin:2px 0 10px;padding:10px 10px 8px;border-radius:12px;background:linear-gradient(135deg,#1c2a52 0%,#2b1f4d 55%,#16384a 100%);border:1px solid #3d5aa8;box-shadow:0 2px 10px rgba(0,0,0,.35);text-align:center}
 #side .sbTitle .tt{display:block;font-weight:800;font-size:15px;letter-spacing:.2px;background:linear-gradient(90deg,#8fd3ff,#c4a8ff 55%,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
-#side .sbTitle small{display:block;margin-top:4px;font-size:11px;color:#a9b8dd}
+#side .sbTitle small{display:block;margin-top:4px;font-size:12px;color:#a9b8dd}
 #side .sbBig{width:100%;padding:8px;margin:2px 0 6px;font-size:13px}
 #side .sbSec{border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin:8px 0;background:#1a1f2b}
 #side .sbSec>summary{cursor:pointer;font-weight:700;padding:3px 0}
@@ -57,10 +57,10 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:13px/1.
 .manList li.cur{background:#243553;color:#fff;font-weight:700}
 #pman #mDesc{white-space:pre-line}
 #pman.folded #mDesc,#pman.folded #mParts,#pman.folded .mCode,#pman.folded .mJump{display:none!important}
-#pman .mCode{margin:0 0 8px;padding:6px 8px;background:#0e121a;border:1px solid #2c3550;border-radius:6px;font-size:11px;line-height:1.45;color:#cfe3ff;max-height:150px;overflow:auto;white-space:pre}
+#pman .mCode{margin:0 0 8px;padding:6px 8px;background:#0e121a;border:1px solid #2c3550;border-radius:6px;font-size:12px;line-height:1.45;color:#cfe3ff;max-height:150px;overflow:auto;white-space:pre}
 #pman .mJump{background:#2a2410;border:1px solid #c08a2a;color:#ffd27a;margin-left:auto;margin-right:6px}#pman .mJump:hover{background:#3c3214}
 .manList li.ext2{padding-left:10px;color:#c9d6f3}
-.manList li.ext{margin-top:10px;border-top:1px dashed #4a5a88;padding-top:6px;border-radius:0 0 5px 5px}.manList li.ext::before{content:'🔌 확장하기 (선택)';display:block;font-size:10.5px;color:#8fa6d8;margin-bottom:2px;font-weight:700}
+.manList li.ext{margin-top:10px;border-top:1px dashed #4a5a88;padding-top:6px;border-radius:0 0 5px 5px}.manList li.ext::before{content:'🔌 확장하기 (선택)';display:block;font-size:11px;color:#8fa6d8;margin-bottom:2px;font-weight:700}
 #side{background:var(--panel);overflow:auto;padding:10px;min-width:0;scrollbar-width:thin;scrollbar-color:#4a5a88 transparent}
 #side::-webkit-scrollbar{width:5px}#side::-webkit-scrollbar-thumb{background:#4a5a88;border-radius:4px}#side::-webkit-scrollbar-thumb:hover{background:#6d82c4}#side::-webkit-scrollbar-track{background:transparent}
 #split{cursor:col-resize;background:var(--line);position:relative;touch-action:none;transition:background .15s}#split::after{content:'';position:absolute;top:50%;left:1px;width:4px;height:36px;margin-top:-21px;border-radius:2px;background:#6d7aa5}#split:hover,#split.drag{background:#3d5aa8}#split:hover::after,#split.drag::after{background:#cfe0ff}
@@ -71,7 +71,7 @@ body.splitting{cursor:col-resize;user-select:none}body.splitting #main{pointer-e
 .row{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;border:1px solid transparent}
 .row .sw{width:10px;height:10px;border-radius:3px;flex:none}
 .row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.row .sub{color:var(--dim);font-size:11px}
+.row .sub{color:var(--dim);font-size:12px}
 .row.sel{background:#243553;border-color:var(--acc)}
 .row:hover{background:#262d3c}
 button,select,input{font:inherit;color:var(--fg);background:#2a3242;border:1px solid var(--line);border-radius:6px;padding:4px 8px}
@@ -84,13 +84,13 @@ button.sm{padding:1px 7px}
 #pPhBox{transition:transform .28s ease}
 #pPhScroll{overflow-y:auto;overscroll-behavior:contain;margin-right:-8px;padding-right:6px}
 #pPhBox.hide{transform:translateX(calc(-100% - 18px))}
-.phTab{position:absolute;right:-30px;top:12px;width:30px;height:64px;padding:0;border-radius:0 10px 10px 0;background:#171c28ee;border:1px solid #c08a2a;border-left:0;color:#ffd27a;font-size:15px;cursor:pointer}
+.phTab{position:absolute;right:-30px;top:12px;width:30px;height:64px;padding:0;border-radius:0 10px 10px 0;background:#171c28ee;border:1px solid #3a4560;border-left:0;color:#cfe0ff;font-size:15px;cursor:pointer}
 .phTab:hover{background:#243553}
 #cv{position:absolute;left:0;top:0;width:100%;height:calc(100% - var(--dock,0px));display:block}
 #bar{position:absolute;left:10px;right:10px;top:10px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
 #bar>*{pointer-events:auto}
 .grp{display:flex;gap:4px;align-items:center;background:rgba(31,36,48,.92);border:1px solid var(--line);border-radius:8px;padding:4px 6px}
-.grp b{color:var(--dim);font-weight:400;font-size:11px;margin-right:2px}
+.grp b{color:var(--dim);font-weight:400;font-size:12px;margin-right:2px}
 .dev{}
 body:not(.devmode) .dev,body:not(.devmode) #info{display:none!important}
 body.devmode .nodev{display:none}
@@ -99,7 +99,7 @@ body.devmode .nodev{display:none}
 #side .sbLib{background:#1d2c55;border-color:#3d5aa8;color:#cfe0ff}
 #side .sbFull{width:100%;margin:2px 0 4px}
 #side .sbFile{display:block;margin:2px 0 6px;font-size:12px;color:var(--dim);cursor:pointer}
-#side .sbFile input{font-size:11px;max-width:100%}
+#side .sbFile input{font-size:12px;max-width:100%}
 #side .sbOpt{font-size:12px;justify-content:space-between}
 #side .sbOpt label{display:flex;align-items:center;gap:4px}
 #side textarea{width:100%;height:190px;background:#0e121a;color:#e8ecf5;border:1px solid #3a4560;border-radius:6px;font:12px/1.4 Consolas,monospace;padding:6px;resize:vertical;white-space:pre}
@@ -119,7 +119,7 @@ body.devmode .nodev{display:none}
 #side #segMarks .segLine.hov{border-bottom:3px dashed #67e8f9}
 #side #segClip .runLineBar{position:absolute;left:0;right:0;background:rgba(255,209,102,.22);border-left:3px solid #ffd166}
 #side .segList{display:flex;flex-direction:column;gap:3px;margin-top:4px;max-height:160px;overflow-y:auto}
-#side .segList button{text-align:left;font:11px Consolas,monospace;padding:3px 6px;background:#10202a;border-color:#245a6a;color:#a5f3fc}
+#side .segList button{text-align:left;font:12px Consolas,monospace;padding:3px 6px;background:#10202a;border-color:#245a6a;color:#a5f3fc}
 #side .sbOutBox{margin:4px 0 6px}
 #side .sbOutHead{font-size:13px;font-weight:700;color:#ffd166;margin:0}
 #side .sbOutBox #outWork{margin:3px 0}#side .sbOutBox .sbRow2{margin:0}
@@ -127,25 +127,25 @@ body.devmode .nodev{display:none}
 #side .sbSub{border:1px solid var(--line);border-radius:8px;margin:6px 0;background:#10141d}
 #side .sbSub>summary{cursor:pointer;padding:5px 8px;font-size:12px;color:var(--dim)}
 #side .sbH{font-weight:700;margin:10px 0 4px;font-size:12px;color:var(--dim)}
-#side .sbMacros{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#side .sbMacros button{padding:4px 2px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin:0}
-#side .sbNote{font-weight:400;font-size:11px;color:#7dd3fc;margin-left:6px}
-#side .sbNote2{font-size:11px;color:#9bd0ee;text-align:center;margin:6px 2px}
+#side .sbMacros{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#side .sbMacros button{padding:4px 2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin:0}
+#side .sbNote{font-weight:400;font-size:12px;color:#7dd3fc;margin-left:6px}
+#side .sbNote2{font-size:12px;color:#9bd0ee;text-align:center;margin:6px 2px}
 #side .sbBlue{background:#0b7fc7;border-color:#0b7fc7;color:#fff;font-weight:700}
 #side .sbBlue:disabled{opacity:.5}
 #side #outWork{width:100%;margin:6px 0 2px;background:#0a0e15;color:#7dff9a;border:1px solid #3a4560;border-radius:6px;font:12px Consolas,monospace;padding:6px}
 #side .motorGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px}
-#side .motorGrid label{display:flex;align-items:center;gap:3px;font-size:11px}
+#side .motorGrid label{display:flex;align-items:center;gap:3px;font-size:12px}
 #side .motorGrid input{width:100%;min-width:0;padding:2px 3px}
 #side .sumBox{padding:6px 8px;font-size:12px}
-#side .sumHead{color:var(--dim);font-size:11px;margin-bottom:4px}
+#side .sumHead{color:var(--dim);font-size:12px;margin-bottom:4px}
 #side .sumGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-#side .sumGrid span{background:#1a2230;border-radius:5px;padding:2px 4px;text-align:center;font-size:11px}
+#side .sumGrid span{background:#1a2230;border-radius:5px;padding:2px 4px;text-align:center;font-size:12px}
 #side .sumGrid span.bad{background:#7f1d1d;color:#fff}
 #side .sumGrid b{color:var(--dim);font-weight:400;margin-right:2px}
 #side .sumWarn{color:#ffcf6a;margin-top:6px;line-height:1.5}#side .sumOk{color:#7dff9a;margin-top:6px}
-.angBox{position:absolute;display:flex;align-items:center;gap:3px;padding:2px 4px;background:rgba(17,24,39,.9);border:1px solid rgba(107,114,128,.9);border-radius:5px;font-size:10px;color:#e5e7eb;pointer-events:auto;user-select:none;box-shadow:0 1px 5px rgba(0,0,0,.35);white-space:nowrap}
+.angBox{position:absolute;display:flex;align-items:center;gap:3px;padding:2px 4px;background:rgba(17,24,39,.9);border:1px solid rgba(107,114,128,.9);border-radius:5px;font-size:11px;color:#e5e7eb;pointer-events:auto;user-select:none;box-shadow:0 1px 5px rgba(0,0,0,.35);white-space:nowrap}
 .angBox b{min-width:18px;text-align:center}
-.angBox input{width:38px;background:transparent;border:0;border-bottom:1px solid #6b7280;border-radius:0;color:#e5e7eb;padding:0 2px;font-size:11px;text-align:right}
+.angBox input{width:38px;background:transparent;border:0;border-bottom:1px solid #6b7280;border-radius:0;color:#e5e7eb;padding:0 2px;font-size:12px;text-align:right}
 .angBox.on{border-color:#facc15;box-shadow:0 0 7px rgba(250,204,21,.75)}.angBox.on input{color:#fde047}
 #helpBox{display:none;position:absolute;left:10px;top:64px;z-index:25;max-width:300px;background:rgba(17,24,39,.94);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.6}
 
@@ -155,67 +155,101 @@ body.devmode .nodev{display:none}
 #info .g{display:grid;grid-template-columns:22px 1fr 22px 1fr;gap:4px 6px;align-items:center}
 #info input[type=number]{width:100%;padding:3px 5px}
 #info .btns{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
-#hint{position:absolute;left:10px;bottom:calc(10px + var(--dock,0px));color:var(--dim);font-size:11px;background:rgba(31,36,48,.8);padding:5px 8px;border-radius:6px;max-width:520px}
+#hint{position:absolute;left:10px;bottom:calc(10px + var(--dock,0px));color:var(--dim);font-size:12px;background:rgba(31,36,48,.8);padding:5px 8px;border-radius:6px;max-width:520px}
 #dlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10}
 #dlg>div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;width:min(720px,92vw)}
 #dlg textarea{width:100%;height:260px;background:#12151c;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.4 Consolas,monospace}
 #toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ok);color:#03150c;padding:6px 14px;border-radius:8px;font-weight:700;display:none;z-index:20}
-.note{color:var(--dim);font-size:11px;margin:4px 2px}
+.note{color:var(--dim);font-size:12px;margin:4px 2px}
+
+/* ---- 화면 정리 2026-11-26: 모드 탭 · 재생 막대 · 코드 색칠 · 처음 안내 ---- */
+#side .modeTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 0 10px;padding:4px;background:#10141d;border:1px solid var(--line);border-radius:10px}
+#side .modeTabs button{padding:8px 2px;font-size:14px;font-weight:700;border-radius:7px;background:transparent;border:1px solid transparent;color:#9aa6c4}
+#side .modeTabs button:hover{background:#1b2232;color:#e8ecf5}
+#side .modeTabs button.on{background:#2a3a5c;border-color:#4f9cff;color:#fff}
+#side .sbPhys{background:#1b2a44;border-color:#4f9cff;color:#cfe0ff;font-weight:700}#side .sbPhys.on{background:#4f9cff;color:#fff}
+#side .sbTools .sbToolsIn{padding:0 8px 4px}#side .sbTools .sbRow3,#side .sbTools .sbRow2,#side .sbTools .sbRow{margin:4px 0}
+#side .sbRunNear{display:flex;align-items:center;gap:6px;margin:6px 0 2px}#side .sbRunNear button{flex:0 0 auto;padding:6px 12px;font-size:13px;margin:0;white-space:nowrap}#side .sbRunNear .runBtn{background:#4f9cff;border-color:#4f9cff;color:#fff;font-weight:700}#side .sbRunNear .runMsg{flex:1;min-width:0;margin:0}
+#side .sbLink{background:none;border:none;color:#8fb3ff;font-size:12px;text-decoration:underline;cursor:pointer;margin:2px 0 6px;padding:2px}
+.playBar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(12px + var(--dock,0px));z-index:21;display:flex;align-items:center;gap:6px;padding:7px 10px;background:#171c28f2;border:1px solid #3a4560;border-radius:12px;box-shadow:0 4px 14px #0007;max-width:calc(100% - 24px)}
+.playBar button{white-space:nowrap;padding:7px 10px;font-size:13px}
+.playBar .runBtn{background:#4f9cff;border-color:#4f9cff;color:#fff;font-weight:700}.playBar .runBtn:hover{background:#3b82f6}
+.playBar .pbInfo{min-width:150px;display:flex;flex-direction:column;gap:3px}
+.playBar .pbTrack{height:6px;border-radius:3px;background:#2a3346;overflow:hidden}.playBar #pbFill{height:100%;width:0;background:#4f9cff;transition:width .1s linear}
+.playBar .pbTxt{font-size:12px;color:#b8c3de;white-space:nowrap}.playBar .runStat{font-weight:700;color:#e8ecf5;margin:0;padding:0;background:none;border:0;display:inline}
+#hint{bottom:calc(64px + var(--dock,0px))!important}body[data-mode="asm"] #hint{bottom:calc(10px + var(--dock,0px))!important}
+.phHead{display:flex;align-items:center;gap:6px;margin-bottom:2px}.phHead b{color:#e8ecf5}.phHead #pPhT{color:#9aa6c0}.phHead #pPhMore{margin-left:auto;padding:2px 8px;font-size:12px}
+#side .taWrap{position:relative}
+#side #pHl{position:absolute;margin:0;overflow:hidden;pointer-events:none;box-sizing:border-box;font:12px/1.4 Consolas,monospace;padding:6px;white-space:pre;color:#e8ecf5;background:#0e121a;border:1px solid transparent;border-radius:6px;tab-size:8}
+#side textarea#pText{position:relative;z-index:1;background:transparent;color:transparent;caret-color:#e8ecf5;tab-size:8}
+#side textarea#pText::placeholder{color:#6b7591}
+#side textarea#pText::selection{background:#3b82f666;color:transparent}
+#side #segClip{z-index:2}
+#side #pGut{position:absolute;z-index:2;overflow:hidden;pointer-events:none;box-sizing:border-box;font:12px/1.4 Consolas,monospace;padding:6px 8px 6px 0;white-space:pre;text-align:right;color:#4f5a75;background:#0e121a;border-radius:6px 0 0 6px}
+#pHl .hW{color:#7dd3fc;font-weight:700}#pHl .hP{color:#c4b5fd;font-weight:700}#pHl .hH{color:#86efac;font-weight:700}#pHl .hK{color:#f0abfc;font-weight:400}#pHl .hN{color:#fca5a5}#pHl .hC{color:#6b7a99}
+#coach{position:fixed;z-index:1000;width:290px;background:#1d2740;border:2px solid #4f9cff;border-radius:12px;padding:12px 14px;color:#e8ecf5;font-size:14px;line-height:1.5;box-shadow:0 8px 28px #000a}
+#coach .cBtn{display:flex;align-items:center;gap:6px;margin-top:10px}#coach .cBtn span{color:#9aa6c4;font-size:12px;margin-right:auto}#coach .cBtn button{padding:5px 12px;font-size:13px}
+.coachRing{outline:3px solid #4f9cff!important;outline-offset:3px;border-radius:8px}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="side">
-    <div class="sbTitle"><span class="tt">🕷️ 4Leg Spider Robot Simulator 🤖</span><small>🔧 조립 설명서 · ⌨ 동작 코드 · 📊 부하 분석</small></div>
-    <details id="manBox" class="sbSec" open>
+    <div class="sbTitle"><span class="tt">🕷️ 4Leg Spider Robot Simulator 🤖</span><small>🔧 조립 · ⌨ 코딩 · 🔬 실험</small></div>
+    <div id="modeTabs" class="modeTabs" role="tablist"><button type="button" data-m="asm" title="조립 설명서와 조립 영상">🔧 조립</button><button type="button" data-m="code" title="코드를 넣고 로봇을 움직여요">⌨ 코딩</button><button type="button" data-m="lab" title="물리 모드 · 부하 분석 · 과학 실험실">🔬 실험</button></div>
+    <details id="manBox" class="sbSec" open data-mode="asm">
       <summary>🔧 조립 설명서</summary>
-      <div style="display:flex;gap:6px;margin:2px 0 6px"><button id="bMan" class="pri sbBig" style="flex:1;width:auto;margin:0;padding:8px 4px;white-space:nowrap;font-size:12.5px">▶ 설명서 시작/닫기</button><button id="bVid" class="sbBig" type="button" title="조립 과정 영상을 유튜브에서 새 창으로 엽니다" style="flex:1;width:auto;margin:0;padding:8px 4px;white-space:nowrap;font-size:12.5px;background:#c4302b;border-color:#e0524c;color:#fff" onclick="window.open('https://www.youtube.com/watch?v=wKxm_X0SjQ8','_blank','noopener')">🎬 조립 영상 보기</button></div>
+      <div style="display:flex;gap:6px;margin:2px 0 6px"><button id="bMan" class="pri sbBig" style="flex:1;width:auto;margin:0;padding:8px 4px;white-space:nowrap;font-size:12.5px">▶ 설명서 시작/닫기</button><button id="bVid" class="sbBig" type="button" title="조립 과정 영상을 유튜브에서 새 창으로 엽니다" style="flex:1;width:auto;margin:0;padding:8px 4px;white-space:nowrap;font-size:12.5px;background:transparent;border-color:#e0524c;color:#ff9a90" onclick="window.open('https://www.youtube.com/watch?v=wKxm_X0SjQ8','_blank','noopener')">조립 영상 보기</button></div>
       <ol id="manList" class="manList"></ol>
     </details>
-    <details id="pcode" class="sbSec" open>
+    <details id="pcode" class="sbSec" open data-mode="code">
       <summary>⌨ 로봇 코드 실행</summary>
-      <div class="sbRow"><button id="bLib" class="sbLib" title="코드 조각과 동작 영상이 모여 있는 라이브러리 페이지를 새 창으로 엽니다">📚 라이브러리 ↗</button><button id="bBig" title="코드 입력창을 크게 봅니다">⛶ 크게 보기</button></div>
-      <select id="songSel" class="sbFull"><option value="">🎵 예제 음악 불러오기...</option></select>
-      <div id="musBox" hidden style="margin:4px 0 6px;padding:6px;border:1px solid #c08a2a;border-radius:8px;background:#171c28">
+      <div class="sbRow"><button id="bLib" class="sbLib" title="코드 조각과 동작 영상이 모여 있는 라이브러리 페이지를 새 창으로 엽니다">라이브러리 ↗</button><button id="bBig" title="코드 입력창을 크게 봅니다">⛶ 크게 보기</button></div>
+      <select id="songSel" class="sbFull"><option value="">예제 음악 불러오기...</option></select>
+      <div id="musBox" hidden style="margin:4px 0 6px;padding:6px;border:1px solid #3a4560;border-radius:8px;background:#171c28">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;margin-bottom:4px"><b style="color:#ffd166">🎵 음악과 함께 재생</b><button id="musPlay" type="button" title="음악과 로봇을 처음부터 함께 재생합니다 («처음부터 실행» 과 같아요)" style="padding:1px 9px;font-size:13px;line-height:1.3;border-radius:6px;background:#ff3b3b;color:#fff;border:none">▶</button><label><input type="checkbox" id="musOn" checked> 켜기</label><label title="로봇이 음악보다 늦으면 +, 빠르면 − 로 맞춥니다 (이 컴퓨터에만 저장)">싱크 <input id="musOff" type="number" step="50" value="0" style="width:58px">ms</label></div>
         <div style="height:200px;border-radius:6px;overflow:hidden;background:#000"><div id="musPlayer"></div></div>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;margin-top:4px"><label title="시뮬레이터가 곡 끝에서 이만큼(초) 빨리 끝나면, 곡 전체를 고르게 늘려 맞춥니다 (+ = 로봇을 느리게). 이 컴퓨터에만 저장">끝 맞춤 <input id="musEnd" type="number" step="0.1" value="0" style="width:56px">초</label><button id="musMark" type="button" title="음악과 함께 실행하는 중에, 유튜브 영상 속 로봇이 마지막 동작을 마치는 순간 누르면 «끝 맞춤» 값을 자동으로 잽니다" style="font-size:11px;padding:2px 6px">⏱ 영상 로봇이 끝난 순간</button></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;margin-top:4px"><label title="시뮬레이터가 곡 끝에서 이만큼(초) 빨리 끝나면, 곡 전체를 고르게 늘려 맞춥니다 (+ = 로봇을 느리게). 이 컴퓨터에만 저장">끝 맞춤 <input id="musEnd" type="number" step="0.1" value="0" style="width:56px">초</label><button id="musMark" type="button" title="음악과 함께 실행하는 중에, 유튜브 영상 속 로봇이 마지막 동작을 마치는 순간 누르면 «끝 맞춤» 값을 자동으로 잽니다" style="font-size:12px;padding:2px 6px">⏱ 영상 로봇이 끝난 순간</button></div>
         <div id="musMsg" style="font-size:12px;margin-top:4px;color:#9fd4ff">곡을 고르면 유튜브 음악이 준비돼요</div>
       </div>
+      <div class="sbH">동작 예시</div>
+      <div id="pMacros" class="sbMacros"></div>
       <div class="sbOutBox">
-        <div class="sbOutHead" title="3D 화면에서 다리를 마우스로 끌면 여기에 코드가 생겨요">🎚 다리를 끌어 만든 Work</div>
+        <div class="sbOutHead" title="3D 화면에서 다리를 마우스로 끌면 여기에 코드가 생겨요">다리를 끌어 만든 Work</div>
         <input type="text" id="outWork" readonly placeholder="다리를 드래그하면 Work 코드가 생성됩니다">
         <div class="sbRow2"><button id="bCopyWork">복사</button><button id="bAppendWork" class="sbBlue" disabled>여러 줄에 추가</button></div>
       </div>
-      <div class="sbRow sbOpt"><label title="켜면 3D 로봇의 아랫다리에 네오픽셀 막대 4개와 몸통판의 연결판(W)을 달고, 곡을 불러올 때 strip.showColor(...) 같은 네오픽셀 코드도 입력창에 넣습니다. 끄면 막대와 코드가 모두 빠집니다"><input type="checkbox" id="neoCode"> 💡 네오픽셀 (막대·연결판 달기 + 코드 넣기)</label><label>실제 로봇 속도 <select id="pDelay"><option value="20">delay 20ms</option><option value="25" selected>delay 25ms</option></select></label></div>
+      <div class="sbRow sbOpt"><label title="켜면 3D 로봇의 아랫다리에 네오픽셀 막대 4개와 몸통판의 연결판(W)을 달고, 곡을 불러올 때 strip.showColor(...) 같은 네오픽셀 코드도 입력창에 넣습니다. 끄면 막대와 코드가 모두 빠집니다"><input type="checkbox" id="neoCode"> 네오픽셀 (막대·연결판 달기 + 코드 넣기)</label><label>실제 로봇 속도 <select id="pDelay"><option value="20">delay 20ms</option><option value="25" selected>delay 25ms</option></select></label></div>
       <div class="taWrap"><textarea id="pText" spellcheck="false" placeholder="Work(...)&#10;basic.pause(3000)&#10;Work(...) 여러 줄 입력 (Work(), basic.pause() ...)"></textarea><div id="segClip"><div id="segMarks"></div></div></div>
-      <div class="sbRun"><button id="pRun" class="runBtn">▶ 처음부터 실행</button><button id="pPause">⏸ 일시정지</button><button id="pStop">■ 중지</button></div>
-      <div id="runStat" class="runStat">실행 대기</div>
-      <div id="runMsg" class="runMsg">코드를 입력하면 실행 가능 여부를 확인합니다.</div>
+      <div class="sbRunNear"><button id="pRun2" class="runBtn" type="button" title="입력창의 코드를 처음 자세부터 실행합니다 (입력창에서 Ctrl+Enter 도 돼요) — 3D 화면 아래 재생 막대와 같아요">▶ 실행</button><button id="pStop2" type="button" title="실행을 끝냅니다">■ 중지</button><div id="runMsg" class="runMsg">코드를 입력하면 실행 가능 여부를 확인합니다.</div></div>
       <div class="runInfoRow"><div id="runInfo" class="runInfo">Work 0개 · 대기 0초 · 예상 실행시간 0초</div><span id="sumBadge" class="sumBadge" hidden></span></div>
-      <div class="sbRow3"><button id="pReset">↺ 자세 초기화</button><button id="bGif" disabled title="다음 단계에서 연결해요">GIF 저장</button><button id="pClear">입력 지우기</button></div>
-      <div class="sbRow dev"><button id="bGifSeg" title="입력창의 하늘색 점선(모든 모터 합이 0이 되는 지점)마다 나눠서 구간별 GIF 여러 개로 저장합니다">🔹 GIF 0 지점 구간별 내보내기</button><label class="sbOpt" title="0 지점으로 나누되, 조각이 이 시간보다 짧으면 다음 조각과 합칩니다" style="white-space:nowrap">최소 <input id="gifMin" type="number" min="0" max="60" step="1" value="8" style="width:42px">초</label></div>
-      <div class="sbRow2"><button id="pAddHome">복귀() 추가</button><button id="pAddFix" title="모터별 합계가 0이 되도록 되돌리는 Work 한 줄을 끝에 붙입니다">보정 Work 추가</button></div>
-      <details class="sbSub sbFileBox"><summary>📂 내 코드 파일 추가(.txt)</summary><label class="sbFile"><input type="file" id="pFile" accept=".txt,text/plain" multiple></label></details>
+      <details class="sbSub sbTools"><summary title="자세 초기화 · GIF 저장 · 입력 지우기 · 복귀() 추가 · 보정 Work 추가">🛠 도구</summary><div class="sbToolsIn">
+        <div class="sbRow3"><button id="pReset">↺ 자세 초기화</button><button id="bGif" disabled title="다음 단계에서 연결해요">GIF 저장</button><button id="pClear">입력 지우기</button></div>
+        <div class="sbRow dev"><button id="bGifSeg" title="입력창의 하늘색 점선(모든 모터 합이 0이 되는 지점)마다 나눠서 구간별 GIF 여러 개로 저장합니다">GIF 0 지점 구간별 내보내기</button><label class="sbOpt" title="0 지점으로 나누되, 조각이 이 시간보다 짧으면 다음 조각과 합칩니다" style="white-space:nowrap">최소 <input id="gifMin" type="number" min="0" max="60" step="1" value="8" style="width:42px">초</label></div>
+        <div class="sbRow2"><button id="pAddHome">복귀() 추가</button><button id="pAddFix" title="모터별 합계가 0이 되도록 되돌리는 Work 한 줄을 끝에 붙입니다">보정 Work 추가</button></div>
+      </div></details>
+      <details class="sbSub sbFileBox"><summary>내 코드 파일 추가(.txt)</summary><label class="sbFile"><input type="file" id="pFile" accept=".txt,text/plain" multiple></label></details>
       <details class="sbSub"><summary id="sumTitle">모터별 분석 자세히</summary>
         <div id="sumBox" class="sumBox">코드를 입력하면 모터별 Work 합계를 확인합니다.</div>
       </details>
-      <div class="sbRow2 sbAna"><button id="pLoad" class="pri">📊 부하 분석</button><button id="bLab" class="sbLab" title="무게중심·중력·바닥 재질·로봇 무게를 바꿔 보며 결과를 표로 비교합니다">🔬 과학 실험실</button></div>
-      <details class="sbSub"><summary>부하 분석 설정</summary>
-        <div class="sbRow sbOpt" style="padding:0 8px"><span>위험선 <input id="pLimit" type="number" value="50" style="width:48px">%</span><span>최대토크 <input id="pStall" type="number" step="0.1" value="2.2" style="width:50px"></span><span>μ <input id="pMu" type="number" step="0.05" value="0.3" style="width:50px"></span></div>
-        <div class="sbRow sbOpt" style="padding:0 8px 6px"><label><input type="checkbox" id="pStab"> 안정 영역 보기</label><label title="안전하게 줄이기가 넘어질 듯한 줄도 줄입니다"><input type="checkbox" id="pStabLim"> 넘어짐도 막기</label></div>
-        <div style="padding:0 8px 6px"><button id="pSafe" style="width:100%">안전하게 줄이기</button></div>
-        <div class="sbDev dev" style="padding:0 8px 6px"><button id="pOne">Work 1줄만 적용</button></div>
-      </details>
-      <div class="sbH">동작 예시</div>
-      <div id="pMacros" class="sbMacros"></div>
     </details>
-    <details class="sbSec">
+    <details class="sbSec" data-mode="code">
       <summary>🎚 모터 각도 제어 <span class="sbNote">3D 화면에서 직접 조정</span></summary>
       <details class="sbSub"><summary>M1~M12 값 직접 입력 (고급)</summary><div id="motorGrid" class="motorGrid"></div></details>
       <div class="sbNote2">현재 변화값을 여러 줄 코드에 추가하면 그 자세가 확정되고 다음 동작을 이어서 만들 수 있습니다.</div>
     </details>
-    <details id="devParts" class="sbSec dev">
+    <details id="labSec" class="sbSec" open data-mode="lab">
+      <summary>🔬 실험 · 분석</summary>
+      <button id="bPhys2" class="sbBig sbPhys" type="button" title="중력·마찰을 계산하는 물리 모드를 켜고 끕니다. 넘어지거나 미끄러지는지 볼 수 있어요">물리 모드 켜기 / 끄기</button>
+      <div class="sbRow2 sbAna"><button id="pLoad" class="pri">부하 분석</button><button id="bLab" class="sbLab" title="무게중심·중력·바닥 재질·로봇 무게를 바꿔 보며 결과를 표로 비교합니다">과학 실험실</button></div>
+      <details class="sbSub"><summary>부하 분석 설정</summary>
+        <div class="sbRow sbOpt" style="padding:0 8px"><span>위험선 <input id="pLimit" type="number" value="50" style="width:48px">%</span><span title="서보모터가 낼 수 있는 최대 힘(kgf·cm)">서보 최대 힘 <input id="pStall" type="number" step="0.1" value="2.2" style="width:50px"></span><span>미끄럼 μ <input id="pMu" type="number" step="0.05" value="0.3" style="width:50px"></span></div>
+        <div class="sbRow sbOpt" style="padding:0 8px 6px"><label><input type="checkbox" id="pStab"> 안정 영역 보기</label><label title="안전하게 줄이기가 넘어질 듯한 줄도 줄입니다"><input type="checkbox" id="pStabLim"> 넘어짐도 막기</label></div>
+        <div style="padding:0 8px 6px"><button id="pSafe" style="width:100%">안전하게 줄이기</button></div>
+        <div class="sbDev dev" style="padding:0 8px 6px"><button id="pOne">Work 1줄만 적용</button></div>
+      </details>
+    </details>
+    <details id="devParts" class="sbSec dev" data-mode="asm">
       <summary>🛠 부품 목록 (개발자)</summary>
       <h3>3D 프린트 부품 (STL 파일에서 분리)</h3>
       <div class="tray" id="trayStl"></div>
@@ -230,6 +264,7 @@ body.devmode .nodev{display:none}
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ko" target="_blank" rel="noopener noreferrer" title="CC BY-NC-SA 4.0"><img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA" height="24"></a>
       <p>본 시뮬레이터는 크리에이티브 커먼즈<br>저작자표시-비영리-동일조건변경허락<br>라이선스에 따라 이용할 수 있습니다.</p>
       <button id="btnPrivacy" class="sbBig">개인정보 처리방침 보기</button>
+      <button id="bCoach" class="sbLink" type="button" title="처음 열었을 때 나오는 말풍선 안내를 다시 봅니다">처음 안내 다시 보기</button>
     </div>
     <div id="privacyModal" class="pvOv" hidden>
       <div class="pvBox" role="dialog" aria-modal="true" aria-label="개인정보 처리방침">
@@ -300,8 +335,8 @@ body.devmode .nodev{display:none}
         <select id="snapT"><option value="0">이동 자유</option><option value="0.5">0.5mm</option><option value="1" selected>1mm</option><option value="5">5mm</option></select>
         <select id="snapR"><option value="0">회전 자유</option><option value="5">5°</option><option value="15">15°</option><option value="45">45°</option><option value="90" selected>90°</option></select>
       </div>
-      <div class="grp"><button id="helpBtn">? 조작 도움말</button><label style="font-size:12px"><input type="checkbox" id="angChk" checked> 각도 상자</label><label style="font-size:12px" title="바닥 격자(그리드)를 보이거나 숨깁니다. GIF 에도 그대로 적용돼요"><input type="checkbox" id="gridChk" checked> ▦ 그리드</label><label style="font-size:12px" title="물리로 실행할 때 로봇이 멀리 가면 화면이 따라갑니다"><input type="checkbox" id="followChk" checked> 🎥 로봇 따라가기</label><label class="dev" style="font-size:12px" title="(개발자) 1·4·7·10번 서보 선을 관절 축 위에서 홈으로 잡을 자리 후보를 점으로 보여줍니다"><input type="checkbox" id="clipChk"> 선 홈 자리</label><button id="clipMax" class="dev" title="4번 서보 선이 가장 길어지는 자세로 만들고 구간 길이를 적어 줍니다 (끈으로 재 볼 때 비교용)" style="font-size:11px;padding:2px 6px">4번 선 최장</button><button id="clipMin" class="dev" title="4번 서보 선이 가장 짧아지는 자세" style="font-size:11px;padding:2px 6px">최단</button></div>
-      <div class="grp"><b>📷 시점</b>
+      <div class="grp"><button id="helpBtn">? 조작 도움말</button><label style="font-size:12px"><input type="checkbox" id="angChk"> 각도 상자 모두</label><label style="font-size:12px" title="바닥 격자(그리드)를 보이거나 숨깁니다. GIF 에도 그대로 적용돼요"><input type="checkbox" id="gridChk" checked> 그리드</label><label style="font-size:12px" title="물리로 실행할 때 로봇이 멀리 가면 화면이 따라갑니다"><input type="checkbox" id="followChk" checked> 로봇 따라가기</label><label class="dev" style="font-size:12px" title="(개발자) 1·4·7·10번 서보 선을 관절 축 위에서 홈으로 잡을 자리 후보를 점으로 보여줍니다"><input type="checkbox" id="clipChk"> 선 홈 자리</label><button id="clipMax" class="dev" title="4번 서보 선이 가장 길어지는 자세로 만들고 구간 길이를 적어 줍니다 (끈으로 재 볼 때 비교용)" style="font-size:12px;padding:2px 6px">4번 선 최장</button><button id="clipMin" class="dev" title="4번 서보 선이 가장 짧아지는 자세" style="font-size:12px;padding:2px 6px">최단</button></div>
+      <div class="grp"><b>시점</b>
         <select id="viewSel" title="보는 방향을 바꿉니다"><option value="iso">비스듬히</option><option value="top">위</option><option value="front">앞</option><option value="side">옆</option></select>
       </div>
       <div class="grp dev"><b>보기</b>
@@ -328,9 +363,9 @@ body.devmode .nodev{display:none}
         <button id="bIo" class="pri">상태 주고받기</button>
         <button id="bShot">그림 저장</button>
       </div>
-      <div class="grp" style="position:relative"><button id="bColor" title="3D 프린트 부품(출력물) 색을 고릅니다">🎨 색상</button>
+      <div class="grp" style="position:relative"><button id="bColor" title="3D 프린트 부품(출력물) 색을 고릅니다">색상</button>
         <div id="colPop" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;z-index:30;background:#1f2430;border:1px solid var(--line);border-radius:8px;padding:8px;width:176px">
-          <div style="font-size:11px;color:var(--dim);margin-bottom:6px">출력물 색 (서보·배터리 등은 그대로)</div>
+          <div style="font-size:12px;color:var(--dim);margin-bottom:6px">출력물 색 (서보·배터리 등은 그대로)</div>
           <div id="colSw" style="display:flex;flex-wrap:wrap;gap:6px"></div>
           <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px">직접 고르기 <input type="color" id="colPick" style="width:36px;height:24px;padding:0;border:0;background:none"></label>
         </div>
@@ -338,15 +373,16 @@ body.devmode .nodev{display:none}
       <div class="grp"><button id="bDev" title="부품 편집·조립 도구(조작·배치·보기·부품 목록 등)를 보이거나 숨겨요">개발자 모드</button></div>
     </div>
     <div id="mBadge" style="display:none;position:absolute;left:18px;top:74px;z-index:22;font-size:38px;font-weight:800;color:#ffd166;background:#171c28dd;border:3px solid #c08a2a;border-radius:14px;padding:6px 18px;pointer-events:none"></div>
-    <div id="pman" style="display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(46px + var(--dock,0px));z-index:21;width:560px;max-width:92%;background:#171c28f2;border:1px solid #c08a2a;border-radius:12px;padding:12px 14px;font-size:13px">
+    <div id="pman" style="display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(46px + var(--dock,0px));z-index:21;width:560px;max-width:92%;background:#171c28f2;border:1px solid #3a4560;border-radius:12px;padding:12px 14px;font-size:13px">
       <div style="display:flex;align-items:flex-start;gap:8px"><div id="mTitle" style="flex:1;font-weight:700;font-size:15px;color:#ffd27a;margin-bottom:4px"></div><button id="mFold" title="설명을 아래로 접어 화면을 넓게 봅니다" style="padding:1px 8px;font-size:12px">▾ 접기</button></div>
       <div id="mDesc" style="line-height:1.5;margin-bottom:6px"></div>
       <div id="mParts" style="color:#9fd4ff;margin-bottom:8px"></div>
       <div style="display:flex;gap:6px"><button id="mPrev">◀ 이전</button><button id="mReplay">↺ 다시 보기</button><button id="mNext" class="pri">다음 ▶</button><button id="mEnd" style="margin-left:auto">설명서 닫기</button></div>
     </div>
-    <div id="pLoadBox" style="display:none;position:absolute;right:12px;top:150px;z-index:23;width:380px;max-width:92%;background:#171c28f2;border:1px solid #c08a2a;border-radius:12px;padding:10px 12px;font-size:12px"></div>
+    <div id="pLoadBox" style="display:none;position:absolute;right:12px;top:150px;z-index:23;width:380px;max-width:92%;background:#171c28f2;border:1px solid #3a4560;border-radius:12px;padding:10px 12px;font-size:12px"></div>
     <div id="pStabBox" style="display:none;position:absolute;left:18px;top:128px;z-index:22;font-size:13px;background:#171c28dd;border:1px solid #3a4560;border-radius:10px;padding:6px 12px;pointer-events:none"></div>
-    <div id="pPhBox" style="display:none;position:absolute;left:18px;top:128px;z-index:22;width:330px;max-width:60%;font-size:12px;background:#171c28ee;border:1px solid #c08a2a;border-radius:10px;padding:8px 12px"></div>
+    <div id="pPhBox" style="display:none;position:absolute;left:18px;top:128px;z-index:22;width:330px;max-width:60%;font-size:12px;background:#171c28ee;border:1px solid #3a4560;border-radius:10px;padding:8px 12px"></div>
+    <div id="playBar" class="playBar"><button id="pRun" class="runBtn" title="입력창의 코드를 처음 자세부터 실행합니다">▶ 처음부터 실행</button><button id="pPause" title="실행을 잠깐 멈추거나 다시 이어 갑니다">⏸ 일시정지</button><button id="pStop" title="실행을 끝냅니다">■ 중지</button><div class="pbInfo"><div class="pbTrack"><div id="pbFill"></div></div><div class="pbTxt"><span id="runStat" class="runStat">실행 대기</span> <span id="pbTime"></span></div></div></div>
     <div id="hint"><span class="nodev">오른쪽 버튼 드래그 = 화면 돌리기 · 휠 누르고 드래그 = 화면 옮기기 · 휠 = 확대</span><span class="dev">오른쪽 버튼 드래그 = 화면 돌리기 · 휠 누르고 드래그(또는 Shift+오른쪽) = 화면 옮기기 · 휠 = 확대 · 부품 클릭 = 선택 후 화살표/고리를 끌어 이동·회전 · Del = 삭제 · Ctrl+D = 복제</span></div>
     <div id="info"><h4 id="iname">부품을 클릭하세요</h4><div id="ibody"></div></div>
   </div>
@@ -808,6 +844,7 @@ let motionTok=0;
 async function runMotion(code,delay){
   const tok=++motionTok, steps=parseMotion(code,delay||25); if(!steps.length){toast('Work(...) 코드를 찾지 못했어요');return;}
   ensureFlat(); let D=curD.slice(), n=0, wc=0;
+  RUNINFO={t0:performance.now(), total:steps.reduce((a,s)=>a+(s.t==='pause'?Math.min(s.ms,4000):(s.t==='work'||s.t==='home')?Math.max(s.ms,30):0),0)/1000, nW:steps.filter(s=>s.t==='work').length};      /* 재생 막대가 진행을 그린다 */
   for(const st of steps){
     if(tok!==motionTok)return; n++; if(Number.isFinite(st.ln))RUNLN=st.ln;
     if(st.t==='led'||st.t==='bright'){ neoCmd(st); continue; }
@@ -1666,33 +1703,33 @@ function ldShow(R){
     +'<span style="padding:3px 10px;border-radius:12px;background:'+(nTq?'#d93a2b':'#2f8a58')+'">서보 힘 위험선('+LD.limitPct+'%) 넘는 줄 <b>'+nTq+'</b></span>'
     +(PHY?'<span style="padding:3px 10px;border-radius:12px;background:'+(nSt?'#d93a2b':'#2f8a58')+'">넘어짐·몸통 일부 닿음·두 다리 듦 줄 <b>'+nSt+'</b></span>':'')+'</span>';
   const ph=R.phys, status=R.physState==='run'?'물리 계산 중 '+(R.physPct||0)+'% (임시로 정적 값을 보여 줘요)':(ph&&!ph.ok?'물리 계산 안 됨 — '+ph.why:(ph&&ph.ok?'물리 계산 '+ph.secs.toFixed(0)+'초 걸림'+(ph.fellAt>=0?' · '+(ph.fellAt+1)+'번째에서 넘어짐, 그 뒤는 회색':''):''));
-  bd='<span style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"><span id="pLdProg" style="color:#ffd27a;font-size:11px">'+status+'</span><button id="pLdPause" title="실행 · 일시정지 · 계속">▶ 실행</button><b id="pLdNow" style="color:#7dff9a;font-size:12px"></b></span>'+bd;
+  bd='<span style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"><span id="pLdProg" style="color:#ffd27a;font-size:12px">'+status+'</span><button id="pLdPause" title="실행 · 일시정지 · 계속">▶ 실행</button><b id="pLdNow" style="color:#7dff9a;font-size:12px"></b></span>'+bd;
   h=h.replace('BADGES',bd).replace('justify-content:space-between;','gap:14px;flex-wrap:wrap;');
   const top=h; h='';
-  h+='<div style="font-size:11px;color:#9aa6c0;margin-bottom:4px">칸 하나 = 동작 한 단계(반복문은 펼쳐서 셈). 색 = 최대 토크('+LD.stall+'kgf·cm)의 몇 %인지 · 칸을 누르면 코드의 그 줄이 선택돼요</div>';
-  h+='<div style="display:flex;gap:10px;font-size:11px;margin-bottom:4px;flex-wrap:wrap">'+[['#1f3a2c','12% 미만'],['#2f8a58','여유'],['#d3ab1f',Math.round(LD.limitPct*0.6)+'%~'],['#e8772e','위험선 '+LD.limitPct+'%~'],['#d93a2b','95%~ 힘 모자람']].map(a=>'<span><i style="display:inline-block;width:10px;height:10px;background:'+a[0]+';margin-right:3px;vertical-align:-1px"></i>'+a[1]+'</span>').join('')+'</div>';
+  h+='<div style="font-size:12px;color:#9aa6c0;margin-bottom:4px">칸 하나 = 동작 한 단계(반복문은 펼쳐서 셈). 색 = 최대 토크('+LD.stall+'kgf·cm)의 몇 %인지 · 칸을 누르면 코드의 그 줄이 선택돼요</div>';
+  h+='<div style="display:flex;gap:10px;font-size:12px;margin-bottom:4px;flex-wrap:wrap">'+[['#1f3a2c','12% 미만'],['#2f8a58','여유'],['#d3ab1f',Math.round(LD.limitPct*0.6)+'%~'],['#e8772e','위험선 '+LD.limitPct+'%~'],['#d93a2b','95%~ 힘 모자람']].map(a=>'<span><i style="display:inline-block;width:10px;height:10px;background:'+a[0]+';margin-right:3px;vertical-align:-1px"></i>'+a[1]+'</span>').join('')+'</div>';
   h+='<div id="pLdScroll" style="overflow-x:auto;padding-bottom:4px"><div id="pLdHeat" style="display:inline-block;min-width:100%;position:relative"><div id="pLdHead" style="display:none;position:absolute;top:0;bottom:0;left:116px;width:2px;background:#ff4d4d;box-shadow:0 0 6px #ff4d4d;pointer-events:none;z-index:3"><i style="position:absolute;top:-1px;left:-5px;border:6px solid transparent;border-top-color:#ff4d4d"></i></div>';
   h+='<div style="display:flex;margin-left:116px;font-size:9px;color:#9aa6c0;height:11px">'+Array.from({length:N},(_,i)=>'<span style="display:inline-block;width:'+cw+'px;margin-right:1px;overflow:visible;white-space:nowrap">'+((i+1)%5===0?(i+1):'')+'</span>').join('')+'</div>';
   const cell=(i,bg,tip)=>'<span data-ln="'+i+'" title="'+tip+'" style="display:inline-block;width:'+cw+'px;height:13px;margin-right:1px;background:'+bg+';cursor:pointer"></span>';
-  if(PHY)h+='<div style="display:flex;align-items:center;margin-bottom:3px"><span style="width:116px;font-size:11px;color:#ffd27a">넘어짐 여부</span><span style="white-space:nowrap">'+st.map((x,i)=>cell(i,ldPhCell(x),(i+1)+'번째 · '+ldPhTip(x))).join('')+'</span></div>';
+  if(PHY)h+='<div style="display:flex;align-items:center;margin-bottom:3px"><span style="width:116px;font-size:12px;color:#ffd27a">넘어짐 여부</span><span style="white-space:nowrap">'+st.map((x,i)=>cell(i,ldPhCell(x),(i+1)+'번째 · '+ldPhTip(x))).join('')+'</span></div>';
   const rowsView=rows.slice().sort((a,b)=>a.mn-b.mn);   // 화면에는 모터 번호(= Work 인자 순서 1~12) 순서로
   rowsView.forEach((r,ri)=>{ const mx=Math.max(...LV.map(v=>v[r.k])), p=mx/LD.stall*100, at=LV.findIndex(v=>v[r.k]===mx)+1;
-    h+='<div style="display:flex;align-items:center;'+(ri%3===0&&ri>0?'margin-top:5px;':'')+'"><span style="width:116px;font-size:11px;color:#c7d0e6">'+r.short+'</span><span style="white-space:nowrap">'
+    h+='<div style="display:flex;align-items:center;'+(ri%3===0&&ri>0?'margin-top:5px;':'')+'"><span style="width:116px;font-size:12px;color:#c7d0e6">'+r.short+'</span><span style="white-space:nowrap">'
       +LV.map((v,i)=>cell(i,ldPctColor(v[r.k]/LD.stall*100)+(REF(i)?'55':''),(i+1)+'번째 줄 · '+r.name+' '+v[r.k].toFixed(2)+'kgf·cm ('+Math.round(v[r.k]/LD.stall*100)+'%)')).join('')
-      +'</span><span style="margin-left:8px;font-size:11px;white-space:nowrap;color:'+ldPctColor(p)+'"><b>'+Math.round(p)+'%</b> <span style="color:#9aa6c0">'+at+'번째</span></span></div>'; });
+      +'</span><span style="margin-left:8px;font-size:12px;white-space:nowrap;color:'+ldPctColor(p)+'"><b>'+Math.round(p)+'%</b> <span style="color:#9aa6c0">'+at+'번째</span></span></div>'; });
   h+='</div></div>';
   const heat=h; h='';
   // 문제 구간 목록
   const segs=[]; let cur=null;
   for(let i=0;i<N;i++){ const bad=tqBad[i]||stBad[i]; if(bad){ if(!cur){cur={a:i,b:i};segs.push(cur);} else cur.b=i; } else cur=null; }
   segs.forEach(sg=>{ let wp=0,wn='',wl=0,wm=1e9,wd='',wb=0,wf=0,wt=0,wpa=0,w2=0; for(let i=sg.a;i<=sg.b;i++){ LV[i].forEach((v,k)=>{ const p=v/LD.stall*100; if(p>wp){wp=p;wn=rows[k].name;wl=i;} }); if(stBad[i]){ if(PHY){ if(st[i].fell)wf=1; if(st[i].partial)wpa=1; if(st[i].twoUp)w2=1; wt=Math.max(wt,st[i].tilt); wm=0; } else if(st[i].margin<wm){wm=st[i].margin;wd=st[i].dir;wb=st[i].body;} } } Object.assign(sg,{wp,wn,wl,wm,wd,wb,wf,wt,wpa,w2,tq:wp>=LD.limitPct,sb:wm<1e9}); });
-  h+='<div style="margin-top:6px;font-weight:700;color:#ffd27a">문제 구간 ('+segs.length+'곳) <span style="font-weight:400;color:#9aa6c0;font-size:11px">— 누르면 코드가 선택돼요</span></div>';
+  h+='<div style="margin-top:6px;font-weight:700;color:#ffd27a">문제 구간 ('+segs.length+'곳) <span style="font-weight:400;color:#9aa6c0;font-size:12px">— 누르면 코드가 선택돼요</span></div>';
   if(!segs.length) h+='<div style="color:#7dff9a;margin:3px 0">위험선 아래이고 넘어질 줄도 없어요 👍</div>';
   else h+='<div style="margin-top:3px">'+segs.map(sg=>'<div data-ln="'+(sg.tq?sg.wl:sg.a)+'" style="cursor:pointer;display:flex;gap:8px;align-items:center;padding:3px 6px;margin-bottom:2px;border-radius:6px;background:#ffffff0d">'
     +'<b style="min-width:64px">'+(sg.a===sg.b?(sg.a+1)+'번째':(sg.a+1)+'~'+(sg.b+1)+'번째')+'</b>'
     +(sg.tq?'<span style="padding:1px 7px;border-radius:9px;background:'+ldPctColor(sg.wp)+'">'+sg.wn+' '+Math.round(sg.wp)+'%</span>':'')
     +(sg.sb?(PHY?'<span style="padding:1px 7px;border-radius:9px;background:'+(sg.wf||sg.wpa||sg.w2?'#d93a2b':'#e8772e')+'">'+[sg.wf?'넘어짐':'',sg.wpa?'몸통 일부만 닿음':'',sg.w2?'두 다리 동시에 듦':''].filter(Boolean).join(' · ')+(sg.wf||sg.wpa||sg.w2?'':'많이 기욺')+' · 최대 기울기 '+sg.wt.toFixed(0)+'°</span>':'<span style="padding:1px 7px;border-radius:9px;background:'+(sg.wm<0?'#d93a2b':'#e8772e')+'">'+(sg.wm<0?'넘어짐('+sg.wd+')':'넘어짐 위험')+' 여유 '+sg.wm.toFixed(0)+'mm</span>'):'')+'</div>').join('')+'</div>';
-  h+='<div style="color:#9aa6c0;font-size:11px;margin-top:6px;line-height:1.5">'+(PHY?'물리엔진(중력·마찰 μ='+LD.mu+')으로 곡 전체를 돌려 잰 값이에요. 서보 힘은 최대 토크에서 잘려서 100%가 «힘 모자람»이에요.'+(R.phys.fellAt>=0?'<br><span style="color:#ffcf6a">⚠ '+(R.phys.fellAt+1)+'번째 단계에서 넘어져서 그 뒤는 계산을 멈췄어요. 흐린 칸은 «참고용»(정적 계산: 발이 땅을 미는 힘으로 어림, 속도·충격 없음)이에요.</span>':''):'물리 계산이 끝나기 전의 임시 값(정적 계산: 어깨는 마찰 μ='+LD.mu+'로 어림, 속도·충격 없음)이에요.')+'</div>';
+  h+='<div style="color:#9aa6c0;font-size:12px;margin-top:6px;line-height:1.5">'+(PHY?'물리엔진(중력·마찰 μ='+LD.mu+')으로 곡 전체를 돌려 잰 값이에요. 서보 힘은 최대 토크에서 잘려서 100%가 «힘 모자람»이에요.'+(R.phys.fellAt>=0?'<br><span style="color:#ffcf6a">⚠ '+(R.phys.fellAt+1)+'번째 단계에서 넘어져서 그 뒤는 계산을 멈췄어요. 흐린 칸은 «참고용»(정적 계산: 발이 땅을 미는 힘으로 어림, 속도·충격 없음)이에요.</span>':''):'물리 계산이 끝나기 전의 임시 값(정적 계산: 어깨는 마찰 μ='+LD.mu+'로 어림, 속도·충격 없음)이에요.')+'</div>';
   const side=h, dockH=Math.round(Math.max(300,Math.min(innerHeight*0.45,440)));
   box.innerHTML='<div style="padding:8px 14px 4px;border-bottom:1px solid #3a4560">'+top+'</div><div style="display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:0;flex:1;min-height:0"><div style="overflow:auto;padding:8px 14px">'+heat+'</div><div style="overflow:auto;padding:8px 12px;border-left:1px solid #3a4560">'+side+'</div></div>';
   box.style.cssText='display:flex;flex-direction:column;position:absolute;left:0;right:0;bottom:0;height:'+dockH+'px;z-index:23;background:#171c28;border-top:2px solid #c08a2a;font-size:12px';
@@ -1993,15 +2030,18 @@ function phFollow(){        // 로봇이 어느 정도(6cm) 이상 멀어지면 
 function phUi(m){
   const dyn=$('#pPhDyn'); if(!dyn)return; const col=PH.state==='넘어짐'?'#c0392b':/안정/.test(PH.state)||PH.state==='서 있음'?'#2f7d4f':'#c8a21a';
   const mc=ldStabClass(m.margin,m.bodyTouch), inside=m.margin>=0, fw=m.fwd, rt=m.right;
-  let h='<div style="font-weight:700;color:#ffd27a">물리 모드 <span style="font-weight:400;color:#9aa6c0">('+PH.sim.toFixed(1)+'초)</span></div>';
+  const tt=$('#pPhT'); if(tt)tt.textContent='('+PH.sim.toFixed(1)+'초)'; let h='';
   h+='<div style="margin:4px 0"><b style="color:'+col+';font-size:15px">'+PH.state+'</b> · 기울기 '+m.tilt.toFixed(0)+'° · 닿은 발 '+m.feet+'개'+(m.bodyTouch?' + 몸통':'')+'</div>';
-  h+='<div>이동 <b>'+(fw>=0?'앞 ':'뒤 ')+Math.abs(fw).toFixed(0)+'mm</b> · <b>'+(rt>=0?'오른쪽 ':'왼쪽 ')+Math.abs(rt).toFixed(0)+'mm</b> · 방향 <b>'+(m.yaw>=0?'왼쪽 ':'오른쪽 ')+Math.abs(m.yaw).toFixed(0)+'° 회전</b> · 발 미끄러짐 합계 '+PH.slipRun.toFixed(0)+'mm</div>';
+  if(PH.detail){ h+='<div>이동 <b>'+(fw>=0?'앞 ':'뒤 ')+Math.abs(fw).toFixed(0)+'mm</b> · <b>'+(rt>=0?'오른쪽 ':'왼쪽 ')+Math.abs(rt).toFixed(0)+'mm</b> · 방향 <b>'+(m.yaw>=0?'왼쪽 ':'오른쪽 ')+Math.abs(m.yaw).toFixed(0)+'° 회전</b> · 발 미끄러짐 합계 '+PH.slipRun.toFixed(0)+'mm</div>';
   h+='<div style="margin-bottom:4px">무게중심 높이 <b>'+m.comH.toFixed(0)+'mm</b> · 지지 여유 <b style="color:'+mc+'">'+(m.margin<-999?'발·몸통 안 닿음':m.margin.toFixed(0)+'mm'+(inside?'':' ('+m.dir+'으로 기움)'))+'</b></div>';
-  h+='<table style="border-collapse:collapse;font-size:11px;width:100%"><tr><th></th>'+LDJ.map(j=>'<th>'+j+'</th>').join('')+'</tr>';
+  h+='<table style="border-collapse:collapse;font-size:12px;width:100%"><tr><th></th>'+LDJ.map(j=>'<th>'+j+'</th>').join('')+'</tr>';
   Object.keys(JAXES).forEach(tag=>{ h+='<tr><td style="color:#9aa6c0;padding:0 4px">'+tag+'</td>'+[0,1,2].map(j=>{ const J=PH.joints.find(x=>x.tag===tag&&x.j===j), pct=J.peak/PHF/LD.stall*100; const c=pct>=95?'#c0392b':pct>=LD.limitPct?'#e0702c':pct>=LD.limitPct*0.6?'#c8a21a':'#2f7d4f'; return '<td style="text-align:center;border:1px solid #3a4560;background:'+c+'33">'+(J.peak/PHF).toFixed(2)+' <span style="color:#9aa6c0">'+Math.round(pct)+'%</span></td>'; }).join('')+'</tr>'; });
-  h+='</table><div style="color:#9aa6c0;font-size:11px;margin-top:3px">서보 힘: 최근 1초 최대(kgf·cm) · 95% 이상 = 힘이 모자람</div>';
+  h+='</table><div style="color:#9aa6c0;font-size:12px;margin-top:3px">서보 힘: 최근 1초 최대(kgf·cm) · 95% 이상 = 힘이 모자람</div>'; }
+  else { let best=null; PH.joints.forEach(J=>{ const pct=J.peak/PHF/LD.stall*100; if(!best||pct>best.p)best={p:pct,n:J.name}; });      // 간단히: 가장 힘든 서보 하나만
+    const c=best.p>=95?'#ff6a5a':best.p>=LD.limitPct?'#ffb020':'#7dff9a'; h+='<div>가장 힘든 서보: <b style="color:'+c+'">'+best.n+' '+Math.round(best.p)+'%</b></div>'; }
   dyn.innerHTML=h; phChart(); phOverlay(m);
-  const S=PH.summary, sm=$('#pPhSum'); if(sm){ if(!S)sm.innerHTML=''; else sm.innerHTML='<div style="margin-top:6px;border-top:1px solid #3a4560;padding-top:4px;line-height:1.55"><b style="color:#ffd27a">마지막 실행 요약 ('+S.dur.toFixed(1)+'초)</b><br>'
+  const S=PH.summary, sm=$('#pPhSum'); if(sm){ if(!S)sm.innerHTML=''; else if(!PH.detail)sm.innerHTML='<div style="margin-top:6px;border-top:1px solid #3a4560;padding-top:4px;line-height:1.55"><b style="color:#ffd27a">마지막 실행</b> ('+S.dur.toFixed(1)+'초) · 끝 상태 <b>'+S.end+'</b> · 이동 '+(S.fwd>=0?'앞 ':'뒤 ')+Math.abs(S.fwd).toFixed(0)+'mm</div>';
+    else sm.innerHTML='<div style="margin-top:6px;border-top:1px solid #3a4560;padding-top:4px;line-height:1.55"><b style="color:#ffd27a">마지막 실행 요약 ('+S.dur.toFixed(1)+'초)</b><br>'
     +'이동 '+(S.fwd>=0?'앞 ':'뒤 ')+Math.abs(S.fwd).toFixed(0)+'mm, '+(S.right>=0?'오른쪽 ':'왼쪽 ')+Math.abs(S.right).toFixed(0)+'mm · 회전 '+(S.yaw>=0?'왼쪽 ':'오른쪽 ')+Math.abs(S.yaw).toFixed(0)+'° · 끝 상태 <b>'+S.end+'</b><br>'
     +'발 미끄러짐 합계 <b>'+S.slip.toFixed(0)+'mm</b> (이동 거리의 '+(Math.hypot(S.fwd,S.right)>1?(S.slip/Math.hypot(S.fwd,S.right)).toFixed(1)+'배':'—')+')<br>'
     +'몸통이 바닥에 닿은 시간 <b>'+S.body.toFixed(0)+'%</b> · 넘어짐 판정 '+S.fall.toFixed(0)+'%<br>'
@@ -2021,18 +2061,22 @@ async function phOn_(silent){
   if(!ensureRobot())return; if(!await phLoad())return; stopMotion(); if(typeof ldOverlayOff==='function'){ const c=$('#pStab'); if(c&&c.checked){c.checked=false; ldOverlayOff();} }
   if($('#pman').style.display==='block')endManual();
   LD.mu=PH.mu; phBuild(); PH.on=true; const box=$('#pPhBox'), o=PH.opt, ck=(id,t,v)=>'<label style="white-space:nowrap"><input type="checkbox" id="'+id+'"'+(v?' checked':'')+'> '+t+'</label>';
-  box.innerHTML='<div id="pPhScroll"><div id="pPhDyn"></div><div style="margin:5px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">μ(마찰) <input id="pPhMu" title="바닥 마찰계수 μ — 클수록 덜 미끄러져요" type="number" step="0.05" min="0.05" max="1.2" value="'+PH.mu+'" style="width:54px"><span style="font-size:11px;color:#9aa6c0">PLA·책상 0.25~0.4</span><button id="pPhReset" title="로봇을 처음 자세로 다시 세우고 기록을 지웁니다">처음 자세로</button><button id="pPhOff" title="끄면 코드가 물리 없이 단순 재생돼요">물리 끄기</button></div>'
-    +'<div style="display:flex;gap:12px;flex-wrap:wrap;margin:2px 0 6px;font-size:12px">'+ck('pPhTrail','이동 자국 보기',o.trail)+ck('pPhSlip','발 미끄러짐 표시',o.slip)+'</div>'
-    +'<canvas id="pPhChart" width="306" height="96" style="width:100%;border-radius:6px"></canvas><div style="font-size:11px;line-height:1.75;color:#b8c3de;margin-top:3px"><span style="white-space:nowrap"><b style="color:#e8ecf5">━</b> 무게중심 높이</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff9a3c">━</b> 기울기</span> &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">━</b> 지지 여유</span> &nbsp;<span style="white-space:nowrap"><b style="color:#c0392b">▬</b> 몸통이 바닥에 닿음</span><br>발 색 &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">●</b> 붙어 있음</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ffcf6a">●</b> 조금 미끄러짐</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff6a5a">●</b> 많이 미끄러짐</span></div><div id="pPhSum"></div></div>';
+  box.innerHTML='<div id="pPhScroll"><div class="phHead"><b>물리 모드</b> <span id="pPhT"></span><button id="pPhMore" type="button" title="서보 12개 힘 표 · 그래프 · 자세한 측정값을 보이거나 숨깁니다">자세히 ▾</button></div><div id="pPhDyn"></div><div style="margin:5px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">미끄럼 μ <input id="pPhMu" title="바닥 마찰계수 μ — 클수록 덜 미끄러져요" type="number" step="0.05" min="0.05" max="1.2" value="'+PH.mu+'" style="width:54px"><span style="font-size:12px;color:#9aa6c0">PLA·책상 0.25~0.4</span><button id="pPhReset" title="로봇을 처음 자세로 다시 세우고 기록을 지웁니다">처음 자세로</button><button id="pPhOff" title="끄면 코드가 물리 없이 단순 재생돼요">물리 끄기</button></div>'
+    +'<div id="pPhDet"><div style="display:flex;gap:12px;flex-wrap:wrap;margin:2px 0 6px;font-size:12px">'+ck('pPhTrail','이동 자국 보기',o.trail)+ck('pPhSlip','발 미끄러짐 표시',o.slip)+'</div>'
+    +'<canvas id="pPhChart" width="306" height="96" style="width:100%;border-radius:6px"></canvas><div style="font-size:12px;line-height:1.75;color:#b8c3de;margin-top:3px"><span style="white-space:nowrap"><b style="color:#e8ecf5">━</b> 무게중심 높이</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff9a3c">━</b> 기울기</span> &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">━</b> 지지 여유</span> &nbsp;<span style="white-space:nowrap"><b style="color:#c0392b">▬</b> 몸통이 바닥에 닿음</span><br>발 색 &nbsp;<span style="white-space:nowrap"><b style="color:#7dff9a">●</b> 붙어 있음</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ffcf6a">●</b> 조금 미끄러짐</span> &nbsp;<span style="white-space:nowrap"><b style="color:#ff6a5a">●</b> 많이 미끄러짐</span></div></div><div id="pPhSum"></div></div>';
   $('#pPhTrail').parentElement.title='몸통이 지나간 길을 바닥에 선으로 남깁니다'; $('#pPhSlip').parentElement.title='발이 미끄러지면 발 색을 노랑·빨강으로 바꿔 보여 줍니다';
   box.insertAdjacentHTML('beforeend','<button id="pPhTab" class="phTab" title="물리모드 접기">◀</button>');   // 화면을 가릴 때: 옆으로 쓱 접고, 다시 누르면 나온다
   { const tab=$('#pPhTab'), setHide=h=>{ PH.hidePanel=h; box.classList.toggle('hide',h); tab.textContent=h?'▶':'◀'; tab.title=h?'물리모드 펼치기':'물리모드 접기'; }; setHide(!!PH.hidePanel); tab.onclick=()=>setHide(!PH.hidePanel); }
   $('#pPhReset').onclick=()=>phReset(); $('#pPhOff').onclick=()=>{ PH.userOff=true; phOff(); }; $('#pPhMu').onchange=e=>{ PH.mu=Math.max(0.05,Number(e.target.value)||0.3); LD.mu=PH.mu; phReset(); };
+  { const mb=$('#pPhMore'), det=$('#pPhDet'), set=d=>{ PH.detail=d; det.style.display=d?'':'none'; mb.textContent=d?'간단히 ▴':'자세히 ▾'; try{localStorage.setItem('robot_phDetail',d?'1':'0');}catch(_){} phFitBox(); };      // 처음엔 «간단히»: 상태·기울기·가장 힘든 서보만
+    if(PH.detail==null){ try{ PH.detail=localStorage.getItem('robot_phDetail')==='1'; }catch(_){ PH.detail=false; } } set(!!PH.detail); mb.onclick=()=>set(!PH.detail); }
   $('#pPhTrail').onchange=e=>{ PH.opt.trail=e.target.checked; }; $('#pPhSlip').onchange=e=>{ PH.opt.slip=e.target.checked; };
   box.style.display='block'; phFitBox(); $('#pPhys').classList.add('on'); PH.last=performance.now(); PH.raf=requestAnimationFrame(phFrame); if(!silent)toast('물리 모드 시작 — 중력·마찰(μ '+PH.mu+')이 적용돼요');
 }
 function phFitBox(){ const box=$('#pPhBox'), sc=$('#pPhScroll'), main=$('#main'); if(!box||!sc||!main||box.style.display==='none')return;      // 노트북처럼 화면이 낮으면 창이 아래로 잘린다 → 화면 안에 맞추고 넘치는 만큼만 창 안에서 스크롤
-  sc.style.maxHeight=Math.max(160,main.clientHeight-box.offsetTop-28)+'px'; }
+  const dk=parseFloat(getComputedStyle(main).getPropertyValue('--dock'))||0, pb=$('#playBar'), pbH=pb&&pb.offsetParent?pb.offsetHeight+18:0;      // 아래 부하 창·재생 막대 위에서 멈춘다
+  sc.style.maxHeight=Math.max(120,main.clientHeight-dk-pbH-box.offsetTop-28)+'px'; }
+setInterval(phFitBox,700);
 addEventListener('resize',phFitBox);
 function phOff(silent){
   PH.on=false; cancelAnimationFrame(PH.raf); if(PH.sg)PH.sg.visible=false; if(grid.material)grid.material.opacity=1; if(PH.ov){ PH.ov.matrix.identity(); } grid.visible=$('#gridChk')?$('#gridChk').checked:true; $('#pPhBox').style.display='none'; $('#pPhys').classList.remove('on'); if(PH.ov)PH.ov.visible=false; grid.position.set(0,0,0);
@@ -2072,7 +2116,7 @@ function jointFrame(m){      // 관절의 중심(서보 혼 중심)과 회전축
 function setMotorD(m,val){ const [lo,hi]=motorRange(m); const d=curD.slice(); d[m]=Math.max(lo,Math.min(hi,val)); applyD(d); }
 
 /* --- 3D 위 각도 상자 --- */
-const angBoxes=[]; let angOn=true;
+const angBoxes=[]; let angOn=false, angFocus={tag:null,t:0};      // angOn: 12개 모두 보기(위쪽 «각도 상자» 체크). 끄면 마우스를 올린·끌고 있는 다리의 3개만 보인다
 function buildAngleBoxes(){
   const host=document.createElement('div'); host.id='angLayer'; host.style.cssText='position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:5'; $('#main').appendChild(host);
   for(let m=0;m<12;m++){
@@ -2083,16 +2127,18 @@ function buildAngleBoxes(){
     inp.addEventListener('focus',()=>setTimeout(()=>inp.select(),0));
     inp.addEventListener('input',()=>{ if(!prepareEdit())return; const v=Number(inp.value); if(!isFinite(v))return; setMotorD(m,poseBase()[m]+v); poseOutput(); });
     inp.addEventListener('change',()=>{ angRefresh(true); });
+    w.addEventListener('pointermove',()=>{ angFocus.t=performance.now(); });      // 상자 위에 마우스가 있는 동안은 계속 보이게
     host.appendChild(w); angBoxes.push({w,inp,m});
   }
 }
 function angRefresh(force){ const d=poseDelta(); angBoxes.forEach(b=>{ const v=d[b.m]; if(force||document.activeElement!==b.inp)b.inp.value=String(v); b.w.classList.toggle('on',v!==0); }); }
 function angTick(){
   const host=$('#angLayer'); if(!host){ requestAnimationFrame(angTick); return; }
-  const hide=!angOn||(typeof PH!=='undefined'&&(PH.on||PH.run))||$('#pman').style.display==='block'||!items.some(i=>/^T /.test(i.name));
+  const hide=(typeof PH!=='undefined'&&(PH.on||PH.run))||$('#pman').style.display==='block'||!items.some(i=>/^T /.test(i.name));
   host.style.display=hide?'none':'block';
   if(!hide){ const r=cv.getBoundingClientRect(), rm=$('#main').getBoundingClientRect(); const lay=[];
-    angBoxes.forEach(b=>{ const f=jointFrame(b.m); if(!f){ b.w.style.display='none'; return; } const v=f.p.clone().project(camera);
+    const ae=document.activeElement, keepTag=angBoxes.find(b=>b.inp===ae), ftag=POSE.drag?MOTOR_J[POSE.drag.m].tag:keepTag?MOTOR_J[keepTag.m].tag:(performance.now()-angFocus.t<1800?angFocus.tag:null);
+    angBoxes.forEach(b=>{ if(!angOn&&MOTOR_J[b.m].tag!==ftag){ b.w.style.display='none'; return; } const f=jointFrame(b.m); if(!f){ b.w.style.display='none'; return; } const v=f.p.clone().project(camera);
       if(v.z>1||v.z<-1){ b.w.style.display='none'; return; } b.w.style.display='flex';
       b.w.style.left=((v.x+1)/2*r.width+(r.left-rm.left)+10)+'px'; b.w.style.top=((1-v.y)/2*r.height+(r.top-rm.top)-12)+'px'; });
     angRefresh(false); }
@@ -2124,6 +2170,8 @@ function angHit(e){
   const objs=items.filter(i=>i.obj.visible&&legTagOf(i.name)).map(i=>i.obj);
   const h=angRay.intersectObjects(objs,true).find(x=>x.object.userData.item&&legTagOf(x.object.userData.item.name)); return h||null;
 }
+let angHovT=0; cv.addEventListener('pointermove',e=>{ if(angOn||DEV||e.buttons)return; const now=performance.now(); if(now-angHovT<70)return; angHovT=now;      // 마우스를 올린 다리의 각도 상자만 잠깐 보여 준다 (잠깐 떼어도 1.8초는 남아 있어 상자로 옮겨 갈 수 있다)
+  const h=angHit(e); if(h){ angFocus={tag:legTagOf(h.object.userData.item.name),t:now}; } });
 cv.addEventListener('pointerdown',e=>{
   if(e.button!==0||DEV||$('#pman').style.display==='block'||!items.some(i=>/^T /.test(i.name)))return;
   const h=angHit(e); if(!h)return; const it=h.object.userData.item, tag=legTagOf(it.name), j=legGroup(it.name), m=JAXES[tag].m[j];
@@ -2287,7 +2335,7 @@ $('#sumBox').addEventListener('click',e=>{ const b=e.target.closest('[data-ln]')
   pMu:'바닥 마찰계수 μ — 클수록 덜 미끄러져요 (PLA·책상 0.25~0.4)',
   btnPrivacy:'이 시뮬레이터의 개인정보 처리방침을 봅니다',
   helpBtn:'마우스·키보드로 화면을 다루는 방법을 봅니다',
-  angChk:'3D 로봇의 모터마다 각도 숫자 상자를 보이거나 숨깁니다',
+  angChk:'켜면 모터 12개의 각도 상자를 모두 보여 줍니다. 끄면 마우스를 올린 다리의 상자 3개만 보여요',
   pBasic:'로봇을 기본 자세(모든 모터 0)로 놓습니다',
   pAsm:'조립할 때의 자세(다리를 수평으로 편 자세)로 놓습니다',
   pPhys:'중력·마찰을 계산하는 물리 모드를 켜고 끕니다. 넘어지거나 미끄러지는지 볼 수 있어요',
@@ -2716,7 +2764,7 @@ function labRender(){ if(!LAB.open)return; const b=labBox(), e=LAB.exp, T=LAB_TX
   labChips(); labLive(); }
 async function labOpen(){ LAB.open=true; labBadge(); labWrap(); labSetHide(false); $('#labWrap').style.display='block'; $('#bLab').classList.add('on'); PH.userOff=false; labRender(); if(!PH.on&&ensureRobot()){ await phOn(true); labRender(); } clearInterval(LAB.timer); LAB.timer=setInterval(()=>{ if(!LAB.busy)labLive(); },200); }
 function labClose(){ if(LAB.busy)return; LAB.open=false; $('#labWrap').style.display='none'; $('#bLab').classList.remove('on'); clearInterval(LAB.timer); labBadge(); }      // 닫아도 바꾼 값·기록은 그대로 둔다 (잘못 눌러도 손해가 없게) — 되돌리기는 «↺ 처음 값으로»
-function labBadge(){ const b=$('#bLab'); if(!b)return; const n=labChanged().length; b.textContent=(n&&!LAB.open)?'🔬 과학 실험실 (바꾼 값 '+n+'개 유지 중)':'🔬 과학 실험실'; b.classList.toggle('dirty',n>0&&!LAB.open); }
+function labBadge(){ const b=$('#bLab'); if(!b)return; const n=labChanged().length; b.textContent=(n&&!LAB.open)?'과학 실험실 (바꾼 값 '+n+'개 유지 중)':'과학 실험실'; b.classList.toggle('dirty',n>0&&!LAB.open); }
 $('#bLab').onclick=()=>{ LAB.open?labClose():labOpen(); };
 $('#pStop').addEventListener('click',()=>{ LAB.pending=null; });
 $('#pRun').addEventListener('click',()=>{ if(!LAB.open||LAB.busy||LAB.pending||!LAB_RUNEXP.includes(LAB.exp))return; LAB.pending={exp:LAB.exp,set:labSettingText(),code:labNameOf($('#pText').value)}; labRender(); });       // 이 탭이 열려 있을 때 사이드바에서 돌린 실행도 표에 쌓는다
@@ -2990,6 +3038,83 @@ $('#musOn').addEventListener('change',()=>{ if(!$('#musOn').checked)musStop(); }
 (function(){ const b=document.createElement('div'); b.id='musBadge'; b.style.cssText='position:absolute;left:50%;top:96px;transform:translateX(-50%);z-index:20;padding:6px 14px;border-radius:999px;background:#1b2236e6;border:1px solid #ffd166;color:#ffd166;font-weight:700;font-size:14px;pointer-events:none;display:none;white-space:nowrap';
   ($('#main')||document.body).appendChild(b);
   setInterval(()=>{ let on=false; try{ on=MUS.active&&MUS.vidOn&&MUS.yt&&MUS.yt.getPlayerState()===1; }catch(e){} const s=musSongNo(); b.style.display=on?'block':'none'; if(on)b.textContent='🎵 음악에 맞춰 춤추는 중 · '+((SONGS.find(x=>(x.n||'').startsWith(s+'.'))||{}).n||''); },300); })();
+/* ---------- 화면 정리 (2026-11-26) — 중고등학생이 한 번에 보는 정보를 줄인다 ----------
+   · 모드 탭: 🔧 조립 · ⌨ 코딩 · 🔬 실험 — 고른 탭의 사이드바 구역만 보인다 (이 컴퓨터에 기억)
+   · 재생 막대: ▶ ⏸ ■ 를 3D 화면 아래 가운데로 — 로봇을 보면서 누른다. 진행 막대·시간
+   · 코드 입력창: 줄 번호 · Work / pause / 복귀 / 반복문 / 주석 색칠 (글자는 textarea 그대로, 뒤에 색칠한 판을 깐다)
+   · 처음 열었을 때 말풍선 3개 안내 (한 번만, 사이드바 맨 아래 «처음 안내 다시 보기») */
+
+/* --- 모드 탭 --- */
+const MODE={cur:null};
+function setMode(m,save){
+  if(!['asm','code','lab'].includes(m))m='code'; MODE.cur=m;
+  document.querySelectorAll('#modeTabs button').forEach(b=>{ const on=b.dataset.m===m; b.classList.toggle('on',on); b.setAttribute('aria-selected',on?'true':'false'); });
+  document.querySelectorAll('#side [data-mode]').forEach(d=>{ d.style.display=d.dataset.mode===m?'':'none'; });
+  document.body.dataset.mode=m;
+  const pb=$('#playBar'); if(pb)pb.style.display=m==='asm'?'none':'';
+  if(save){ try{ localStorage.setItem('robot_mode',m); }catch(_){} }
+  if(m==='code'&&typeof positionSegMarks==='function')setTimeout(positionSegMarks,0);
+}
+(function(){ const t=$('#modeTabs'); if(!t)return; t.addEventListener('click',e=>{ const b=e.target.closest('button[data-m]'); if(b)setMode(b.dataset.m,true); });
+  let m=null; try{ m=localStorage.getItem('robot_mode'); }catch(_){} setMode(m||'code',false); })();
+// 다른 곳에서 코드 줄을 보여 줘야 할 때(부하 분석 표에서 줄 누르기 등)는 «코딩» 탭으로 넘어간다
+if(typeof ldSelectLine==='function'){ const _ldSel=ldSelectLine; ldSelectLine=function(){ if(MODE.cur!=='code')setMode('code',true); return _ldSel.apply(this,arguments); }; }
+$('#bPhys2')&&($('#bPhys2').onclick=()=>$('#pPhys').click());
+setInterval(()=>{ const b=$('#bPhys2'); if(!b)return; const on=typeof PH!=='undefined'&&PH.on; b.textContent=on?'물리 모드 끄기':'물리 모드 켜기'; b.classList.toggle('on',on); },400);
+
+/* --- 재생 막대 (3D 화면 아래 가운데) --- */
+let RUNINFO=null;      // 화면 실행(물리 아님)의 시작 시각·전체 시간 — runMotion 이 채운다
+(function(){ const bar=$('#playBar'), fill=$('#pbFill'), tm=$('#pbTime'); if(!bar)return;
+  const f1=v=>(Math.round(v*10)/10).toFixed(1);
+  const tick=()=>{ const man=$('#pman')&&$('#pman').style.display==='block'; bar.style.display=(MODE.cur==='asm'||man)?'none':'';
+    const hint=$('#hint'); if(hint){ const dk=parseFloat(getComputedStyle($('#main')).getPropertyValue('--dock'))||0; hint.style.visibility=dk>0?'hidden':''; }      // 부하 창이 열리면 3D 화면이 좁아진다 — 조작 안내는 숨긴다 (? 조작 도움말에 같은 내용)
+    let t=null, T=null, w=null, W=null;
+    if(typeof PH!=='undefined'&&PH.on&&PH.run){ t=Math.max(0,PH.sim-PH.run.t0); T=PH.run.end; const seq=PH.run.seq; W=seq.length?Math.max(...seq.map(x=>x.w))+1:0; w=PH.at&&!PH.at.done?PH.at.w+1:W; }
+    else if(RUNINFO&&typeof RUNPOS!=='undefined'&&RUNPOS.active){ t=(performance.now()-RUNINFO.t0)/1000; T=RUNINFO.total; W=RUNINFO.nW; w=Math.min(W,RUNPOS.w+1); }
+    if(t===null){ fill.style.width='0%'; tm.textContent=''; }
+    else { const k=T>0?Math.min(1,t/T):1; fill.style.width=(k*100).toFixed(1)+'%'; tm.textContent='Work '+w+'/'+W+' · '+f1(Math.min(t,T))+' / '+f1(T)+'초'; }
+    requestAnimationFrame(tick); };
+  requestAnimationFrame(tick); })();
+
+/* --- 코드 입력창: 줄 번호 + 색칠 --- */
+(function(){ const ta=$('#pText'); if(!ta)return; const wrap=ta.parentElement; const pre=document.createElement('pre'); pre.id='pHl'; pre.setAttribute('aria-hidden','true'); wrap.insertBefore(pre,ta); const gut=document.createElement('div'); gut.id='pGut'; gut.setAttribute('aria-hidden','true'); wrap.appendChild(gut);      // 줄 번호는 옆으로 스크롤해도 제자리에
+  const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const paint=line=>{ const i=line.indexOf('//'), code=i>=0?line.slice(0,i):line, com=i>=0?line.slice(i):'';
+    const c=esc(code).replace(/\b(Work)(\s*\()/g,'<b class="hW">$1</b>$2').replace(/(basic\.pause|\bpause)(\s*\()/g,'<b class="hP">$1</b>$2').replace(/(복귀)(\s*\()/g,'<b class="hH">$1</b>$2')
+      .replace(/\b(for|let|while|if|else)\b/g,'<b class="hK">$1</b>').replace(/\b(strip\.\w+|neopixel\.\w+)/g,'<span class="hN">$1</span>');
+    return c+(com?'<span class="hC">'+esc(com)+'</span>':''); };
+  let last=null, gw=0;
+  const fit=()=>{ pre.style.left=ta.offsetLeft+'px'; pre.style.top=ta.offsetTop+'px'; pre.style.width=ta.offsetWidth+'px'; pre.style.height=ta.offsetHeight+'px'; pre.scrollTop=ta.scrollTop; pre.scrollLeft=ta.scrollLeft;
+    gut.style.left=(ta.offsetLeft+ta.clientLeft)+'px'; gut.style.top=(ta.offsetTop+ta.clientTop)+'px'; gut.style.width=gw+'px'; gut.style.height=ta.clientHeight+'px'; gut.scrollTop=ta.scrollTop; };
+  const render=()=>{ const v=ta.value; if(v===last)return; last=v; const L=v.split('\n'), w=Math.max(2,String(L.length).length)*7+16;
+    if(w!==gw){ gw=w; ta.style.paddingLeft=w+'px'; pre.style.paddingLeft=w+'px'; if(typeof positionSegMarks==='function')positionSegMarks(); }
+    pre.innerHTML=L.map(paint).join('\n')+'\n '; gut.textContent=L.map((_,i)=>i+1).join('\n')+'\n\n '; fit(); };
+  ta.addEventListener('input',render); ta.addEventListener('scroll',()=>{ pre.scrollTop=ta.scrollTop; pre.scrollLeft=ta.scrollLeft; gut.scrollTop=ta.scrollTop; });
+  if(window.ResizeObserver)new ResizeObserver(fit).observe(ta); addEventListener('resize',fit);
+  setInterval(()=>{ render(); if(pre.scrollTop!==ta.scrollTop){ pre.scrollTop=ta.scrollTop; gut.scrollTop=ta.scrollTop; } },250);      // 코드가 input 이벤트 없이 바뀌는 곳도 따라간다
+  render(); })();
+
+/* --- 처음 열었을 때 안내 (말풍선 3개) --- */
+const COACH=[
+  {sel:'#modeTabs button[data-m="asm"]', txt:'<b>여기서 조립을 봐요</b><br>«🔧 조립» 탭에 조립 설명서와 조립 영상이 있어요.'},
+  {sel:'#pMacros', mode:'code', txt:'<b>동작 예시를 눌러 보세요</b><br>누르면 코드가 들어가고 로봇이 바로 움직여요.'},
+  {sel:'#cv', mode:'code', center:true, txt:'<b>다리를 끌어 직접 만들어요</b><br>로봇 다리를 마우스로 끌면, 사이드바 «다리를 끌어 만든 Work» 에 코드가 생겨요.'}];
+function coachStart(){ let k=0; const old=$('#coach'); if(old)old.remove(); const box=document.createElement('div'); box.id='coach'; document.body.appendChild(box);
+  const end=()=>{ box.remove(); document.querySelectorAll('.coachRing').forEach(e=>e.classList.remove('coachRing')); try{ localStorage.setItem('robot_coach','1'); }catch(_){} };
+  const show=()=>{ document.querySelectorAll('.coachRing').forEach(e=>e.classList.remove('coachRing')); const S=COACH[k]; if(S.mode&&MODE.cur!==S.mode)setMode(S.mode,true);
+    const el=$(S.sel); if(!el){ end(); return; } if(!S.center){ el.classList.add('coachRing'); el.scrollIntoView({block:'nearest'}); }
+    box.innerHTML='<div class="cTxt">'+S.txt+'</div><div class="cBtn"><span>'+(k+1)+' / '+COACH.length+'</span><button type="button" class="cSkip">건너뛰기</button><button type="button" class="pri cNext">'+(k<COACH.length-1?'다음 ▶':'시작하기')+'</button></div>';
+    box.querySelector('.cSkip').onclick=end; box.querySelector('.cNext').onclick=()=>{ k++; k<COACH.length?show():end(); };
+    const r=el.getBoundingClientRect(), bw=290, bh=box.offsetHeight||110; let x, y;
+    if(S.center){ x=r.left+r.width/2-bw/2; y=r.top+r.height*0.62; box.className='cCenter'; }
+    else { x=r.right+12; y=r.top+r.height/2-bh/2; box.className='cRight'; if(x+bw>innerWidth-8){ x=Math.max(8,r.left); y=r.bottom+10; box.className='cBelow'; } }
+    box.style.left=Math.max(8,Math.min(innerWidth-bw-8,x))+'px'; box.style.top=Math.max(8,Math.min(innerHeight-bh-8,y))+'px'; };
+  show(); }
+(function(){ const b=$('#bCoach'); if(b)b.onclick=()=>coachStart(); let seen=false; try{ seen=localStorage.getItem('robot_coach')==='1'; }catch(_){} if(!seen)setTimeout(coachStart,1200); })();
+
+/* --- 입력창 바로 아래 실행 단추 · Ctrl+Enter (코드를 쓰다가 멀리 가지 않게) --- */
+(function(){ const r=$('#pRun2'), st=$('#pStop2'), ta=$('#pText'); if(r)r.onclick=()=>$('#pRun').click(); if(st)st.onclick=()=>$('#pStop').click();
+  if(ta)ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); $('#pRun').click(); } }); })();
 $('#bFull').onclick=()=>{resetFlatCache();pushUndo();restore(BODY_DRAFT.concat(LEG_DRAFT));save();toast('다리 포함 전체 초안을 불러왔어요 (다리는 추정이 많아요)');};
 const LEGV={"h":{"EG":[{"t":"P_E","n":"E 뒤오른쪽 관절","p":[37.69,46.81,-0.57],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.69,58.56,-2.95],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.74,81.84,-8.35],"r":[0,0,0]},{"t":"P_G","n":"G 뒤오른쪽 아랫다리","p":[38.94,137.71,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.69,110.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.94,58.56,11.05],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.94,58.56,-16.95],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.94,124.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.94,96.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[27.39,56.58,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.99,50.39,-5.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.99,50.39,-11.35],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[27.39,105.12,-6.37],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.99,108.12,-0.18],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.99,102.12,-0.18],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.89,58.56,-8.35],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.89,105.12,-8.35],"r":[-90.0,90.0,0.0]}],"EH":[{"t":"P_E","n":"E 뒤오른쪽 관절","p":[37.69,46.81,-0.57],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.69,58.56,-2.95],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.74,81.84,-8.35],"r":[0,0,0]},{"t":"P_H","n":"H 뒤오른쪽 아랫다리","p":[38.94,137.96,-8.35],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.69,110.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.94,58.56,11.05],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.94,58.56,-16.95],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.94,124.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.94,96.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[27.39,56.58,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.99,50.39,-5.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.99,50.39,-11.35],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[27.39,105.12,-10.33],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.99,102.12,-16.52],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.99,108.12,-16.52],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.89,58.56,-8.35],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.89,105.12,-8.35],"r":[-90.0,90.0,0.0]}],"FG":[{"t":"P_F","n":"F 뒤오른쪽 관절","p":[37.72,47.53,-1.07],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.22,59.28,0.82],"r":[180.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.27,82.56,6.22],"r":[0,0,0]},{"t":"P_G","n":"G 뒤오른쪽 아랫다리","p":[38.47,138.43,6.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.22,111.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.47,59.28,-13.18],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.47,59.28,14.82],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.47,125.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.47,97.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[26.92,57.3,6.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.52,51.11,9.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.52,51.11,3.22],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[26.92,105.84,8.2],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.52,108.84,14.39],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.52,102.84,14.39],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.42,59.28,6.22],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.42,105.84,6.22],"r":[-90.0,90.0,0.0]}],"FH":[{"t":"P_F","n":"F 뒤오른쪽 관절","p":[37.72,47.53,-1.07],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.22,59.28,0.82],"r":[180.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.27,82.56,6.22],"r":[0,0,0]},{"t":"P_H","n":"H 뒤오른쪽 아랫다리","p":[38.47,138.68,6.22],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.22,111.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.47,59.28,-13.18],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.47,59.28,14.82],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.47,125.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.47,97.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[26.92,57.3,6.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.52,51.11,9.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.52,51.11,3.22],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[26.92,105.84,4.24],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.52,102.84,-1.95],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.52,108.84,-1.95],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.42,59.28,6.22],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.42,105.84,6.22],"r":[-90.0,90.0,0.0]}]},"d":{"뒤오른쪽":{"EG":[{"t":"P_E","n":"E 뒤오른쪽 관절","p":[37.69,46.81,-0.57],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.69,58.56,-2.95],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.74,81.84,-8.35],"r":[0,0,0]},{"t":"P_G","n":"G 뒤오른쪽 아랫다리","p":[38.94,137.71,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.69,110.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.94,58.56,11.05],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.94,58.56,-16.95],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.94,124.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.94,96.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[27.39,56.58,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.99,50.39,-5.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.99,50.39,-11.35],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[27.39,105.12,-6.37],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.99,108.12,-0.18],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.99,102.12,-0.18],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.89,58.56,-8.35],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.89,105.12,-8.35],"r":[-90.0,90.0,0.0]}],"EH":[{"t":"P_E","n":"E 뒤오른쪽 관절","p":[37.69,46.81,-0.57],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.69,58.56,-2.95],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.74,81.84,-8.35],"r":[0,0,0]},{"t":"P_H","n":"H 뒤오른쪽 아랫다리","p":[38.94,137.96,-8.35],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.69,110.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.94,58.56,11.05],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.94,58.56,-16.95],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.94,124.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.94,96.52,-8.35],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[27.39,56.58,-8.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.99,50.39,-5.35],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.99,50.39,-11.35],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[27.39,105.12,-10.33],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.99,102.12,-16.52],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.99,108.12,-16.52],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.89,58.56,-8.35],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.89,105.12,-8.35],"r":[-90.0,90.0,0.0]}],"FG":[{"t":"P_F","n":"F 뒤오른쪽 관절","p":[37.72,47.53,-1.07],"r":[90,-90,0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.22,59.28,0.82],"r":[180,90,0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.27,82.56,6.22],"r":[0,0,0]},{"t":"P_G","n":"G 뒤오른쪽 아랫다리","p":[38.47,138.43,6.22],"r":[-180,-90,0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.22,111.24,6.22],"r":[-90,90,0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.47,59.28,-13.18],"r":[180,90,0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.47,59.28,14.82],"r":[180,90,0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.47,125.24,6.22],"r":[-90,90,0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.47,97.24,6.22],"r":[-90,90,0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[26.92,57.3,6.22],"r":[-180,-90,0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.52,51.11,9.22],"r":[-180,-90,0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.52,51.11,3.22],"r":[-180,-90,0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[26.92,105.84,8.2],"r":[90,-90,0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.52,108.84,14.39],"r":[90,-90,0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.52,102.84,14.39],"r":[90,-90,0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[0,0,90]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.42,59.28,6.22],"r":[90,90,0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.42,105.84,6.22],"r":[-90,90,0]}],"FH":[{"t":"P_F","n":"F 뒤오른쪽 관절","p":[37.72,47.53,-1.07],"r":[90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 관절 서보","p":[42.22,59.28,0.82],"r":[180.0,90.0,0.0]},{"t":"P_C","n":"C 뒤오른쪽 윗다리","p":[42.27,82.56,6.22],"r":[0,0,0]},{"t":"P_H","n":"H 뒤오른쪽 아랫다리","p":[38.47,138.68,6.22],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤오른쪽 아랫다리 서보","p":[42.22,111.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 1","p":[45.47,59.28,-13.18],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 관절 8mm 2","p":[45.47,59.28,14.82],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 1","p":[45.47,125.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤오른쪽 아랫다리 8mm 2","p":[45.47,97.24,6.22],"r":[-90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 관절 연결판","p":[26.92,57.3,6.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 1","p":[32.52,51.11,9.22],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 관절 10mm 2","p":[32.52,51.11,3.22],"r":[-180.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤오른쪽 아랫다리 연결판","p":[26.92,105.84,4.24],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 1","p":[32.52,102.84,-1.95],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤오른쪽 아랫다리 10mm 2","p":[32.52,108.84,-1.95],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽 어깨 혼","p":[41.15,31.79,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 뒤오른쪽관절 혼","p":[62.42,59.28,6.22],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤오른쪽아랫다리 혼","p":[62.42,105.84,6.22],"r":[-90.0,90.0,0.0]}]},"앞왼쪽":{"EG":[{"t":"P_E","n":"E 앞왼쪽 관절","p":[-37.61,-45.07,-0.57],"r":[90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 관절 서보","p":[-42.61,-56.82,-2.95],"r":[-180.0,-90.0,0.0]},{"t":"P_C","n":"C 앞왼쪽 윗다리","p":[-42.66,-80.1,-8.35],"r":[0,0,-180]},{"t":"P_G","n":"G 앞왼쪽 아랫다리","p":[-38.86,-135.97,-8.35],"r":[-0.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 아랫다리 서보","p":[-42.61,-108.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 1","p":[-45.86,-56.82,11.05],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 2","p":[-45.86,-56.82,-16.95],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 1","p":[-45.86,-122.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 2","p":[-45.86,-94.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 관절 연결판","p":[-27.31,-54.84,-8.35],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 1","p":[-32.91,-48.65,-5.35],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 2","p":[-32.91,-48.65,-11.35],"r":[0.0,90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 아랫다리 연결판","p":[-27.31,-103.38,-6.37],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 1","p":[-32.91,-106.38,-0.18],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 2","p":[-32.91,-100.38,-0.18],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽 어깨 혼","p":[-41.07,-30.05,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 앞왼쪽관절 혼","p":[-62.81,-56.82,-8.35],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽아랫다리 혼","p":[-62.81,-103.38,-8.35],"r":[-90.0,-90.0,0.0]}],"EH":[{"t":"P_E","n":"E 앞왼쪽 관절","p":[-37.61,-45.07,-0.57],"r":[90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 관절 서보","p":[-42.61,-56.82,-2.95],"r":[-180.0,-90.0,0.0]},{"t":"P_C","n":"C 앞왼쪽 윗다리","p":[-42.66,-80.1,-8.35],"r":[0,0,-180]},{"t":"P_H","n":"H 앞왼쪽 아랫다리","p":[-38.86,-136.22,-8.35],"r":[180.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 아랫다리 서보","p":[-42.61,-108.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 1","p":[-45.86,-56.82,11.05],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 2","p":[-45.86,-56.82,-16.95],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 1","p":[-45.86,-122.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 2","p":[-45.86,-94.78,-8.35],"r":[-90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 관절 연결판","p":[-27.31,-54.84,-8.35],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 1","p":[-32.91,-48.65,-5.35],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 2","p":[-32.91,-48.65,-11.35],"r":[0.0,90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 아랫다리 연결판","p":[-27.31,-103.38,-10.33],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 1","p":[-32.91,-100.38,-16.52],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 2","p":[-32.91,-106.38,-16.52],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽 어깨 혼","p":[-41.07,-30.05,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 앞왼쪽관절 혼","p":[-62.81,-56.82,-8.35],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽아랫다리 혼","p":[-62.81,-103.38,-8.35],"r":[-90.0,-90.0,0.0]}],"FG":[{"t":"P_F","n":"F 앞왼쪽 관절","p":[-37.64,-45.79,-1.07],"r":[90,90,0]},{"t":"HW_SERVO","n":"S 앞왼쪽 관절 서보","p":[-42.14,-57.54,0.82],"r":[0,-90,0]},{"t":"P_C","n":"C 앞왼쪽 윗다리","p":[-42.19,-80.82,6.22],"r":[0,0,-180]},{"t":"P_G","n":"G 앞왼쪽 아랫다리","p":[-38.39,-136.69,6.22],"r":[0,90,0]},{"t":"HW_SERVO","n":"S 앞왼쪽 아랫다리 서보","p":[-42.14,-109.5,6.22],"r":[-90,-90,0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 1","p":[-45.39,-57.54,-13.18],"r":[0,-90,0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 2","p":[-45.39,-57.54,14.82],"r":[0,-90,0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 1","p":[-45.39,-123.5,6.22],"r":[-90,-90,0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 2","p":[-45.39,-95.5,6.22],"r":[-90,-90,0]},{"t":"P_L","n":"L 앞왼쪽 관절 연결판","p":[-26.84,-55.56,6.22],"r":[0,90,0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 1","p":[-32.44,-49.37,9.22],"r":[0,90,0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 2","p":[-32.44,-49.37,3.22],"r":[0,90,0]},{"t":"P_L","n":"L 앞왼쪽 아랫다리 연결판","p":[-26.84,-104.1,8.2],"r":[90,90,0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 1","p":[-32.44,-107.1,14.39],"r":[90,90,0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 2","p":[-32.44,-101.1,14.39],"r":[90,90,0]},{"t":"HW_HORN","n":"T 앞왼쪽 어깨 혼","p":[-41.07,-30.05,18.88],"r":[0,0,-90]},{"t":"HW_HORN","n":"T 앞왼쪽관절 혼","p":[-62.34,-57.54,6.22],"r":[90,-90,0]},{"t":"HW_HORN","n":"T 앞왼쪽아랫다리 혼","p":[-62.34,-104.1,6.22],"r":[-90,-90,0]}],"FH":[{"t":"P_F","n":"F 앞왼쪽 관절","p":[-37.64,-45.79,-1.07],"r":[90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 관절 서보","p":[-42.14,-57.54,0.82],"r":[-0.0,-90.0,0.0]},{"t":"P_C","n":"C 앞왼쪽 윗다리","p":[-42.19,-80.82,6.22],"r":[0,0,-180]},{"t":"P_H","n":"H 앞왼쪽 아랫다리","p":[-38.39,-136.94,6.22],"r":[180.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞왼쪽 아랫다리 서보","p":[-42.14,-109.5,6.22],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 1","p":[-45.39,-57.54,-13.18],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 관절 8mm 2","p":[-45.39,-57.54,14.82],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 1","p":[-45.39,-123.5,6.22],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞왼쪽 아랫다리 8mm 2","p":[-45.39,-95.5,6.22],"r":[-90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 관절 연결판","p":[-26.84,-55.56,6.22],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 1","p":[-32.44,-49.37,9.22],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 관절 10mm 2","p":[-32.44,-49.37,3.22],"r":[0.0,90.0,0.0]},{"t":"P_L","n":"L 앞왼쪽 아랫다리 연결판","p":[-26.84,-104.1,4.24],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 1","p":[-32.44,-101.1,-1.95],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞왼쪽 아랫다리 10mm 2","p":[-32.44,-107.1,-1.95],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽 어깨 혼","p":[-41.07,-30.05,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 앞왼쪽관절 혼","p":[-62.34,-57.54,6.22],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞왼쪽아랫다리 혼","p":[-62.34,-104.1,6.22],"r":[-90.0,-90.0,0.0]}]},"뒤왼쪽":{"EG":[{"t":"P_E","n":"E 뒤왼쪽 관절","p":[37.69,-45.11,-1.07],"r":[-90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 관절 서보","p":[42.69,-56.86,1.31],"r":[-180.0,90.0,0.0]},{"t":"P_C","n":"C 뒤왼쪽 윗다리","p":[42.74,-80.14,6.71],"r":[180,0,0]},{"t":"P_G","n":"G 뒤왼쪽 아랫다리","p":[38.94,-136.01,6.71],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 아랫다리 서보","p":[42.69,-108.82,6.71],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 1","p":[45.94,-56.86,-12.69],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 2","p":[45.94,-56.86,15.31],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 1","p":[45.94,-122.82,6.71],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 2","p":[45.94,-94.82,6.71],"r":[90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 관절 연결판","p":[27.39,-54.88,6.71],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 1","p":[32.99,-48.69,3.71],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 2","p":[32.99,-48.69,9.71],"r":[-0.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 아랫다리 연결판","p":[27.39,-103.42,4.73],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 1","p":[32.99,-106.42,-1.46],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 2","p":[32.99,-100.42,-1.46],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽 어깨 혼","p":[41.15,-30.09,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 뒤왼쪽관절 혼","p":[62.89,-56.86,6.71],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽아랫다리 혼","p":[62.89,-103.42,6.71],"r":[90.0,90.0,0.0]}],"EH":[{"t":"P_E","n":"E 뒤왼쪽 관절","p":[37.69,-45.11,-1.07],"r":[-90,-90,0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 관절 서보","p":[42.69,-56.86,1.31],"r":[-180,90,0]},{"t":"P_C","n":"C 뒤왼쪽 윗다리","p":[42.74,-80.14,6.71],"r":[180,0,0]},{"t":"P_H","n":"H 뒤왼쪽 아랫다리","p":[38.94,-136.26,6.71],"r":[-180,-90,0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 아랫다리 서보","p":[42.69,-108.82,6.71],"r":[90,90,0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 1","p":[45.94,-56.86,-12.69],"r":[-180,90,0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 2","p":[45.94,-56.86,15.31],"r":[-180,90,0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 1","p":[45.94,-122.82,6.71],"r":[90,90,0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 2","p":[45.94,-94.82,6.71],"r":[90,90,0]},{"t":"P_L","n":"L 뒤왼쪽 관절 연결판","p":[27.39,-54.88,6.71],"r":[0,-90,0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 1","p":[32.99,-48.69,3.71],"r":[0,-90,0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 2","p":[32.99,-48.69,9.71],"r":[0,-90,0]},{"t":"P_L","n":"L 뒤왼쪽 아랫다리 연결판","p":[27.39,-103.42,8.69],"r":[90,-90,0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 1","p":[32.99,-100.42,14.88],"r":[90,-90,0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 2","p":[32.99,-106.42,14.88],"r":[90,-90,0]},{"t":"HW_HORN","n":"T 뒤왼쪽 어깨 혼","p":[41.15,-30.09,18.88],"r":[0,0,-90]},{"t":"HW_HORN","n":"T 뒤왼쪽관절 혼","p":[62.89,-56.86,6.71],"r":[-90,90,0]},{"t":"HW_HORN","n":"T 뒤왼쪽아랫다리 혼","p":[62.89,-103.42,6.71],"r":[90,90,0]}],"FG":[{"t":"P_F","n":"F 뒤왼쪽 관절","p":[37.72,-45.83,-1.07],"r":[-90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 관절 서보","p":[42.22,-57.58,-2.96],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤왼쪽 윗다리","p":[42.27,-80.86,-8.36],"r":[180,0,0]},{"t":"P_G","n":"G 뒤왼쪽 아랫다리","p":[38.47,-136.73,-8.36],"r":[-0.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 아랫다리 서보","p":[42.22,-109.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 1","p":[45.47,-57.58,11.04],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 2","p":[45.47,-57.58,-16.96],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 1","p":[45.47,-123.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 2","p":[45.47,-95.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 관절 연결판","p":[26.92,-55.6,-8.36],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 1","p":[32.52,-49.41,-11.36],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 2","p":[32.52,-49.41,-5.36],"r":[-0.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 아랫다리 연결판","p":[26.92,-104.14,-10.34],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 1","p":[32.52,-107.14,-16.53],"r":[-90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 2","p":[32.52,-101.14,-16.53],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽 어깨 혼","p":[41.15,-30.09,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 뒤왼쪽관절 혼","p":[62.42,-57.58,-8.36],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽아랫다리 혼","p":[62.42,-104.14,-8.36],"r":[90.0,90.0,0.0]}],"FH":[{"t":"P_F","n":"F 뒤왼쪽 관절","p":[37.72,-45.83,-1.07],"r":[-90.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 관절 서보","p":[42.22,-57.58,-2.96],"r":[0.0,90.0,0.0]},{"t":"P_C","n":"C 뒤왼쪽 윗다리","p":[42.27,-80.86,-8.36],"r":[180,0,0]},{"t":"P_H","n":"H 뒤왼쪽 아랫다리","p":[38.47,-136.98,-8.36],"r":[-180.0,-90.0,0.0]},{"t":"HW_SERVO","n":"S 뒤왼쪽 아랫다리 서보","p":[42.22,-109.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 1","p":[45.47,-57.58,11.04],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 관절 8mm 2","p":[45.47,-57.58,-16.96],"r":[0.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 1","p":[45.47,-123.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW8","n":"V 뒤왼쪽 아랫다리 8mm 2","p":[45.47,-95.54,-8.36],"r":[90.0,90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 관절 연결판","p":[26.92,-55.6,-8.36],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 1","p":[32.52,-49.41,-11.36],"r":[-0.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 관절 10mm 2","p":[32.52,-49.41,-5.36],"r":[-0.0,-90.0,0.0]},{"t":"P_L","n":"L 뒤왼쪽 아랫다리 연결판","p":[26.92,-104.14,-6.38],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 1","p":[32.52,-101.14,-0.19],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW","n":"U L 뒤왼쪽 아랫다리 10mm 2","p":[32.52,-107.14,-0.19],"r":[90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽 어깨 혼","p":[41.15,-30.09,18.88],"r":[-0.0,0.0,-90.0]},{"t":"HW_HORN","n":"T 뒤왼쪽관절 혼","p":[62.42,-57.58,-8.36],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 뒤왼쪽아랫다리 혼","p":[62.42,-104.14,-8.36],"r":[90.0,90.0,0.0]}]},"앞오른쪽":{"EG":[{"t":"P_E","n":"E 앞오른쪽 관절","p":[-37.61,46.85,-1.07],"r":[-90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 관절 서보","p":[-42.61,58.6,1.31],"r":[0.0,-90.0,0.0]},{"t":"P_C","n":"C 앞오른쪽 윗다리","p":[-42.66,81.88,6.71],"r":[180,0,-180]},{"t":"P_G","n":"G 앞오른쪽 아랫다리","p":[-38.86,137.75,6.71],"r":[180.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 아랫다리 서보","p":[-42.61,110.56,6.71],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 1","p":[-45.86,58.6,-12.69],"r":[0.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 2","p":[-45.86,58.6,15.31],"r":[0.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 1","p":[-45.86,124.56,6.71],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 2","p":[-45.86,96.56,6.71],"r":[90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 관절 연결판","p":[-27.31,56.62,6.71],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 1","p":[-32.91,50.43,3.71],"r":[180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 2","p":[-32.91,50.43,9.71],"r":[180.0,90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 아랫다리 연결판","p":[-27.31,105.16,4.73],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 1","p":[-32.91,108.16,-1.46],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 2","p":[-32.91,102.16,-1.46],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽 어깨 혼","p":[-41.07,31.83,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 앞오른쪽관절 혼","p":[-62.81,58.6,6.71],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽아랫다리 혼","p":[-62.81,105.16,6.71],"r":[90.0,-90.0,0.0]}],"EH":[{"t":"P_E","n":"E 앞오른쪽 관절","p":[-37.61,46.85,-1.07],"r":[-90,90,0]},{"t":"HW_SERVO","n":"S 앞오른쪽 관절 서보","p":[-42.61,58.6,1.31],"r":[0,-90,0]},{"t":"P_C","n":"C 앞오른쪽 윗다리","p":[-42.66,81.88,6.71],"r":[180,0,-180]},{"t":"P_H","n":"H 앞오른쪽 아랫다리","p":[-38.86,138.0,6.71],"r":[0,90,0]},{"t":"HW_SERVO","n":"S 앞오른쪽 아랫다리 서보","p":[-42.61,110.56,6.71],"r":[90,-90,0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 1","p":[-45.86,58.6,-12.69],"r":[0,-90,0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 2","p":[-45.86,58.6,15.31],"r":[0,-90,0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 1","p":[-45.86,124.56,6.71],"r":[90,-90,0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 2","p":[-45.86,96.56,6.71],"r":[90,-90,0]},{"t":"P_L","n":"L 앞오른쪽 관절 연결판","p":[-27.31,56.62,6.71],"r":[180,90,0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 1","p":[-32.91,50.43,3.71],"r":[180,90,0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 2","p":[-32.91,50.43,9.71],"r":[180,90,0]},{"t":"P_L","n":"L 앞오른쪽 아랫다리 연결판","p":[-27.31,105.16,8.69],"r":[90,90,0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 1","p":[-32.91,102.16,14.88],"r":[90,90,0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 2","p":[-32.91,108.16,14.88],"r":[90,90,0]},{"t":"HW_HORN","n":"T 앞오른쪽 어깨 혼","p":[-41.07,31.83,18.88],"r":[0,0,90]},{"t":"HW_HORN","n":"T 앞오른쪽관절 혼","p":[-62.81,58.6,6.71],"r":[-90,-90,0]},{"t":"HW_HORN","n":"T 앞오른쪽아랫다리 혼","p":[-62.81,105.16,6.71],"r":[90,-90,0]}],"FG":[{"t":"P_F","n":"F 앞오른쪽 관절","p":[-37.64,47.57,-1.07],"r":[-90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 관절 서보","p":[-42.14,59.32,-2.96],"r":[-180.0,-90.0,0.0]},{"t":"P_C","n":"C 앞오른쪽 윗다리","p":[-42.19,82.6,-8.36],"r":[180,0,-180]},{"t":"P_G","n":"G 앞오른쪽 아랫다리","p":[-38.39,138.47,-8.36],"r":[180.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 아랫다리 서보","p":[-42.14,111.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 1","p":[-45.39,59.32,11.04],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 2","p":[-45.39,59.32,-16.96],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 1","p":[-45.39,125.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 2","p":[-45.39,97.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 관절 연결판","p":[-26.84,57.34,-8.36],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 1","p":[-32.44,51.15,-11.36],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 2","p":[-32.44,51.15,-5.36],"r":[-180.0,90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 아랫다리 연결판","p":[-26.84,105.88,-10.34],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 1","p":[-32.44,108.88,-16.53],"r":[-90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 2","p":[-32.44,102.88,-16.53],"r":[-90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽 어깨 혼","p":[-41.07,31.83,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 앞오른쪽관절 혼","p":[-62.34,59.32,-8.36],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽아랫다리 혼","p":[-62.34,105.88,-8.36],"r":[90.0,-90.0,0.0]}],"FH":[{"t":"P_F","n":"F 앞오른쪽 관절","p":[-37.64,47.57,-1.07],"r":[-90.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 관절 서보","p":[-42.14,59.32,-2.96],"r":[-180.0,-90.0,0.0]},{"t":"P_C","n":"C 앞오른쪽 윗다리","p":[-42.19,82.6,-8.36],"r":[180,0,-180]},{"t":"P_H","n":"H 앞오른쪽 아랫다리","p":[-38.39,138.72,-8.36],"r":[-0.0,90.0,0.0]},{"t":"HW_SERVO","n":"S 앞오른쪽 아랫다리 서보","p":[-42.14,111.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 1","p":[-45.39,59.32,11.04],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 관절 8mm 2","p":[-45.39,59.32,-16.96],"r":[-180.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 1","p":[-45.39,125.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"HW_SCREW8","n":"V 앞오른쪽 아랫다리 8mm 2","p":[-45.39,97.28,-8.36],"r":[90.0,-90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 관절 연결판","p":[-26.84,57.34,-8.36],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 1","p":[-32.44,51.15,-11.36],"r":[-180.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 관절 10mm 2","p":[-32.44,51.15,-5.36],"r":[-180.0,90.0,0.0]},{"t":"P_L","n":"L 앞오른쪽 아랫다리 연결판","p":[-26.84,105.88,-6.38],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 1","p":[-32.44,102.88,-0.19],"r":[90.0,90.0,0.0]},{"t":"HW_SCREW","n":"U L 앞오른쪽 아랫다리 10mm 2","p":[-32.44,108.88,-0.19],"r":[90.0,90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽 어깨 혼","p":[-41.07,31.83,18.88],"r":[-0.0,0.0,90.0]},{"t":"HW_HORN","n":"T 앞오른쪽관절 혼","p":[-62.34,59.32,-8.36],"r":[-90.0,-90.0,0.0]},{"t":"HW_HORN","n":"T 앞오른쪽아랫다리 혼","p":[-62.34,105.88,-8.36],"r":[90.0,-90.0,0.0]}]}}};   // 다리 변형: h=수평 1개(뒤오른쪽) / d=4다리(모두 수평) · 키 = 관절(E|F)+아랫다리(G|H) · 서보 혼 포함 (혼 방향: 선생님 2026-11-17)
 const LEG_COMBO={'앞왼쪽':'FG','뒤오른쪽':'FG','앞오른쪽':'EH','뒤왼쪽':'EH'};   // F+G 는 180° 돌린 자리, 거울 짝 E+H
