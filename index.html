@@ -117,6 +117,7 @@ body.devmode .nodev{display:none}
 #side #segClip{position:absolute;pointer-events:none;overflow:hidden}
 #side #segMarks .segLine{position:absolute;left:0;right:0;border-bottom:2px dashed rgba(34,211,238,.85)}
 #side #segMarks .segLine.hov{border-bottom:3px dashed #67e8f9}
+#side #segClip .runLineBar{position:absolute;left:0;right:0;background:rgba(255,209,102,.22);border-left:3px solid #ffd166}
 #side .segList{display:flex;flex-direction:column;gap:3px;margin-top:4px;max-height:160px;overflow-y:auto}
 #side .segList button{text-align:left;font:11px Consolas,monospace;padding:3px 6px;background:#10202a;border-color:#245a6a;color:#a5f3fc}
 #side .sbOutBox{margin:4px 0 6px}
@@ -808,7 +809,7 @@ async function runMotion(code,delay){
   const tok=++motionTok, steps=parseMotion(code,delay||25); if(!steps.length){toast('Work(...) 코드를 찾지 못했어요');return;}
   ensureFlat(); let D=curD.slice(), n=0, wc=0;
   for(const st of steps){
-    if(tok!==motionTok)return; n++;
+    if(tok!==motionTok)return; n++; if(Number.isFinite(st.ln))RUNLN=st.ln;
     if(st.t==='led'||st.t==='bright'){ neoCmd(st); continue; }
     if(st.t==='pause'){await new Promise(r=>setTimeout(r,Math.min(st.ms,4000)));continue;}
     const from=D.slice(), to=st.t==='home'?new Array(12).fill(0):D.map((v,i)=>v+st.d[i]);
@@ -817,9 +818,10 @@ async function runMotion(code,delay){
     await new Promise(res=>{const f=now=>{if(tok!==motionTok)return res();const k=Math.min(1,(now-t0)/dur);applyD(from.map((v,i)=>v+(to[i]-v)*k));k<1?requestAnimationFrame(f):res();};requestAnimationFrame(f);});
     D=to;
   }
-  if(tok===motionTok){ RUNPOS.active=false; toast('동작 끝 ('+n+'단계)'); }
+  if(tok===motionTok){ RUNPOS.active=false; RUNLN=null; toast('동작 끝 ('+n+'단계)'); }
 }
-let RUNPOS={active:false};       /* 화면 실행(물리 아님)이 어느 Work 까지 갔는지 — 끝까지 가면 active=false */
+let RUNPOS={active:false}, RUNLN=null;       /* RUNLN: 화면 실행이 지금 몇 번째 코드 줄을 하고 있는지 (입력창에 표시) */
+       /* 화면 실행(물리 아님)이 어느 Work 까지 갔는지 — 끝까지 가면 active=false */
 const stopMotion=()=>{motionTok++;};
 function ensureRobot(){
   if(!items.some(i=>/^T /.test(i.name))){ restore(BODY_DRAFT.concat(LEG_DRAFT)); resetFlatCache(); }
@@ -1850,9 +1852,9 @@ function phControl(dt){
 function phSchedule(code,delay){
   const steps=parseMotion(code,delay||25), seq=[], leds=[]; let D=new Array(12).fill(0), t=0, from=phTargets(D), wc=0;   // w: 이 구간이 속한 Work 번호(쉼·복귀는 바로 앞 Work 에 붙인다)
   steps.forEach(s=>{ if(s.t==='led'||s.t==='bright'){ leds.push({t,s}); return; }      // 네오픽셀 색 바꾸기는 시간이 걸리지 않는다
-    if(s.t==='pause'){ seq.push({t0:t,t1:t+s.ms/1000,from,to:from,w:Math.max(0,wc-1),D:D.slice()}); t+=s.ms/1000; return; }
+    if(s.t==='pause'){ seq.push({t0:t,t1:t+s.ms/1000,from,to:from,w:Math.max(0,wc-1),D:D.slice(),ln:s.ln}); t+=s.ms/1000; return; }
     const w=s.t==='home'?Math.max(0,wc-1):wc++;
-    if(s.t==='home'){ D=new Array(12).fill(0); } else D=D.map((v,i)=>v+s.d[i]); const to=phTargets(D), dur=Math.max(s.ms,30)/1000; seq.push({t0:t,t1:t+dur,from,to,w,D:D.slice()}); t+=dur; from=to; });       /* D: 이 구간이 끝났을 때의 모터 값(Work 누적) — 멈춘 자세에서 다리를 끌 때 쓴다 */
+    if(s.t==='home'){ D=new Array(12).fill(0); } else D=D.map((v,i)=>v+s.d[i]); const to=phTargets(D), dur=Math.max(s.ms,30)/1000; seq.push({t0:t,t1:t+dur,from,to,w,D:D.slice(),ln:s.ln}); t+=dur; from=to; });       /* D: 이 구간이 끝났을 때의 모터 값(Work 누적) — 멈춘 자세에서 다리를 끌 때 쓴다 */
   return {seq,end:t,leds};
 }
 function phRun(code,delay){ if(!PH.on)return; const s=phSchedule(code,delay); PH.at=null;
@@ -1883,7 +1885,7 @@ const SERVO_DPS=600;       /* 실제 서보(MG90S 호환)가 낼 수 있는 가�
 function phSlew(){ const lim=SERVO_DPS*Math.PI/180*PH.dt; PH.joints.forEach(J=>{ const tg=J.target; if(J.cmd==null||!isFinite(J.cmd))J.cmd=tg; J.cmd+=Math.max(-lim,Math.min(lim,tg-J.cmd)); J.target=J.cmd; }); }
 function phApplyRun(){
   if(!PH.run)return; const t=PH.sim-PH.run.t0; neoAt(PH.run.leds,t); const sg=PH.run.seq.find(x=>t>=x.t0&&t<x.t1);
-  if(sg){ const k=(t-sg.t0)/(sg.t1-sg.t0); PH.joints.forEach((J,i)=>{ J.target=sg.from[i]+(sg.to[i]-sg.from[i])*k; }); phSlew(); PH.at={D:sg.D,w:sg.w,done:false}; }       /* PH.at: 지금 어느 Work 를 하고 있는지 (멈추고 다리를 끌 때 그 Work 가 끝난 자세에서 시작) */
+  if(sg){ const k=(t-sg.t0)/(sg.t1-sg.t0); PH.joints.forEach((J,i)=>{ J.target=sg.from[i]+(sg.to[i]-sg.from[i])*k; }); phSlew(); PH.at={D:sg.D,w:sg.w,done:false,ln:sg.ln}; }       /* PH.at: 지금 어느 Work 를 하고 있는지 (멈추고 다리를 끌 때 그 Work 가 끝난 자세에서 시작) */
   else if(t>=PH.run.end){ const last=PH.run.seq[PH.run.seq.length-1]; PH.joints.forEach((J,i)=>{ J.target=last.to[i]; }); phSlew(); PH.at={D:last.D,w:last.w,done:true}; if(t>PH.run.end+0.2){ phSummarize(); PH.run=null; toast('동작 끝 — 아래 요약을 보세요'); if(window.labDone)labDone(PH.summary); } }
 }
 function phStepN(n){ for(let i=0;i<n;i++){ phApplyRun(); phControl(PH.dt); PH.world.step(); PH.sim+=PH.dt; phLogTick(); } }
@@ -2293,6 +2295,15 @@ $('#sumBox').addEventListener('click',e=>{ const b=e.target.closest('[data-ln]')
   for(const id in T){ const e=document.getElementById(id); if(!e)continue; const l=e.closest('label')||(e.parentElement&&e.parentElement.tagName==='SPAN'?e.parentElement:null);
     if(!e.title)e.title=T[id]; if(l&&!l.title)l.title=T[id]; }
   const f=$('#pFile'), fl=f&&f.closest('label'); if(fl&&!fl.title)fl.title='내 컴퓨터의 코드 파일(.txt)을 «예제 음악 불러오기» 목록에 추가하고 입력창에 불러옵니다. 여러 개를 한 번에 고를 수 있어요'; })();
+
+/* ---------- 실행 중인 코드 줄 표시 — «처음부터 실행»(화면·물리 모두)에서 지금 하는 줄을 입력창에 띠로 보여 준다 ---------- */
+(function(){ const ta=$('#pText'), clip=$('#segClip'); if(!ta||!clip)return; const bar=document.createElement('div'); bar.className='runLineBar'; bar.hidden=true; clip.appendChild(bar); let lastLn=null;
+  const curLn=()=>{ if(typeof PH!=='undefined'&&PH.on){ return PH.run&&PH.at&&!PH.at.done&&Number.isFinite(PH.at.ln)?PH.at.ln:null; } return (typeof RUNPOS!=='undefined'&&RUNPOS.active&&Number.isFinite(RUNLN))?RUNLN:null; };
+  const tick=()=>{ const ln=curLn(); if(ln===null){ bar.hidden=true; lastLn=null; } else { const cs=getComputedStyle(ta), lh=parseFloat(cs.lineHeight)||16.8, pt=parseFloat(cs.paddingTop)||0;
+      if(ln!==lastLn){ lastLn=ln; const y=pt+ln*lh; if(y<ta.scrollTop+lh||y>ta.scrollTop+ta.clientHeight-3*lh)ta.scrollTop=Math.max(0,y-ta.clientHeight*0.35); }      // 화면 밖으로 나가면 따라 내려간다
+      bar.style.top=(pt+ln*lh-ta.scrollTop)+'px'; bar.style.height=lh+'px'; bar.hidden=false; } requestAnimationFrame(tick); };
+  ta.addEventListener('input',()=>{ if(typeof RUNPOS!=='undefined'&&!(typeof PH!=='undefined'&&PH.run))RUNLN=null; });
+  requestAnimationFrame(tick); })();
 /* ---------- GIF 저장: 입력창의 코드를 처음부터 끝까지 화면 없이 돌려서 프레임을 모아 움직이는 GIF 로 만든다 (다른 학생과 코드 동작을 공유하는 용도) ----------
    · 외부 라이브러리 없이 직접 만든 GIF89a 인코더 (프레임마다 바뀐 부분에 맞춘 색 255개 + 투명 1개, 디더링, 2배로 그려 줄이기 → 화질이 좋다, 가만히 있는 구간은 한 프레임으로 합친다)
    · 물리 모드가 켜져 있으면 물리로, «물리 끄기» 상태면 각도만 따라가는 단순 재생으로 찍는다
